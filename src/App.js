@@ -1103,6 +1103,12 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
     setSelectedJob(null); load();
   };
 
+  const deleteJob = async (job) => {
+    if (!window.confirm("Delete this job? This cannot be undone.")) return;
+    await sb.query("jobs", "DELETE", null, `?id=eq.${job.id}`);
+    load();
+  };
+
   const postJob = async () => {
     if (!pData.title || !pData.description) return;
     setPosting(true);
@@ -1181,6 +1187,11 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                         {job.status === "open" && <Btn onClick={() => viewBids(job)} variant={(job.bid_count || 0) > 0 ? "primary" : "secondary"} T={T}>{(job.bid_count || 0) > 0 ? `View ${job.bid_count} Bid${job.bid_count > 1 ? "s" : ""} →` : "Waiting for bids…"}</Btn>}
                         {job.status === "in_progress" && <Btn variant="green" onClick={() => completeJob(job)} T={T}>✅ Approve & Release Payment</Btn>}
                         {job.status === "complete" && <div style={{ background: T.greenBg, borderRadius: 10, padding: 10, textAlign: "center", fontSize: 13, fontWeight: 700, color: T.green }}>✓ Job complete — payment released</div>}
+                        {job.status !== "in_progress" && (
+                          <button onClick={() => deleteJob(job)} style={{ width: "100%", marginTop: 8, padding: "10px", borderRadius: 10, border: `1.5px solid ${T.red}40`, background: T.redBg, color: T.red, fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
+                            🗑 Delete Job
+                          </button>
+                        )}
                       </div>
                     </div>
                   ))
