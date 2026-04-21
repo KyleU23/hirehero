@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
    🔑 PASTE YOUR SUPABASE PUBLISHABLE KEY BELOW
 ───────────────────────────────────────────── */
 const SUPABASE_URL = "https://tjawaqchdqwzseqvkmcm.supabase.co";
-const SUPABASE_KEY = "YOUR_PUBLISHABLE_KEY_HERE";
+const SUPABASE_KEY = "sb_publishable_z47xBsiT400iHmheSscc5g_NAvrQ1v1";
 
 /* ─────────────────────────────────────────────
    PASSWORD HASHING
