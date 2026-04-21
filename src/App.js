@@ -73,6 +73,31 @@ const DARK = {
 };
 
 /* ─────────────────────────────────────────────
+   PHOTO UPLOAD TO SUPABASE STORAGE
+───────────────────────────────────────────── */
+async function uploadPhoto(file, folder = "jobs") {
+  try {
+    const ext = file.name.split(".").pop();
+    const fileName = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const res = await fetch(`${SUPABASE_URL}/storage/v1/object/uploads/${fileName}`, {
+      method: "POST",
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Authorization": `Bearer ${SUPABASE_KEY}`,
+        "Content-Type": file.type,
+        "x-upsert": "true",
+      },
+      body: file,
+    });
+    if (!res.ok) throw new Error("Upload failed");
+    return `${SUPABASE_URL}/storage/v1/object/public/uploads/${fileName}`;
+  } catch (e) {
+    console.error("Photo upload error:", e);
+    return null;
+  }
+}
+
+/* ─────────────────────────────────────────────
    CONSTANTS
 ───────────────────────────────────────────── */
 const C_STEPS = ["Account", "Profile", "Verify", "Done"];
@@ -164,7 +189,7 @@ function ThemeToggle({ dark, onToggle, T }) {
   );
 }
 
-function Topbar({ T, user, onLogout, dark, onToggleTheme, onBack }) {
+function Topbar({ T, user, onLogout, dark, onToggleTheme, onBack, onHome }) {
   return (
     <div style={{
       position: "sticky", top: 0, zIndex: 100,
@@ -176,20 +201,24 @@ function Topbar({ T, user, onLogout, dark, onToggleTheme, onBack }) {
       boxShadow: T.shadow,
     }}>
       {onBack
-        ? <button onClick={onBack} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", fontSize: 14, fontWeight: 700, color: T.accent, padding: "4px 0" }}>← Back</button>
+        ? <button onClick={onBack} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", fontSize: 14, fontWeight: 700, color: T.accent, padding: "4px 0", minHeight: 44, minWidth: 44 }}>← Back</button>
         : <Logo T={T} size={18} />
       }
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <ThemeToggle dark={dark} onToggle={onToggleTheme} T={T} />
-        {user && (
-          <div style={{
-            width: 34, height: 34, borderRadius: "50%",
-            background: T.accentGlow, border: `2px solid ${T.border}`,
-            display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16
-          }}>
-            {user.role === "contractor" ? "🔧" : "🏠"}
-          </div>
+        {onHome && (
+          <button
+            onTouchEnd={(e) => { e.preventDefault(); onHome(); }}
+            onClick={onHome}
+            style={{
+              minWidth: 44, minHeight: 44, borderRadius: 8,
+              background: T.surface2, border: `1.5px solid ${T.border}`,
+              cursor: "pointer", fontSize: 18, display: "flex",
+              alignItems: "center", justifyContent: "center",
+              WebkitTapHighlightColor: "transparent",
+            }}>🏠</button>
         )}
+
         {onLogout && (
           <button onClick={onLogout} style={{
             background: "none", border: `1.5px solid ${T.border}`,
@@ -329,7 +358,7 @@ function StatCard({ icon, value, label, T, color }) {
 /* ─────────────────────────────────────────────
    WELCOME SCREEN
 ───────────────────────────────────────────── */
-function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin }) {
+function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard }) {
   const [imgLoaded, setImgLoaded] = useState(false);
 
   return (
@@ -339,7 +368,10 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin }) {
         <Logo T={T} size={20} />
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <ThemeToggle dark={dark} onToggle={onToggleTheme} T={T} />
-          <button onClick={onLogin} style={{ background: "none", border: `1.5px solid ${T.border}`, borderRadius: 8, padding: "8px 18px", fontSize: 13, fontWeight: 700, color: T.text, cursor: "pointer" }}>Sign In</button>
+          {onDashboard
+            ? <button onClick={onDashboard} style={{ background: "none", border: `1.5px solid ${T.border}`, borderRadius: 8, padding: "8px 18px", fontSize: 13, fontWeight: 700, color: T.text, cursor: "pointer" }}>My Dashboard</button>
+            : <button onClick={onLogin} style={{ background: "none", border: `1.5px solid ${T.border}`, borderRadius: 8, padding: "8px 18px", fontSize: 13, fontWeight: 700, color: T.text, cursor: "pointer" }}>Sign In</button>
+          }
         </div>
       </div>
 
@@ -356,12 +388,12 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin }) {
           <div style={{ position: "absolute", inset: 0, background: dark ? "linear-gradient(to bottom, rgba(13,17,23,0.4) 0%, rgba(13,17,23,0.95) 100%)" : "linear-gradient(to bottom, rgba(15,23,42,0.3) 0%, rgba(15,23,42,0.9) 100%)" }} />
 
           {/* Hero text over image */}
-          <div className="fu" style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0 24px 32px" }}>
+          <div className="fu" style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0 24px 32px", paddingTop: "80px" }}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.1)", backdropFilter: "blur(8px)", borderRadius: 50, padding: "6px 14px", marginBottom: 16, border: "1px solid rgba(255,255,255,0.15)" }}>
               <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#3fb950", animation: "shimmer 2s infinite" }} />
               <span style={{ fontSize: 12, fontWeight: 700, color: "#fff", letterSpacing: 0.5 }}>Now live in Marysville & Columbus, OH</span>
             </div>
-            <h1 style={{ fontFamily: "'Syne',sans-serif", fontSize: "clamp(36px,9vw,56px)", fontWeight: 800, color: "#fff", lineHeight: 1.05, letterSpacing: -1, marginBottom: 12 }}>
+            <h1 style={{ fontFamily: "'Syne',sans-serif", fontSize: "clamp(26px,6vw,40px)", fontWeight: 800, color: "#fff", lineHeight: 1.1, letterSpacing: -0.5, marginBottom: 12 }}>
               The Safer &<br />
               <span style={{ color: T.goldLight }}>Smarter Way</span><br />
               to Hire.
@@ -803,7 +835,7 @@ function HomeownerSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
 /* ─────────────────────────────────────────────
    CONTRACTOR DASHBOARD
 ───────────────────────────────────────────── */
-function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout }) {
+function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome }) {
   const [tab, setTab] = useState("jobs");
   const [jobs, setJobs] = useState([]);
   const [myBids, setMyBids] = useState([]);
@@ -851,7 +883,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout }) {
 
   return (
     <div style={{ background: T.bg, minHeight: "100vh", paddingBottom: 80 }}>
-      <Topbar T={T} user={user} onLogout={onLogout} dark={dark} onToggleTheme={onToggleTheme} />
+      <Topbar T={T} user={user} onLogout={onLogout} dark={dark} onToggleTheme={onToggleTheme} onHome={onHome} />
 
       {/* Hero header */}
       <div style={{ position: "relative", margin: "16px 16px 0", borderRadius: 18, overflow: "hidden" }}>
@@ -1030,7 +1062,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout }) {
 /* ─────────────────────────────────────────────
    HOMEOWNER DASHBOARD
 ───────────────────────────────────────────── */
-function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab = "jobs" }) {
+function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab = "jobs", onHome }) {
   const [tab, setTab] = useState(defaultTab);
   const [myJobs, setMyJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -1084,6 +1116,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
         budget_min: parseFloat(pData.budgetMin) || 50,
         budget_max: parseFloat(pData.budgetMax) || 200,
         city: user.city || "Marysville, OH",
+        photo_url: pData.photoUrl || null,
         timeline: pData.timeline, status: "open", bid_count: 0,
       });
       setPData({}); setPStep(0); setTab("jobs"); load();
@@ -1097,7 +1130,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
 
   return (
     <div style={{ background: T.bg, minHeight: "100vh", paddingBottom: 80 }}>
-      <Topbar T={T} user={user} onLogout={onLogout} dark={dark} onToggleTheme={onToggleTheme} />
+      <Topbar T={T} user={user} onLogout={onLogout} dark={dark} onToggleTheme={onToggleTheme} onHome={onHome} />
 
       {/* Hero header */}
       <div style={{ position: "relative", margin: "16px 16px 0", borderRadius: 18, overflow: "hidden" }}>
@@ -1174,7 +1207,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                             </div>
                           }
                         </div>
-                        <input id="jp" type="file" accept="image/*" style={{ display: "none" }} onChange={e => { const f = e.target.files[0]; if (f) { const r = new FileReader(); r.onload = ev => up("photoPreview", ev.target.result); r.readAsDataURL(f); } }} />
+                        <input id="jp" type="file" accept="image/*" style={{ display: "none" }} onChange={async e => { const f = e.target.files[0]; if (f) { const r = new FileReader(); r.onload = ev => up("photoPreview", ev.target.result); r.readAsDataURL(f); const url = await uploadPhoto(f, "jobs"); if (url) up("photoUrl", url); } }} />
                       </div>
                       <Field label="Job Title" icon="🔨" T={T}><input style={iS(T)} placeholder="e.g. Fix leaky faucet, install ceiling fan…" value={pData.title || ""} onChange={e => up("title", e.target.value)} /></Field>
                       <Btn onClick={() => pData.title && setPStep(1)} disabled={!pData.title} T={T}>Continue →</Btn>
@@ -1308,6 +1341,9 @@ export default function App() {
     else setScreen("welcome");
   }, []);
 
+  // Allow going home without losing session
+  const goHome = () => setScreen("welcome");
+
   useEffect(() => {
     document.body.style.background = T.bg;
     document.body.style.color = T.text;
@@ -1325,12 +1361,24 @@ export default function App() {
   return (
     <>
       <style>{css}</style>
-      {screen === "welcome" && <WelcomeScreen {...shared} onSelect={(r, s) => { setRole(r); setScreen(s); }} onLogin={() => setScreen("login")} />}
+      <style>{`
+        #hirehero-root {
+          max-width: 480px;
+          margin: 0 auto;
+          min-height: 100vh;
+          box-shadow: 0 0 60px rgba(0,0,0,0.15);
+          position: relative;
+        }
+        body { background: #0a0a0a !important; }
+      `}</style>
+      <div id="hirehero-root">
+      {screen === "welcome" && <WelcomeScreen {...shared} onSelect={(r, s) => { setRole(r); setScreen(s); }} onLogin={() => setScreen("login")} onDashboard={user ? () => setScreen("dashboard") : null} />}
       {screen === "login" && <LoginScreen {...shared} onBack={() => setScreen("welcome")} onLogin={login} />}
       {screen === "signup" && role === "contractor" && <ContractorSignup {...shared} onDone={signup} onLogin={() => setScreen("login")} onBack={() => setScreen("welcome")} />}
       {screen === "signup" && role === "homeowner" && <HomeownerSignup {...shared} onDone={signup} onLogin={() => setScreen("login")} onBack={() => setScreen("welcome")} />}
-      {screen === "dashboard" && user?.role === "contractor" && <ContractorDashboard {...shared} user={user} onLogout={logout} />}
-      {screen === "dashboard" && user?.role === "homeowner" && <HomeownerDashboard {...shared} user={user} onLogout={logout} defaultTab={defaultTab} />}
+      {screen === "dashboard" && user?.role === "contractor" && <ContractorDashboard {...shared} user={user} onLogout={logout} onHome={goHome} />}
+      {screen === "dashboard" && user?.role === "homeowner" && <HomeownerDashboard {...shared} user={user} onLogout={logout} defaultTab={defaultTab} onHome={goHome} />}
+      </div>
     </>
   );
 }
