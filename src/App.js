@@ -611,7 +611,7 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
         <Field label="Last Name" icon="👤" error={errors.lastName} T={T}><input style={iS(T)} placeholder="Smith" value={d.lastName || ""} onChange={e => u("lastName", e.target.value)} /></Field>
       </div>
       <Field label="Email" icon="✉️" error={errors.email} T={T}><input style={iS(T)} type="email" placeholder="john@email.com" value={d.email || ""} onChange={e => u("email", e.target.value)} /></Field>
-      <Field label="Phone (10 digits)" icon="📱" error={errors.phone} T={T}><input style={iS(T)} type="tel" placeholder="6145550100" value={d.phone || ""} onChange={e => u("phone", e.target.value)} /></Field>
+      <Field label="Phone (10 digits)" icon="📱" error={errors.phone} T={T}><input style={iS(T)} type="tel" placeholder="Your phone number" value={d.phone || ""} onChange={e => u("phone", e.target.value)} /></Field>
       <Field label="Password" icon="🔒" error={errors.password} T={T}><input style={iS(T)} type="password" placeholder="Min 6 characters" value={d.password || ""} onChange={e => u("password", e.target.value)} /></Field>
       <Btn onClick={() => validate0() && setStep(1)} T={T}>Continue →</Btn>
       <div style={{ textAlign: "center", marginTop: 14 }}>
@@ -624,7 +624,7 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
       <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 4 }}>Your Profile</h2>
       <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 18 }}>What homeowners will see when you bid.</p>
       <Field label="Business or Your Name" icon="🏢" T={T}><input style={iS(T)} placeholder="Smith's Handyman Services" value={d.businessName || ""} onChange={e => u("businessName", e.target.value)} /></Field>
-      <Field label="City & State" icon="📍" T={T}><input style={iS(T)} placeholder="Marysville, OH" value={d.city || ""} onChange={e => u("city", e.target.value)} /></Field>
+      <Field label="City & State" icon="📍" T={T}><input style={iS(T)} placeholder="City, State" value={d.city || ""} onChange={e => u("city", e.target.value)} /></Field>
       <Field label="How far will you travel?" icon="🗺️" T={T}>
         <select style={{ ...iS(T), cursor: "pointer" }} value={d.radius || ""} onChange={e => u("radius", e.target.value)}>
           <option value="">Select radius…</option>
@@ -778,7 +778,7 @@ function HomeownerSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
         <Field label="Last Name" icon="👤" error={errors.lastName} T={T}><input style={iS(T)} placeholder="Doe" value={d.lastName || ""} onChange={e => u("lastName", e.target.value)} /></Field>
       </div>
       <Field label="Email" icon="✉️" error={errors.email} T={T}><input style={iS(T)} type="email" placeholder="jane@email.com" value={d.email || ""} onChange={e => u("email", e.target.value)} /></Field>
-      <Field label="Phone (10 digits)" icon="📱" error={errors.phone} T={T}><input style={iS(T)} type="tel" placeholder="6145550200" value={d.phone || ""} onChange={e => u("phone", e.target.value)} /></Field>
+      <Field label="Phone (10 digits)" icon="📱" error={errors.phone} T={T}><input style={iS(T)} type="tel" placeholder="Your phone number" value={d.phone || ""} onChange={e => u("phone", e.target.value)} /></Field>
       <Field label="Password" icon="🔒" error={errors.password} T={T}><input style={iS(T)} type="password" placeholder="Min 6 characters" value={d.password || ""} onChange={e => u("password", e.target.value)} /></Field>
       <Btn onClick={() => validate0() && setStep(1)} T={T}>Continue →</Btn>
       <div style={{ textAlign: "center", marginTop: 14 }}>
@@ -789,9 +789,9 @@ function HomeownerSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
     <div className="fu" key="h1">
       <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 4 }}>Your Home</h2>
       <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 18 }}>Helps us match nearby handymen to you.</p>
-      <Field label="Street Address" icon="🏠" T={T}><input style={iS(T)} placeholder="123 Main St" value={d.address || ""} onChange={e => u("address", e.target.value)} /></Field>
-      <Field label="City & State" icon="📍" T={T}><input style={iS(T)} placeholder="Marysville, OH" value={d.city || ""} onChange={e => u("city", e.target.value)} /></Field>
-      <Field label="Zip Code" icon="📮" T={T}><input style={iS(T)} placeholder="43040" value={d.zip || ""} onChange={e => u("zip", e.target.value)} /></Field>
+      <Field label="Street Address" icon="🏠" T={T}><input style={iS(T)} placeholder="Street address" value={d.address || ""} onChange={e => u("address", e.target.value)} /></Field>
+      <Field label="City & State" icon="📍" T={T}><input style={iS(T)} placeholder="City, State" value={d.city || ""} onChange={e => u("city", e.target.value)} /></Field>
+      <Field label="Zip Code" icon="📮" T={T}><input style={iS(T)} placeholder="Zip code" value={d.zip || ""} onChange={e => u("zip", e.target.value)} /></Field>
       {err && <p style={{ fontSize: 12, color: T.red, fontWeight: 600, marginBottom: 12 }}>⚠ {err}</p>}
       <div style={{ display: "flex", gap: 10 }}>
         <Btn variant="secondary" onClick={() => setStep(0)} T={T} style={{ width: 48, padding: "14px 0", flexShrink: 0 }}>←</Btn>
