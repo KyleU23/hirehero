@@ -586,7 +586,7 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
   const save = async () => {
     setLoading(true); setErr("");
     try {
-      const exists = await sb.select("users", `?email=eq.${encodeURIComponent(d.email)}&role=eq.contractor&select=id`);
+      const exists = await sb.select("users", `?email=eq.${encodeURIComponent(d.email)}&role=eq.contractor`);
       if (exists.length) { setErr("A contractor account with this email already exists."); setLoading(false); return; }
       const hashed = await hashPassword(d.password);
       const rows = await sb.insert("users", {
@@ -760,7 +760,7 @@ function HomeownerSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
   const save = async () => {
     setLoading(true); setErr("");
     try {
-      const exists = await sb.select("users", `?email=eq.${encodeURIComponent(d.email)}&role=eq.homeowner&select=id`);
+      const exists = await sb.select("users", `?email=eq.${encodeURIComponent(d.email)}&role=eq.homeowner`);
       if (exists.length) { setErr("A homeowner account with this email already exists."); setLoading(false); return; }
       const hashed = await hashPassword(d.password);
       const rows = await sb.insert("users", {
