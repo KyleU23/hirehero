@@ -369,8 +369,8 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard 
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <ThemeToggle dark={dark} onToggle={onToggleTheme} T={T} />
           {onDashboard
-            ? <button onClick={onDashboard} style={{ background: "none", border: `1.5px solid ${T.border}`, borderRadius: 8, padding: "8px 18px", fontSize: 13, fontWeight: 700, color: T.text, cursor: "pointer" }}>My Dashboard</button>
-            : <button onClick={onLogin} style={{ background: "none", border: `1.5px solid ${T.border}`, borderRadius: 8, padding: "8px 18px", fontSize: 13, fontWeight: 700, color: T.text, cursor: "pointer" }}>Sign In</button>
+            ? <button onClick={onDashboard} style={{ background: T.accent, border: `1.5px solid ${T.accent}`, borderRadius: 8, padding: "8px 18px", fontSize: 13, fontWeight: 700, color: "#fff", cursor: "pointer" }}>My Dashboard</button>
+            : <button onClick={onLogin} style={{ background: T.accent, border: `1.5px solid ${T.accent}`, borderRadius: 8, padding: "8px 18px", fontSize: 13, fontWeight: 700, color: "#fff", cursor: "pointer" }}>Sign In</button>
           }
         </div>
       </div>
@@ -391,7 +391,7 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard 
           <div className="fu" style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0 24px 32px", paddingTop: "80px" }}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.1)", backdropFilter: "blur(8px)", borderRadius: 50, padding: "6px 14px", marginBottom: 16, border: "1px solid rgba(255,255,255,0.15)" }}>
               <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#3fb950", animation: "shimmer 2s infinite" }} />
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#fff", letterSpacing: 0.5 }}>Now live in Marysville & Columbus, OH</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: "#fff", letterSpacing: 0.5 }}>Now launching in Marysville, OH</span>
             </div>
             <h1 style={{ fontFamily: "'Syne',sans-serif", fontSize: "clamp(26px,6vw,40px)", fontWeight: 800, color: "#fff", lineHeight: 1.1, letterSpacing: -0.5, marginBottom: 12 }}>
               The Safer &<br />
@@ -407,7 +407,7 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard 
         {/* Floating stats */}
         <div className="fu" style={{ margin: "-20px 16px 0", position: "relative", zIndex: 5 }}>
           <div style={{ background: T.card, borderRadius: 16, padding: "16px 20px", boxShadow: T.shadowLg, border: `1px solid ${T.cardBorder}`, display: "flex", justifyContent: "space-around" }}>
-            {[["🔧", "100%", "Free to join"], ["🔒", "Escrow", "Protected pay"], ["✓", "Verified", "Pros only"]].map(([ic, v, l]) => (
+            {[["🔧", "Free", "To join"], ["🔒", "Escrow", "Protected pay"], ["⚡", "Fast", "Get bids quickly"]].map(([ic, v, l]) => (
               <div key={l} style={{ textAlign: "center" }}>
                 <div style={{ fontSize: 18, marginBottom: 2 }}>{ic}</div>
                 <div style={{ fontSize: 14, fontWeight: 800, color: T.accent }}>{v}</div>
@@ -431,7 +431,7 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard 
           }}>
             <div style={{ position: "relative", height: 120, overflow: "hidden" }}>
               <img src={UNSPLASH.home} alt="Home" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(15,23,42,0.85) 0%, rgba(15,23,42,0.3) 100%)" }} />
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(15,23,42,0.65) 0%, rgba(15,23,42,0.1) 100%)" }} />
               <div style={{ position: "absolute", inset: 0, padding: "18px 20px", display: "flex", alignItems: "center", gap: 16 }}>
                 <div style={{ width: 48, height: 48, borderRadius: 14, background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, flexShrink: 0 }}>🏠</div>
                 <div>
@@ -451,20 +451,20 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard 
           }}>
             <div style={{ position: "relative", height: 120, overflow: "hidden" }}>
               <img src={UNSPLASH.tools} alt="Tools" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(15,23,42,0.85) 0%, rgba(15,23,42,0.3) 100%)" }} />
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(15,23,42,0.65) 0%, rgba(15,23,42,0.1) 100%)" }} />
               <div style={{ position: "absolute", inset: 0, padding: "18px 20px", display: "flex", alignItems: "center", gap: 16 }}>
                 <div style={{ width: 48, height: 48, borderRadius: 14, background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, flexShrink: 0 }}>🔧</div>
                 <div>
                   <p style={{ fontSize: 18, fontWeight: 800, color: "#fff", fontFamily: "'Syne',sans-serif" }}>Handyman / Pro</p>
-                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>Find jobs, bid, get paid free</p>
+                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>Browse jobs, place bids, get hired</p>
                 </div>
                 <span style={{ marginLeft: "auto", fontSize: 22, color: "rgba(255,255,255,0.5)" }}>›</span>
               </div>
             </div>
-            {/* Free banner */}
+            {/* Join banner */}
             <div style={{ padding: "12px 20px", background: T.surface2, borderTop: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ fontSize: 16 }}>🎉</span>
-              <p style={{ fontSize: 13, fontWeight: 700, color: T.green }}>100% free — no fees until you're making money on the platform</p>
+              <span style={{ fontSize: 16 }}>🚀</span>
+              <p style={{ fontSize: 13, fontWeight: 700, color: T.accent }}>Sign up · Start bidding on jobs near you</p>
             </div>
           </button>
         </div>
@@ -490,25 +490,16 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard 
           </div>
         </div>
 
-        {/* Sample contractor profiles */}
-        <div style={{ margin: "24px 0 0" }}>
-          <p style={{ fontSize: 12, fontWeight: 700, color: T.muted, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 14 }}>Local Pros Near You</p>
-          <div style={{ display: "flex", gap: 12, overflowX: "auto", paddingBottom: 8 }}>
-            {[
-              { name: "Mike R.", img: UNSPLASH.handyman1, rating: "4.9", jobs: "47 jobs" },
-              { name: "Dave S.", img: UNSPLASH.handyman2, rating: "5.0", jobs: "31 jobs" },
-              { name: "Tom W.", img: UNSPLASH.handyman3, rating: "4.8", jobs: "62 jobs" },
-            ].map(pro => (
-              <div key={pro.name} style={{ flexShrink: 0, width: 130, background: T.card, borderRadius: 14, overflow: "hidden", border: `1px solid ${T.cardBorder}`, boxShadow: T.shadow }}>
-                <img src={pro.img} alt={pro.name} style={{ width: "100%", height: 90, objectFit: "cover" }} />
-                <div style={{ padding: "10px 12px" }}>
-                  <p style={{ fontSize: 13, fontWeight: 800, color: T.text, marginBottom: 2 }}>{pro.name}</p>
-                  <p style={{ fontSize: 11, color: T.gold, fontWeight: 700 }}>⭐ {pro.rating}</p>
-                  <p style={{ fontSize: 10, color: T.muted, fontWeight: 600, marginTop: 2 }}>{pro.jobs}</p>
-                  <div style={{ marginTop: 6, background: T.green + "20", borderRadius: 4, padding: "2px 6px", display: "inline-block" }}>
-                    <span style={{ fontSize: 9, fontWeight: 700, color: T.green }}>✓ VERIFIED</span>
-                  </div>
-                </div>
+        {/* Be a founding member CTA */}
+        <div style={{ margin: "24px 0 0", background: `linear-gradient(135deg,${T.accentGlow},${T.goldGlow})`, borderRadius: 16, padding: "20px 18px", border: `1px solid ${T.accent}30` }}>
+          <p style={{ fontSize: 11, fontWeight: 700, color: T.accent, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 8 }}>🚀 Now Launching in Marysville, OH</p>
+          <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 20, fontWeight: 800, color: T.text, marginBottom: 8 }}>Be a Founding Member</p>
+          <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, lineHeight: 1.6, marginBottom: 14 }}>HireHero is brand new and growing. Sign up now and lock in the founding member rate — the best deal we'll ever offer.</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {[["🔒", "Founding rate locked in forever"], ["⭐", "Be first in your area"], ["💰", "Only pay when you earn"]].map(([ic, text]) => (
+              <div key={text} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <span style={{ fontSize: 14 }}>{ic}</span>
+                <p style={{ fontSize: 13, fontWeight: 600, color: T.text }}>{text}</p>
               </div>
             ))}
           </div>
@@ -609,10 +600,10 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
       <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 4 }}>Create Account</h2>
       <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 20 }}>Free to join. No fees until you're earning.</p>
       <div style={{ background: T.green + "15", border: `1px solid ${T.green}40`, borderRadius: 10, padding: "12px 14px", marginBottom: 18, display: "flex", gap: 10 }}>
-        <span style={{ fontSize: 18 }}>🎉</span>
+        <span style={{ fontSize: 18 }}>💰</span>
         <div>
-          <p style={{ fontSize: 13, fontWeight: 700, color: T.green }}>100% Free to start</p>
-          <p style={{ fontSize: 12, color: T.muted, fontWeight: 500 }}>We only make money when you do. No hidden fees ever.</p>
+          <p style={{ fontSize: 13, fontWeight: 700, color: T.green }}>Simple, transparent pricing</p>
+          <p style={{ fontSize: 12, color: T.muted, fontWeight: 500, lineHeight: 1.6 }}>$99/month subscription — only charged after you've earned your first $99. Plus a 10% commission on completed jobs. You only pay when you're making money.</p>
         </div>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
@@ -686,8 +677,8 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
       <div style={{ background: T.greenBg, border: `1.5px solid ${T.greenBorder}`, borderRadius: 12, padding: "16px 18px", marginBottom: 16, textAlign: "center" }}>
         <p style={{ fontSize: 22, marginBottom: 8 }}>📧</p>
         <p style={{ fontSize: 14, fontWeight: 800, color: T.green, marginBottom: 8 }}>Email your photos directly to us</p>
-        <a href={`mailto:xkyl3@outlook.com?subject=HireHero Verification - ${d.firstName || ""} ${d.lastName || ""}`} style={{ display: "block", background: T.card, borderRadius: 10, padding: "12px", border: `1.5px solid ${T.border}`, fontSize: 15, fontWeight: 800, color: T.accent, textDecoration: "none", marginBottom: 8 }}>
-          xkyl3@outlook.com
+        <a href={`mailto:verify@usehirehero.com?subject=HireHero Verification - ${d.firstName || ""} ${d.lastName || ""}`} style={{ display: "block", background: T.card, borderRadius: 10, padding: "12px", border: `1.5px solid ${T.border}`, fontSize: 15, fontWeight: 800, color: T.accent, textDecoration: "none", marginBottom: 8 }}>
+          verify@usehirehero.com
         </a>
         <p style={{ fontSize: 11, color: T.muted, fontWeight: 600 }}>Tap above — your name is pre-filled in the subject line</p>
       </div>
@@ -710,7 +701,7 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
       <div className="pop" style={{ fontSize: 64, marginBottom: 16 }}>🎉</div>
       <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 30, fontWeight: 800, color: T.text, marginBottom: 10 }}>You're In, {d.firstName}!</h2>
       <p style={{ fontSize: 14, color: T.muted, fontWeight: 500, lineHeight: 1.7, marginBottom: 24 }}>
-        Profile submitted. Send your verification photos to <strong style={{ color: T.accent }}>xkyl3@outlook.com</strong> and we'll activate your badge within 1–2 days.
+        Profile submitted. Send your verification photos to <strong style={{ color: T.accent }}>verify@usehirehero.com</strong> and we'll activate your badge within 1–2 days.
       </p>
       <div style={{ background: T.surface2, borderRadius: 14, padding: 18, marginBottom: 24, textAlign: "left" }}>
         {[["📧", "Confirmation sent", `Check ${d.email}`], ["🔍", "We review your docs", "1–2 business days"], ["🏅", "Verified Pro Badge", "Added to your profile"], ["📬", "Jobs start coming in", "From homeowners near you"]].map(([ic, title, sub]) => (
@@ -887,7 +878,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
 
       {/* Hero header */}
       <div style={{ position: "relative", margin: "16px 16px 0", borderRadius: 18, overflow: "hidden" }}>
-        <img src={UNSPLASH.tools} alt="" style={{ width: "100%", height: 160, objectFit: "cover", filter: "brightness(0.3)" }} />
+        <img src={UNSPLASH.tools} alt="" style={{ width: "100%", height: 160, objectFit: "cover", filter: "brightness(0.5)" }} />
         <div style={{ position: "absolute", inset: 0, background: `linear-gradient(135deg,${T.accent}cc,${T.blueDeep || "#0d2a6e"}cc)`, opacity: 0.7 }} />
         <div style={{ position: "absolute", inset: 0, padding: "20px 20px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
@@ -921,7 +912,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
           <span style={{ fontSize: 18 }}>⚠️</span>
           <div>
             <p style={{ fontSize: 13, fontWeight: 700, color: T.gold }}>Verification in progress</p>
-            <p style={{ fontSize: 11, fontWeight: 500, color: T.muted }}>Email your docs to xkyl3@outlook.com · Approved in 1–2 days</p>
+            <p style={{ fontSize: 11, fontWeight: 500, color: T.muted }}>Email your docs to verify@usehirehero.com · Approved in 1–2 days</p>
           </div>
         </div>
       )}
@@ -931,6 +922,20 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
         {[["jobs", "📬 Jobs"], ["bids", "💬 Bids"], ["profile", "👤 Profile"]].map(([t, l]) => (
           <button key={t} onClick={() => setTab(t)} style={{ flex: 1, padding: "10px 4px", borderRadius: 10, border: "none", fontSize: 12, fontWeight: 700, cursor: "pointer", background: tab === t ? T.accent : "transparent", color: tab === t ? "#fff" : T.muted, transition: "all 0.2s" }}>{l}</button>
         ))}
+      </div>
+
+      {/* Coming Soon Categories */}
+      <div style={{ margin: "14px 16px 0", background: T.surface2, borderRadius: 14, padding: "14px 16px", border: `1px solid ${T.border}` }}>
+        <p style={{ fontSize: 11, fontWeight: 700, color: T.muted, letterSpacing: 1, textTransform: "uppercase", marginBottom: 10 }}>More Categories Coming Soon</p>
+        <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 4 }}>
+          {[["🔧", "Handyman", true], ["🚿", "Power Washing", false], ["🌿", "Landscaping", false], ["🎨", "Painting", false], ["🗑️", "Junk Removal", false]].map(([ic, label, live]) => (
+            <div key={label} style={{ flexShrink: 0, background: live ? T.accentGlow : T.surface, border: `1.5px solid ${live ? T.accent : T.border}`, borderRadius: 10, padding: "8px 12px", textAlign: "center", minWidth: 80 }}>
+              <div style={{ fontSize: 20, marginBottom: 4 }}>{ic}</div>
+              <p style={{ fontSize: 10, fontWeight: 700, color: live ? T.accent : T.muted }}>{label}</p>
+              <p style={{ fontSize: 9, fontWeight: 600, color: live ? T.green : T.muted, marginTop: 2 }}>{live ? "✓ Live" : "Soon"}</p>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div style={{ padding: "14px 16px 0" }}>
@@ -952,8 +957,10 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
                           </div>
                           <p style={{ fontSize: 12, color: T.muted, fontWeight: 600, marginBottom: 8 }}>📍 {job.city} · {timeAgo(job.created_at)}</p>
                           <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, lineHeight: 1.55, marginBottom: 12 }}>{job.description}</p>
-                          <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+                          <div style={{ display: "flex", gap: 8, marginBottom: 12, flexWrap: "wrap" }}>
                             <span style={{ background: T.accentGlow, color: T.accent, borderRadius: 6, padding: "3px 10px", fontSize: 11, fontWeight: 700 }}>🔧 Handyman</span>
+                            {job.urgency === "urgent" && <span style={{ background: "#dc262620", color: "#dc2626", borderRadius: 6, padding: "3px 10px", fontSize: 11, fontWeight: 700 }}>🔴 Urgent</span>}
+                            {job.urgency === "soon" && <span style={{ background: "#f59e0b20", color: "#f59e0b", borderRadius: 6, padding: "3px 10px", fontSize: 11, fontWeight: 700 }}>🟡 Soon</span>}
                             <span style={{ fontSize: 12, color: T.muted, fontWeight: 600 }}>{job.bid_count || 0} bid{job.bid_count !== 1 ? "s" : ""}</span>
                           </div>
                           {alreadyBidThis
@@ -1046,6 +1053,9 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
             <div style={{ background: T.greenBg, border: `1px solid ${T.greenBorder}`, borderRadius: 10, padding: "10px 14px", marginBottom: 14 }}>
               <p style={{ fontSize: 12, fontWeight: 700, color: T.green }}>💡 You only get paid when the homeowner approves your work.</p>
             </div>
+            <div style={{ background: T.goldGlow, border: `1px solid ${T.gold}40`, borderRadius: 10, padding: "10px 14px", marginBottom: 14 }}>
+              <p style={{ fontSize: 12, fontWeight: 600, color: T.gold }}>📋 Estimated amount — subject to change upon arrival or completion of work.</p>
+            </div>
             <div style={{ display: "flex", gap: 10 }}>
               <Btn variant="secondary" onClick={() => setSelectedJob(null)} T={T} style={{ flex: 1 }}>Cancel</Btn>
               <Btn onClick={submitBid} disabled={!bidAmount || submitting || alreadyBid} T={T} style={{ flex: 2 }}>
@@ -1113,6 +1123,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
     if (!pData.title || !pData.description) return;
     setPosting(true);
     try {
+      const photoUrls = pData.photoUrls || [];
       await sb.insert("jobs", {
         homeowner_id: user.id,
         homeowner_name: `${user.first_name} ${user.last_name}`,
@@ -1122,7 +1133,10 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
         budget_min: parseFloat(pData.budgetMin) || 50,
         budget_max: parseFloat(pData.budgetMax) || 200,
         city: user.city || "Marysville, OH",
-        photo_url: pData.photoUrl || null,
+        photo_url: photoUrls[0] || null,
+        photo_urls: JSON.stringify(photoUrls),
+        urgency: pData.urgency || "flexible",
+        bid_duration: pData.duration || "72 hours",
         timeline: pData.timeline, status: "open", bid_count: 0,
       });
       setPData({}); setPStep(0); setTab("jobs"); load();
@@ -1140,7 +1154,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
 
       {/* Hero header */}
       <div style={{ position: "relative", margin: "16px 16px 0", borderRadius: 18, overflow: "hidden" }}>
-        <img src={UNSPLASH.home} alt="" style={{ width: "100%", height: 150, objectFit: "cover", filter: "brightness(0.3)" }} />
+        <img src={UNSPLASH.home} alt="" style={{ width: "100%", height: 150, objectFit: "cover", filter: "brightness(0.5)" }} />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg,rgba(5,150,105,0.8),rgba(6,95,70,0.8))" }} />
         <div style={{ position: "absolute", inset: 0, padding: "20px 20px" }}>
           <p style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.65)", marginBottom: 4 }}>Welcome back 👋</p>
@@ -1205,21 +1219,63 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                   {pStep === 0 && (
                     <div>
                       <h3 style={{ fontFamily: "'Syne',sans-serif", fontSize: 24, fontWeight: 800, color: T.text, marginBottom: 4 }}>Post a Job</h3>
-                      <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 18 }}>Snap a photo, describe the job, get bids fast.</p>
+                      <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 18 }}>Snap photos, describe the job, get bids fast.</p>
+
+                      {/* MULTIPLE PHOTO UPLOAD */}
                       <div style={{ marginBottom: 16 }}>
-                        <label style={{ fontSize: 12, fontWeight: 700, color: T.muted, display: "block", marginBottom: 8, letterSpacing: 0.4, textTransform: "uppercase" }}>📸 Job Photo</label>
-                        <div onClick={() => document.getElementById("jp").click()} style={{ width: "100%", height: 140, borderRadius: 12, background: pData.photoPreview ? "transparent" : T.surface2, border: `2px dashed ${T.border}`, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", cursor: "pointer", position: "relative" }}>
-                          {pData.photoPreview
-                            ? <img src={pData.photoPreview} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt="" />
-                            : <div style={{ textAlign: "center" }}>
-                              <div style={{ fontSize: 36, marginBottom: 8 }}>📷</div>
-                              <p style={{ fontSize: 13, fontWeight: 700, color: T.muted }}>Tap to add a photo</p>
-                              <p style={{ fontSize: 11, color: T.muted, marginTop: 4 }}>Helps pros give accurate bids</p>
+                        <label style={{ fontSize: 12, fontWeight: 700, color: T.muted, display: "block", marginBottom: 8, letterSpacing: 0.4, textTransform: "uppercase" }}>📸 Job Photos (up to 5)</label>
+                        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                          {(pData.photoPreviews || []).map((src, i) => (
+                            <div key={i} style={{ position: "relative", width: 80, height: 80, borderRadius: 10, overflow: "hidden", border: `2px solid ${T.border}` }}>
+                              <img src={src} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt="" />
+                              <button onClick={() => {
+                                const newPreviews = (pData.photoPreviews || []).filter((_, j) => j !== i);
+                                const newUrls = (pData.photoUrls || []).filter((_, j) => j !== i);
+                                up("photoPreviews", newPreviews); up("photoUrls", newUrls);
+                              }} style={{ position: "absolute", top: 2, right: 2, width: 20, height: 20, borderRadius: "50%", background: "rgba(0,0,0,0.7)", border: "none", color: "#fff", fontSize: 10, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>✕</button>
                             </div>
-                          }
+                          ))}
+                          {(pData.photoPreviews || []).length < 5 && (
+                            <div onClick={() => document.getElementById("jp").click()} style={{ width: 80, height: 80, borderRadius: 10, background: T.surface2, border: `2px dashed ${T.border}`, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+                              <div style={{ fontSize: 24 }}>📷</div>
+                              <p style={{ fontSize: 9, fontWeight: 700, color: T.muted, marginTop: 2 }}>Add Photo</p>
+                            </div>
+                          )}
                         </div>
-                        <input id="jp" type="file" accept="image/*" style={{ display: "none" }} onChange={async e => { const f = e.target.files[0]; if (f) { const r = new FileReader(); r.onload = ev => up("photoPreview", ev.target.result); r.readAsDataURL(f); const url = await uploadPhoto(f, "jobs"); if (url) up("photoUrl", url); } }} />
+                        <input id="jp" type="file" accept="image/*" multiple style={{ display: "none" }} onChange={async e => {
+                          const files = Array.from(e.target.files).slice(0, 5 - (pData.photoPreviews || []).length);
+                          for (const f of files) {
+                            const r = new FileReader();
+                            r.onload = ev => up("photoPreviews", [...(pData.photoPreviews || []), ev.target.result]);
+                            r.readAsDataURL(f);
+                            const url = await uploadPhoto(f, "jobs");
+                            if (url) up("photoUrls", [...(pData.photoUrls || []), url]);
+                          }
+                          e.target.value = "";
+                        }} />
+                        <p style={{ fontSize: 11, color: T.muted, fontWeight: 600, marginTop: 6 }}>More photos = more accurate bids. Show all angles.</p>
                       </div>
+
+                      {/* URGENCY TOGGLE */}
+                      <div style={{ marginBottom: 14 }}>
+                        <label style={{ fontSize: 12, fontWeight: 700, color: T.muted, display: "block", marginBottom: 8, letterSpacing: 0.4, textTransform: "uppercase" }}>⚡ Urgency</label>
+                        <div style={{ display: "flex", gap: 8 }}>
+                          {[["🔴", "Urgent", "urgent"], ["🟡", "Soon", "soon"], ["🟢", "Flexible", "flexible"]].map(([emoji, label, val]) => (
+                            <button key={val} onClick={() => up("urgency", val)} style={{ flex: 1, padding: "10px 4px", borderRadius: 10, border: `1.5px solid ${pData.urgency === val ? T.accent : T.border}`, background: pData.urgency === val ? T.accentGlow : T.surface2, fontSize: 11, fontWeight: 700, color: pData.urgency === val ? T.accent : T.muted, cursor: "pointer" }}>
+                              {emoji}<br />{label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* JOB DURATION ON PLATFORM */}
+                      <Field label="How long to accept bids?" icon="⏱️" T={T}>
+                        <select style={{ ...iS(T), cursor: "pointer" }} value={pData.duration || ""} onChange={e => up("duration", e.target.value)}>
+                          <option value="">Select duration…</option>
+                          {["24 hours", "48 hours", "72 hours", "1 week"].map(d => <option key={d}>{d}</option>)}
+                        </select>
+                      </Field>
+
                       <Field label="Job Title" icon="🔨" T={T}><input style={iS(T)} placeholder="e.g. Fix leaky faucet, install ceiling fan…" value={pData.title || ""} onChange={e => up("title", e.target.value)} /></Field>
                       <Btn onClick={() => pData.title && setPStep(1)} disabled={!pData.title} T={T}>Continue →</Btn>
                     </div>
