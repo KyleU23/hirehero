@@ -358,14 +358,14 @@ function StatCard({ icon, value, label, T, color }) {
 /* ─────────────────────────────────────────────
    WELCOME SCREEN
 ───────────────────────────────────────────── */
-function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard }) {
+function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard, onLogoTap }) {
   const [imgLoaded, setImgLoaded] = useState(false);
 
   return (
     <div style={{ minHeight: "100vh", background: T.bg, color: T.text }}>
       {/* Nav */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 24px", position: "absolute", top: 0, left: 0, right: 0, zIndex: 10 }}>
-        <Logo T={T} size={20} />
+        <span onClick={onLogoTap} style={{ cursor: "default", userSelect: "none" }}><Logo T={T} size={20} /></span>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <ThemeToggle dark={dark} onToggle={onToggleTheme} T={T} />
           {onDashboard
@@ -543,7 +543,7 @@ function LoginScreen({ T, dark, onToggleTheme, onBack, onLogin }) {
           </div>
           <Card T={T}>
             <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 20 }}>Sign In</h2>
-            <Field label="Email" icon="✉️" T={T}><input style={iS(T)} type="email" placeholder="your@email.com" value={email} onChange={e => setEmail(e.target.value)} /></Field>
+            <Field label="Email" icon="✉️" T={T}><input style={iS(T)} type="email" placeholder="Email address" value={email} onChange={e => setEmail(e.target.value)} /></Field>
             <Field label="Password" icon="🔒" T={T}><input style={iS(T)} type="password" placeholder="Your password" value={pw} onChange={e => setPw(e.target.value)} onKeyDown={e => e.key === "Enter" && handle()} /></Field>
             {err && <p style={{ fontSize: 12, color: T.red, fontWeight: 600, marginBottom: 12 }}>⚠ {err}</p>}
             <Btn onClick={handle} disabled={loading} T={T}>{loading ? <div className="spin" style={{ width: 18, height: 18, border: `2px solid rgba(255,255,255,0.3)`, borderTopColor: "#fff", borderRadius: "50%", margin: "0 auto" }} /> : "Sign In →"}</Btn>
@@ -607,10 +607,10 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
         </div>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-        <Field label="First Name" icon="👤" error={errors.firstName} T={T}><input style={iS(T)} placeholder="John" value={d.firstName || ""} onChange={e => u("firstName", e.target.value)} /></Field>
-        <Field label="Last Name" icon="👤" error={errors.lastName} T={T}><input style={iS(T)} placeholder="Smith" value={d.lastName || ""} onChange={e => u("lastName", e.target.value)} /></Field>
+        <Field label="First Name" icon="👤" error={errors.firstName} T={T}><input style={iS(T)} placeholder="First name" value={d.firstName || ""} onChange={e => u("firstName", e.target.value)} /></Field>
+        <Field label="Last Name" icon="👤" error={errors.lastName} T={T}><input style={iS(T)} placeholder="Last name" value={d.lastName || ""} onChange={e => u("lastName", e.target.value)} /></Field>
       </div>
-      <Field label="Email" icon="✉️" error={errors.email} T={T}><input style={iS(T)} type="email" placeholder="john@email.com" value={d.email || ""} onChange={e => u("email", e.target.value)} /></Field>
+      <Field label="Email" icon="✉️" error={errors.email} T={T}><input style={iS(T)} type="email" placeholder="Email address" value={d.email || ""} onChange={e => u("email", e.target.value)} /></Field>
       <Field label="Phone (10 digits)" icon="📱" error={errors.phone} T={T}><input style={iS(T)} type="tel" placeholder="Your phone number" value={d.phone || ""} onChange={e => u("phone", e.target.value)} /></Field>
       <Field label="Password" icon="🔒" error={errors.password} T={T}><input style={iS(T)} type="password" placeholder="Min 6 characters" value={d.password || ""} onChange={e => u("password", e.target.value)} /></Field>
       <Btn onClick={() => validate0() && setStep(1)} T={T}>Continue →</Btn>
@@ -623,7 +623,7 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
     <div className="fu" key="c1">
       <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 4 }}>Your Profile</h2>
       <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 18 }}>What homeowners will see when you bid.</p>
-      <Field label="Business or Your Name" icon="🏢" T={T}><input style={iS(T)} placeholder="Smith's Handyman Services" value={d.businessName || ""} onChange={e => u("businessName", e.target.value)} /></Field>
+      <Field label="Business or Your Name" icon="🏢" T={T}><input style={iS(T)} placeholder="Business or your name" value={d.businessName || ""} onChange={e => u("businessName", e.target.value)} /></Field>
       <Field label="City & State" icon="📍" T={T}><input style={iS(T)} placeholder="City, State" value={d.city || ""} onChange={e => u("city", e.target.value)} /></Field>
       <Field label="How far will you travel?" icon="🗺️" T={T}>
         <select style={{ ...iS(T), cursor: "pointer" }} value={d.radius || ""} onChange={e => u("radius", e.target.value)}>
@@ -774,10 +774,10 @@ function HomeownerSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
         <span>🔒</span><p style={{ fontSize: 12, fontWeight: 700, color: T.green }}>Your payment is held in escrow until you approve the finished work.</p>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-        <Field label="First Name" icon="👤" error={errors.firstName} T={T}><input style={iS(T)} placeholder="Jane" value={d.firstName || ""} onChange={e => u("firstName", e.target.value)} /></Field>
-        <Field label="Last Name" icon="👤" error={errors.lastName} T={T}><input style={iS(T)} placeholder="Doe" value={d.lastName || ""} onChange={e => u("lastName", e.target.value)} /></Field>
+        <Field label="First Name" icon="👤" error={errors.firstName} T={T}><input style={iS(T)} placeholder="First name" value={d.firstName || ""} onChange={e => u("firstName", e.target.value)} /></Field>
+        <Field label="Last Name" icon="👤" error={errors.lastName} T={T}><input style={iS(T)} placeholder="Last name" value={d.lastName || ""} onChange={e => u("lastName", e.target.value)} /></Field>
       </div>
-      <Field label="Email" icon="✉️" error={errors.email} T={T}><input style={iS(T)} type="email" placeholder="jane@email.com" value={d.email || ""} onChange={e => u("email", e.target.value)} /></Field>
+      <Field label="Email" icon="✉️" error={errors.email} T={T}><input style={iS(T)} type="email" placeholder="Email address" value={d.email || ""} onChange={e => u("email", e.target.value)} /></Field>
       <Field label="Phone (10 digits)" icon="📱" error={errors.phone} T={T}><input style={iS(T)} type="tel" placeholder="Your phone number" value={d.phone || ""} onChange={e => u("phone", e.target.value)} /></Field>
       <Field label="Password" icon="🔒" error={errors.password} T={T}><input style={iS(T)} type="password" placeholder="Min 6 characters" value={d.password || ""} onChange={e => u("password", e.target.value)} /></Field>
       <Btn onClick={() => validate0() && setStep(1)} T={T}>Continue →</Btn>
@@ -1459,14 +1459,98 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
 }
 
 /* ─────────────────────────────────────────────
-   ROOT APP
+   ADMIN SCREEN
 ───────────────────────────────────────────── */
+const ADMIN_PIN = "1234"; // Change this to whatever PIN you want
+
+function AdminScreen({ T, dark, onToggleTheme, onBack }) {
+  const [pin, setPin] = useState("");
+  const [authed, setAuthed] = useState(false);
+  const [contractors, setContractors] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [msg, setMsg] = useState("");
+
+  const load = async () => {
+    setLoading(true);
+    try {
+      const rows = await sb.select("users", "?role=eq.contractor&order=created_at.desc");
+      setContractors(rows || []);
+    } catch {}
+    setLoading(false);
+  };
+
+  const toggleVerify = async (contractor) => {
+    const newVal = !contractor.verified;
+    await sb.update("users", { verified: newVal }, `?id=eq.${contractor.id}`);
+    setMsg(`${contractor.first_name} ${contractor.last_name} ${newVal ? "✅ verified" : "❌ unverified"}`);
+    setTimeout(() => setMsg(""), 3000);
+    load();
+  };
+
+  const deleteContractor = async (contractor) => {
+    if (!window.confirm(`Delete ${contractor.first_name} ${contractor.last_name}? This cannot be undone.`)) return;
+    await sb.query("users", "DELETE", null, `?id=eq.${contractor.id}`);
+    setMsg(`${contractor.first_name} deleted`);
+    setTimeout(() => setMsg(""), 3000);
+    load();
+  };
+
+  if (!authed) return (
+    <div style={{ minHeight: "100vh", background: T.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24 }}>
+      <div style={{ fontSize: 48, marginBottom: 16 }}>🔐</div>
+      <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 24, fontWeight: 800, color: T.text, marginBottom: 24 }}>Admin Access</p>
+      <div style={{ width: "100%", maxWidth: 320 }}>
+        <Field label="PIN" icon="🔒" T={T}>
+          <input style={iS(T)} type="password" placeholder="Enter admin PIN" value={pin} onChange={e => setPin(e.target.value)} onKeyDown={e => e.key === "Enter" && (pin === ADMIN_PIN ? (setAuthed(true), load()) : setPin(""))} />
+        </Field>
+        <Btn onClick={() => pin === ADMIN_PIN ? (setAuthed(true), load()) : setPin("")} T={T}>Enter</Btn>
+        <Btn variant="secondary" onClick={onBack} T={T} style={{ marginTop: 10 }}>← Back</Btn>
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{ minHeight: "100vh", background: T.bg, paddingBottom: 40 }}>
+      <Topbar T={T} dark={dark} onToggleTheme={onToggleTheme} onBack={onBack} />
+      <div style={{ padding: "20px 16px" }}>
+        <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 24, fontWeight: 800, color: T.text, marginBottom: 4 }}>🛡️ Admin Panel</p>
+        <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 16 }}>Manage contractor verifications</p>
+        {msg && <div style={{ background: T.greenBg, border: `1px solid ${T.greenBorder}`, borderRadius: 10, padding: "10px 14px", marginBottom: 14 }}><p style={{ fontSize: 13, fontWeight: 700, color: T.green }}>{msg}</p></div>}
+        {loading ? <Spinner T={T} /> : contractors.length === 0
+          ? <EmptyState T={T} icon="👷" title="No contractors yet" sub="Contractors will appear here once they sign up." />
+          : contractors.map(c => (
+            <div key={c.id} style={{ background: T.card, borderRadius: 14, padding: 16, marginBottom: 12, border: `1.5px solid ${c.verified ? T.green : T.border}` }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+                <div style={{ width: 44, height: 44, borderRadius: "50%", background: T.accentGlow, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 }}>🔧</div>
+                <div style={{ flex: 1 }}>
+                  <p style={{ fontSize: 15, fontWeight: 800, color: T.text }}>{c.first_name} {c.last_name}</p>
+                  <p style={{ fontSize: 12, color: T.muted, fontWeight: 600 }}>{c.email}</p>
+                  <p style={{ fontSize: 11, color: T.muted, fontWeight: 500 }}>{c.business_name} · {c.city}</p>
+                </div>
+                <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 6, background: c.verified ? T.green + "20" : T.gold + "20", color: c.verified ? T.green : T.gold }}>
+                  {c.verified ? "✓ Verified" : "⏳ Pending"}
+                </span>
+              </div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <Btn variant={c.verified ? "secondary" : "green"} onClick={() => toggleVerify(c)} T={T} style={{ flex: 2 }}>
+                  {c.verified ? "❌ Remove Verification" : "✅ Verify Contractor"}
+                </Btn>
+                <button onClick={() => deleteContractor(c)} style={{ flex: 1, padding: "12px", borderRadius: 10, border: `1.5px solid ${T.red}40`, background: T.redBg, color: T.red, fontSize: 12, fontWeight: 700, cursor: "pointer" }}>🗑 Delete</button>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  );
+}
 export default function App() {
   const [screen, setScreen] = useState("loading");
   const [role, setRole] = useState(null);
   const [user, setUser] = useState(null);
   const [defaultTab, setDefaultTab] = useState("jobs");
   const [dark, setDark] = useState(getTheme() === "dark");
+  const [logoTaps, setLogoTaps] = useState(0);
 
   const T = dark ? DARK : LIGHT;
 
@@ -1475,6 +1559,16 @@ export default function App() {
     if (s) { setUser(s); setRole(s.role); setScreen("dashboard"); }
     else setScreen("welcome");
   }, []);
+
+  // Secret admin — tap logo 5 times fast
+  const handleLogoTap = () => {
+    setLogoTaps(n => {
+      const next = n + 1;
+      if (next >= 5) { setScreen("admin"); return 0; }
+      setTimeout(() => setLogoTaps(0), 3000);
+      return next;
+    });
+  };
 
   // Allow going home without losing session
   const goHome = () => setScreen("welcome");
@@ -1507,12 +1601,13 @@ export default function App() {
         body { background: #0a0a0a !important; }
       `}</style>
       <div id="hirehero-root">
-      {screen === "welcome" && <WelcomeScreen {...shared} onSelect={(r, s) => { setRole(r); setScreen(s); }} onLogin={() => setScreen("login")} onDashboard={user ? () => setScreen("dashboard") : null} />}
+      {screen === "welcome" && <WelcomeScreen {...shared} onSelect={(r, s) => { setRole(r); setScreen(s); }} onLogin={() => setScreen("login")} onDashboard={user ? () => setScreen("dashboard") : null} onLogoTap={handleLogoTap} />}
       {screen === "login" && <LoginScreen {...shared} onBack={() => setScreen("welcome")} onLogin={login} />}
       {screen === "signup" && role === "contractor" && <ContractorSignup {...shared} onDone={signup} onLogin={() => setScreen("login")} onBack={() => setScreen("welcome")} />}
       {screen === "signup" && role === "homeowner" && <HomeownerSignup {...shared} onDone={signup} onLogin={() => setScreen("login")} onBack={() => setScreen("welcome")} />}
       {screen === "dashboard" && user?.role === "contractor" && <ContractorDashboard {...shared} user={user} onLogout={logout} onHome={goHome} />}
       {screen === "dashboard" && user?.role === "homeowner" && <HomeownerDashboard {...shared} user={user} onLogout={logout} defaultTab={defaultTab} onHome={goHome} />}
+      {screen === "admin" && <AdminScreen {...shared} onBack={() => setScreen("welcome")} />}
       </div>
     </>
   );
