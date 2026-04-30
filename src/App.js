@@ -836,7 +836,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
   const [bidNote, setBidNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  const verified = user.insurance && user.id_doc;
+  const verified = user.verified === true || user.verified === "true";
 
   const load = async () => {
     setLoading(true);
@@ -924,19 +924,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
         ))}
       </div>
 
-      {/* Coming Soon Categories */}
-      <div style={{ margin: "14px 16px 0", background: T.surface2, borderRadius: 14, padding: "14px 16px", border: `1px solid ${T.border}` }}>
-        <p style={{ fontSize: 11, fontWeight: 700, color: T.muted, letterSpacing: 1, textTransform: "uppercase", marginBottom: 10 }}>More Categories Coming Soon</p>
-        <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 4 }}>
-          {[["🔧", "Handyman", true], ["🚿", "Power Washing", false], ["🌿", "Landscaping", false], ["🎨", "Painting", false], ["🗑️", "Junk Removal", false]].map(([ic, label, live]) => (
-            <div key={label} style={{ flexShrink: 0, background: live ? T.accentGlow : T.surface, border: `1.5px solid ${live ? T.accent : T.border}`, borderRadius: 10, padding: "8px 12px", textAlign: "center", minWidth: 80 }}>
-              <div style={{ fontSize: 20, marginBottom: 4 }}>{ic}</div>
-              <p style={{ fontSize: 10, fontWeight: 700, color: live ? T.accent : T.muted }}>{label}</p>
-              <p style={{ fontSize: 9, fontWeight: 600, color: live ? T.green : T.muted, marginTop: 2 }}>{live ? "✓ Live" : "Soon"}</p>
-            </div>
-          ))}
-        </div>
-      </div>
+
 
       <div style={{ padding: "14px 16px 0" }}>
         {loading ? <Spinner T={T} /> : (
