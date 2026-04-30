@@ -766,10 +766,11 @@ function HomeownerSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
       const rows = await sb.insert("users", {
         email: d.email, password: hashed, role: "homeowner",
         first_name: d.firstName, last_name: d.lastName,
-        phone: d.phone, city: d.city, address: d.address, zip: d.zip,
+        phone: d.phone, city: d.city, address: d.address || null, zip: d.zip || null,
       });
       if (rows && rows[0]) { session.set(rows[0]); onDone(rows[0]); }
-    } catch { setErr("Error creating account. Please try again."); }
+      else { setErr("Account created but login failed. Please sign in manually."); }
+    } catch (e) { setErr("Error: " + (e.message || JSON.stringify(e))); }
     setLoading(false);
   };
 
