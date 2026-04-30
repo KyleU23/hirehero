@@ -1006,18 +1006,27 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
 
             {tab === "profile" && (
               <div className="fu">
-                <Card T={T}>
-                  <div style={{ position: "relative", borderRadius: 12, overflow: "hidden", marginBottom: 16 }}>
-                    <img src={UNSPLASH.tools} alt="" style={{ width: "100%", height: 80, objectFit: "cover", filter: "brightness(0.4)" }} />
-                    <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", padding: "0 16px", gap: 12 }}>
-                      <div style={{ width: 44, height: 44, borderRadius: "50%", background: T.accentGlow, border: `2px solid ${T.accent}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}>🔧</div>
-                      <div>
-                        <p style={{ fontSize: 16, fontWeight: 800, color: "#fff" }}>{user.business_name || `${user.first_name} ${user.last_name}`}</p>
-                        <p style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>📍 {user.city}</p>
+                {/* Profile Header Card */}
+                <Card T={T} style={{ marginBottom: 14 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 16 }}>
+                    <div style={{ position: "relative", flexShrink: 0 }}>
+                      <div style={{ width: 72, height: 72, borderRadius: "50%", background: T.accentGlow, border: `3px solid ${T.accent}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 32, overflow: "hidden" }}>
+                        {user.avatar_url ? <img src={user.avatar_url} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt="" /> : "🔧"}
                       </div>
+                      <div onClick={() => document.getElementById("avatar-upload").click()} style={{ position: "absolute", bottom: 0, right: 0, width: 22, height: 22, borderRadius: "50%", background: T.accent, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, cursor: "pointer", border: `2px solid ${T.bg}` }}>✏️</div>
+                      <input id="avatar-upload" type="file" accept="image/*" style={{ display: "none" }} onChange={async e => {
+                        const f = e.target.files[0]; if (!f) return;
+                        const url = await uploadPhoto(f, "avatars");
+                        if (url) { await sb.update("users", { avatar_url: url }, `?id=eq.${user.id}`); session.set({ ...user, avatar_url: url }); window.location.reload(); }
+                      }} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 18, fontWeight: 800, color: T.text }}>{user.business_name || `${user.first_name} ${user.last_name}`}</p>
+                      <p style={{ fontSize: 12, color: T.muted, fontWeight: 600 }}>📍 {user.city}</p>
+                      {user.verified && <span style={{ background: T.green + "20", color: T.green, fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 4, marginTop: 4, display: "inline-block" }}>✓ VERIFIED PRO</span>}
                     </div>
                   </div>
-                  {user.bio && <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, lineHeight: 1.6, marginBottom: 16 }}>{user.bio}</p>}
+                  {user.bio && <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, lineHeight: 1.6, marginBottom: 14, padding: "12px 14px", background: T.surface2, borderRadius: 10 }}>{user.bio}</p>}
                   <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                     {[["🛡️", "Insurance", user.insurance], ["📋", "License", user.license], ["🪪", "ID Verified", user.id_doc]].map(([ic, l, v]) => (
                       <div key={l} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", background: T.surface2, borderRadius: 10 }}>
@@ -1027,6 +1036,65 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
                       </div>
                     ))}
                   </div>
+                </Card>
+
+                {/* Past Work Photos */}
+                <Card T={T} style={{ marginBottom: 14 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                    <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 16, fontWeight: 800, color: T.text }}>📸 Past Work</p>
+                    <div onClick={() => document.getElementById("work-photo-upload").click()} style={{ background: T.accentGlow, border: `1.5px solid ${T.accent}`, borderRadius: 8, padding: "6px 12px", fontSize: 12, fontWeight: 700, color: T.accent, cursor: "pointer" }}>+ Add Photo</div>
+                    <input id="work-photo-upload" type="file" accept="image/*" multiple style={{ display: "none" }} onChange={async e => {
+                      const files = Array.from(e.target.files).slice(0, 3);
+                      const existing = JSON.parse(user.work_photos || "[]");
+                      const newUrls = [];
+                      for (const f of files) { const url = await uploadPhoto(f, "work"); if (url) newUrls.push(url); }
+                      const merged = [...existing, ...newUrls].slice(0, 12);
+                      await sb.update("users", { work_photos: JSON.stringify(merged) }, `?id=eq.${user.id}`);
+                      session.set({ ...user, work_photos: JSON.stringify(merged) }); window.location.reload();
+                    }} />
+                  </div>
+                  {(() => {
+                    const photos = JSON.parse(user.work_photos || "[]");
+                    return photos.length === 0
+                      ? <div style={{ textAlign: "center", padding: "24px 0", color: T.muted }}>
+                          <div style={{ fontSize: 36, marginBottom: 8 }}>📷</div>
+                          <p style={{ fontSize: 13, fontWeight: 600 }}>Add photos of your past work</p>
+                          <p style={{ fontSize: 11, fontWeight: 500, marginTop: 4 }}>Homeowners hire contractors they can see</p>
+                        </div>
+                      : <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 }}>
+                          {photos.map((url, i) => (
+                            <div key={i} style={{ aspectRatio: "1", borderRadius: 10, overflow: "hidden", border: `1px solid ${T.border}` }}>
+                              <img src={url} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt="" />
+                            </div>
+                          ))}
+                        </div>;
+                  })()}
+                </Card>
+
+                {/* Google Reviews */}
+                <Card T={T}>
+                  <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 16, fontWeight: 800, color: T.text, marginBottom: 4 }}>⭐ Google Reviews</p>
+                  <p style={{ fontSize: 12, color: T.muted, fontWeight: 500, marginBottom: 14 }}>Paste your Google Business URL so homeowners can see your reviews.</p>
+                  <Field label="Google Business URL" icon="🔗" T={T}>
+                    <input style={iS(T)} placeholder="maps.google.com/your-business" value={user.google_url || ""} onChange={async e => {
+                      const val = e.target.value;
+                      await sb.update("users", { google_url: val }, `?id=eq.${user.id}`);
+                      session.set({ ...user, google_url: val });
+                    }} />
+                  </Field>
+                  {user.google_url
+                    ? <a href={user.google_url.startsWith("http") ? user.google_url : `https://${user.google_url}`} target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", gap: 10, background: T.surface2, borderRadius: 10, padding: "12px 14px", textDecoration: "none", border: `1px solid ${T.border}` }}>
+                        <span style={{ fontSize: 22 }}>⭐</span>
+                        <div>
+                          <p style={{ fontSize: 13, fontWeight: 700, color: T.text }}>View My Google Reviews</p>
+                          <p style={{ fontSize: 11, color: T.muted, fontWeight: 500 }}>Tap to open in Google Maps</p>
+                        </div>
+                        <span style={{ marginLeft: "auto", color: T.muted }}>›</span>
+                      </a>
+                    : <div style={{ background: T.goldGlow, border: `1px solid ${T.gold}40`, borderRadius: 10, padding: "10px 14px" }}>
+                        <p style={{ fontSize: 12, fontWeight: 600, color: T.gold }}>💡 Adding your Google reviews builds trust and gets you more jobs.</p>
+                      </div>
+                  }
                 </Card>
               </div>
             )}
