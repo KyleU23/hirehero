@@ -104,7 +104,7 @@ const C_STEPS = ["Account", "Profile", "Verify", "Done"];
 const H_STEPS = ["Account", "Address", "Done"];
 
 const UNSPLASH = {
-  hero: "https://images.unsplash.com/photo-1572981779307-38b8cabb2407?w=800&q=80",
+  hero: "https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=800&q=80",
   tools: "https://images.unsplash.com/photo-1504148455328-c376907d081c?w=600&q=80",
   home: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&q=80",
   handyman1: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&q=80",
