@@ -526,8 +526,15 @@ function LoginScreen({ T, dark, onToggleTheme, onBack, onLogin }) {
       const rows = await sb.select("users", `?email=eq.${encodeURIComponent(email)}&select=*`);
       if (!rows.length) { setErr("No account found with that email."); setLoading(false); return; }
       const hashed = await hashPassword(pw);
-      if (rows[0].password !== hashed) { setErr("Incorrect password."); setLoading(false); return; }
-      onLogin(rows[0]);
+      const matched = rows.filter(r => r.password === hashed);
+      if (!matched.length) { setErr("Incorrect password."); setLoading(false); return; }
+      if (matched.length === 1) { onLogin(matched[0]); }
+      else {
+        // Has both roles — ask which to log into
+        const choice = window.confirm("You have both a Homeowner and Contractor account.\n\nClick OK to log in as Homeowner\nClick Cancel to log in as Contractor");
+        const pick = matched.find(r => r.role === (choice ? "homeowner" : "contractor"));
+        onLogin(pick || matched[0]);
+      }
     } catch { setErr("Connection error. Please try again."); }
     setLoading(false);
   };
@@ -579,8 +586,8 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
   const save = async () => {
     setLoading(true); setErr("");
     try {
-      const exists = await sb.select("users", `?email=eq.${encodeURIComponent(d.email)}&select=id`);
-      if (exists.length) { setErr("An account with this email already exists."); setLoading(false); return; }
+      const exists = await sb.select("users", `?email=eq.${encodeURIComponent(d.email)}&role=eq.contractor&select=id`);
+      if (exists.length) { setErr("A contractor account with this email already exists."); setLoading(false); return; }
       const hashed = await hashPassword(d.password);
       const rows = await sb.insert("users", {
         email: d.email, password: hashed, role: "contractor",
@@ -753,8 +760,8 @@ function HomeownerSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
   const save = async () => {
     setLoading(true); setErr("");
     try {
-      const exists = await sb.select("users", `?email=eq.${encodeURIComponent(d.email)}&select=id`);
-      if (exists.length) { setErr("An account with this email already exists."); setLoading(false); return; }
+      const exists = await sb.select("users", `?email=eq.${encodeURIComponent(d.email)}&role=eq.homeowner&select=id`);
+      if (exists.length) { setErr("A homeowner account with this email already exists."); setLoading(false); return; }
       const hashed = await hashPassword(d.password);
       const rows = await sb.insert("users", {
         email: d.email, password: hashed, role: "homeowner",
@@ -881,24 +888,18 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
         <img src={UNSPLASH.tools} alt="" style={{ width: "100%", height: 160, objectFit: "cover", filter: "brightness(0.5)" }} />
         <div style={{ position: "absolute", inset: 0, background: `linear-gradient(135deg,${T.accent}cc,${T.blueDeep || "#0d2a6e"}cc)`, opacity: 0.7 }} />
         <div style={{ position: "absolute", inset: 0, padding: "20px 20px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
             <div>
-              <p style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.65)", marginBottom: 4, letterSpacing: 0.5 }}>Welcome back 👋</p>
-              <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 20, fontWeight: 800, color: "#fff", marginBottom: 10 }}>{user.business_name || `${user.first_name} ${user.last_name}`}</p>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                <span style={{ background: (verified ? "#3fb950" : T.gold) + "30", border: `1px solid ${verified ? "#3fb950" : T.gold}60`, borderRadius: 6, padding: "3px 10px", fontSize: 11, fontWeight: 700, color: verified ? "#3fb950" : T.gold }}>
-                  {verified ? "✓ Verified Pro" : "⏳ Pending Verification"}
-                </span>
-                <span style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 6, padding: "3px 10px", fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.8)" }}>
-                  📍 {user.city || "Ohio"}
-                </span>
-              </div>
+              <p style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.65)", marginBottom: 4, letterSpacing: 0.5 }}>Welcome back</p>
+              <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 22, fontWeight: 800, color: "#fff" }}>{user.business_name || `${user.first_name} ${user.last_name}`}</p>
             </div>
+            <span style={{ background: (verified ? "#3fb950" : T.gold) + "30", border: `1px solid ${verified ? "#3fb950" : T.gold}60`, borderRadius: 6, padding: "4px 12px", fontSize: 11, fontWeight: 700, color: verified ? "#3fb950" : T.gold, flexShrink: 0 }}>
+              {verified ? "✓ Verified" : "⏳ Pending"}
+            </span>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 14 }}>
-            {[["📬", jobs.length, "Open Jobs"], ["💬", myBids.length, "My Bids"], ["🏆", wonBids.length, "Won"]].map(([ic, v, l]) => (
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
+            {[["Open Jobs", jobs.length], ["My Bids", myBids.length], ["Won", wonBids.length]].map(([l, v]) => (
               <div key={l} style={{ background: "rgba(255,255,255,0.1)", backdropFilter: "blur(8px)", borderRadius: 10, padding: "10px 8px", textAlign: "center", border: "1px solid rgba(255,255,255,0.15)" }}>
-                <div style={{ fontSize: 16 }}>{ic}</div>
                 <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 24, fontWeight: 800, color: "#fff" }}>{v}</div>
                 <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.6)", letterSpacing: 0.5, textTransform: "uppercase" }}>{l}</div>
               </div>
@@ -919,7 +920,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
 
       {/* Tabs */}
       <div style={{ display: "flex", margin: "14px 16px 0", background: T.surface, borderRadius: 12, padding: 4, border: `1px solid ${T.border}` }}>
-        {[["jobs", "📬 Jobs"], ["bids", "💬 Bids"], ["profile", "👤 Profile"]].map(([t, l]) => (
+        {[["jobs", "Jobs"], ["bids", "Bids"], ["profile", "Profile"]].map(([t, l]) => (
           <button key={t} onClick={() => setTab(t)} style={{ flex: 1, padding: "10px 4px", borderRadius: 10, border: "none", fontSize: 12, fontWeight: 700, cursor: "pointer", background: tab === t ? T.accent : "transparent", color: tab === t ? "#fff" : T.muted, transition: "all 0.2s" }}>{l}</button>
         ))}
       </div>
