@@ -41,7 +41,19 @@ const sb = {
   async select(table, filters = "") { return this.query(table, "GET", null, filters); },
   async insert(table, data) { return this.query(table, "POST", data); },
   async update(table, data, filters) { return this.query(table, "PATCH", data, filters); },
-  async delete(table, filters) { return this.query(table, "DELETE", null, filters); },
+  async delete(table, filters) {
+    const url = `${SUPABASE_URL}/rest/v1/${table}${filters}`;
+    const res = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Authorization": `Bearer ${SUPABASE_KEY}`,
+        "Content-Type": "application/json",
+        "Prefer": "return=minimal",
+      },
+    });
+    return res.ok;
+  },
 };
 
 /* ─────────────────────────────────────────────
@@ -1332,7 +1344,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                         {job.status === "open" && <Btn onClick={() => viewBids(job)} variant={(job.bid_count || 0) > 0 ? "primary" : "secondary"} T={T}>{(job.bid_count || 0) > 0 ? `View ${job.bid_count} Bid${job.bid_count > 1 ? "s" : ""} →` : "Waiting for bids…"}</Btn>}
                         {job.status === "in_progress" && <Btn variant="green" onClick={() => completeJob(job)} T={T}> Approve & Release Payment</Btn>}
                         {job.status === "complete" && <div style={{ background: T.greenBg, borderRadius: 10, padding: 10, textAlign: "center", fontSize: 13, fontWeight: 700, color: T.green }}> Job complete — payment released</div>}
-                        {job.status === "open" && <button onClick={async () => { if (window.confirm("Delete this job?")) { await sb.delete("jobs", `?id=eq.${job.id}`); setMyJobs(prev => prev.filter(j => j.id !== job.id)); } }} style={{ width: "100%", marginTop: 8, padding: "10px", borderRadius: 10, border: `1px solid ${T.red}40`, background: T.redBg, color: T.red, fontSize: 12, fontWeight: 700, cursor: "pointer" }}>Delete Job</button>}
+                        {job.status === "open" && <button onClick={async () => { if (window.confirm("Delete this job?")) { await sb.delete("bids", `?job_id=eq.${job.id}`); await sb.delete("jobs", `?id=eq.${job.id}`); setMyJobs(prev => prev.filter(j => j.id !== job.id)); } }} style={{ width: "100%", marginTop: 8, padding: "10px", borderRadius: 10, border: `1px solid ${T.red}40`, background: T.redBg, color: T.red, fontSize: 12, fontWeight: 700, cursor: "pointer" }}>Delete Job</button>}
                         {job.status !== "in_progress" && (
                           <button onClick={() => deleteJob(job)} style={{ width: "100%", marginTop: 8, padding: "10px", borderRadius: 10, border: `1.5px solid ${T.red}40`, background: T.redBg, color: T.red, fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
                              Delete Job
@@ -1594,6 +1606,8 @@ function AdminScreen({ T, dark, onToggleTheme, onBack }) {
 
   const deleteJob = async (job) => {
     if (!window.confirm(`Delete job "${job.title}"? This cannot be undone.`)) return;
+    // Delete bids first then the job
+    await sb.delete("bids", `?job_id=eq.${job.id}`);
     await sb.delete("jobs", `?id=eq.${job.id}`);
     setJobs(prev => prev.filter(j => j.id !== job.id));
     setMsg(`Job "${job.title}" deleted`);
