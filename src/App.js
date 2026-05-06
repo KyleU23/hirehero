@@ -773,9 +773,6 @@ function HomeownerSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
     <div className="fu" key="h0">
       <h2 style={{ fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 4 }}>Create Account</h2>
       <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 18 }}>Free to join. Post your first job in minutes.</p>
-      <div style={{ background: T.greenBg, border: `1px solid ${T.greenBorder}`, borderRadius: 10, padding: "12px 14px", marginBottom: 18, display: "flex", gap: 10 }}>
-        <span></span><p style={{ fontSize: 12, fontWeight: 700, color: T.green }}>Your payment is held in escrow until you approve the finished work.</p>
-      </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
         <Field label="First Name" icon="" error={errors.firstName} T={T}><input style={iS(T)} placeholder="" value={d.firstName || ""} onChange={e => u("firstName", e.target.value)} /></Field>
         <Field label="Last Name" icon="" error={errors.lastName} T={T}><input style={iS(T)} placeholder="" value={d.lastName || ""} onChange={e => u("lastName", e.target.value)} /></Field>
