@@ -813,6 +813,7 @@ function HomeownerSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
 ───────────────────────────────────────────── */
 function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome }) {
   const [tab, setTab] = useState("jobs");
+  const [editingProfile, setEditingProfile] = useState(false);
   const [jobs, setJobs] = useState([]);
   const [myBids, setMyBids] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -986,9 +987,44 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
                       <p style={{ fontSize: 12, color: T.muted, fontWeight: 600 }}>{user.city}</p>
                       {verified && <span style={{ background: T.green + "20", color: T.green, fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 4, marginTop: 4, display: "inline-block" }}>Verified Pro</span>}
                     </div>
+                    <button onClick={() => setEditingProfile(p => !p)} style={{ background: T.accentGlow, border: `1.5px solid ${T.accent}`, borderRadius: 8, padding: "6px 12px", fontSize: 12, fontWeight: 700, color: T.accent, cursor: "pointer" }}>
+                      {editingProfile ? "Cancel" : "Edit"}
+                    </button>
                   </div>
-                  {user.bio && <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, lineHeight: 1.6, marginBottom: 14, padding: "12px 14px", background: T.surface2, borderRadius: 10 }}>{user.bio}</p>}
-                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+
+                  {editingProfile && (() => {
+                    const [eData, setEData] = useState({ firstName: user.first_name, lastName: user.last_name, businessName: user.business_name, city: user.city, phone: user.phone, bio: user.bio });
+                    const [saving, setSaving] = useState(false);
+                    const eu = (k, v) => setEData(p => ({ ...p, [k]: v }));
+                    const saveProfile = async () => {
+                      setSaving(true);
+                      await sb.update("users", {
+                        first_name: eData.firstName, last_name: eData.lastName,
+                        business_name: eData.businessName, city: eData.city,
+                        phone: eData.phone, bio: eData.bio,
+                      }, `?id=eq.${user.id}`);
+                      session.set({ ...user, first_name: eData.firstName, last_name: eData.lastName, business_name: eData.businessName, city: eData.city, phone: eData.phone, bio: eData.bio });
+                      setSaving(false);
+                      setEditingProfile(false);
+                      window.location.reload();
+                    };
+                    return (
+                      <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: 16, display: "flex", flexDirection: "column", gap: 10 }}>
+                        <div style={{ display: "flex", gap: 10 }}>
+                          <Field label="First Name" icon="" T={T} style={{ flex: 1 }}><input style={iS(T)} value={eData.firstName || ""} onChange={e => eu("firstName", e.target.value)} /></Field>
+                          <Field label="Last Name" icon="" T={T} style={{ flex: 1 }}><input style={iS(T)} value={eData.lastName || ""} onChange={e => eu("lastName", e.target.value)} /></Field>
+                        </div>
+                        <Field label="Business Name" icon="" T={T}><input style={iS(T)} value={eData.businessName || ""} onChange={e => eu("businessName", e.target.value)} /></Field>
+                        <Field label="City" icon="" T={T}><input style={iS(T)} value={eData.city || ""} onChange={e => eu("city", e.target.value)} /></Field>
+                        <Field label="Phone" icon="" T={T}><input style={iS(T)} value={eData.phone || ""} onChange={e => eu("phone", e.target.value)} /></Field>
+                        <Field label="Bio" icon="" T={T}><textarea style={{ ...iS(T), minHeight: 80 }} value={eData.bio || ""} onChange={e => eu("bio", e.target.value)} /></Field>
+                        <Btn onClick={saveProfile} disabled={saving} T={T}>{saving ? "Saving..." : "Save Changes"}</Btn>
+                      </div>
+                    );
+                  })()}
+
+                  {!editingProfile && user.bio && <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, lineHeight: 1.6, marginBottom: 14, padding: "12px 14px", background: T.surface2, borderRadius: 10 }}>{user.bio}</p>}
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: editingProfile ? 0 : 0 }}>
                     {[["Insurance", user.insurance], ["License", user.license], ["ID Verified", user.id_doc]].map(([l, v]) => (
                       <div key={l} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", background: T.surface2, borderRadius: 10 }}>
                         <span style={{ fontSize: 13, fontWeight: 600, color: T.text, flex: 1 }}>{l}</span>
