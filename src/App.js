@@ -484,8 +484,8 @@ function LoginScreen({ T, dark, onToggleTheme, onBack, onLogin }) {
       const hashed = await hashPassword(pw);
       const matched = rows.filter(r => r.password === hashed);
       if (!matched.length) { setErr("Incorrect password."); setLoading(false); return; }
-      if (matched.length === 1) { onLogin(matched[0]); }
-      else { setAccounts(matched); }
+      if (rows.length > 1) { setAccounts(matched.length > 1 ? matched : rows.filter(r => matched.map(m => m.email).includes(r.email))); }
+      else { onLogin(matched[0]); }
     } catch { setErr("Connection error. Please try again."); }
     setLoading(false);
   };
