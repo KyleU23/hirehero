@@ -359,14 +359,14 @@ function StatCard({ icon, value, label, T, color }) {
 /* ─────────────────────────────────────────────
    WELCOME SCREEN
 ───────────────────────────────────────────── */
-function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard }) {
+function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard, onLogoTap }) {
   const [imgLoaded, setImgLoaded] = useState(false);
 
   return (
     <div style={{ minHeight: "100vh", background: T.bg, color: T.text }}>
       {/* Nav */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 24px", position: "absolute", top: 0, left: 0, right: 0, zIndex: 10 }}>
-        <Logo T={T} size={20} />
+        <span onClick={onLogoTap} style={{ cursor: "default", userSelect: "none" }}><Logo T={T} size={20} /></span>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <ThemeToggle dark={dark} onToggle={onToggleTheme} T={T} />
           {onDashboard
@@ -1305,6 +1305,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                         {job.status === "open" && <Btn onClick={() => viewBids(job)} variant={(job.bid_count || 0) > 0 ? "primary" : "secondary"} T={T}>{(job.bid_count || 0) > 0 ? `View ${job.bid_count} Bid${job.bid_count > 1 ? "s" : ""} →` : "Waiting for bids…"}</Btn>}
                         {job.status === "in_progress" && <Btn variant="green" onClick={() => completeJob(job)} T={T}> Approve & Release Payment</Btn>}
                         {job.status === "complete" && <div style={{ background: T.greenBg, borderRadius: 10, padding: 10, textAlign: "center", fontSize: 13, fontWeight: 700, color: T.green }}> Job complete — payment released</div>}
+                        {job.status === "open" && <button onClick={async () => { if (window.confirm("Delete this job?")) { await sb.query("jobs", "DELETE", null, `?id=eq.${job.id}`); load(); } }} style={{ width: "100%", marginTop: 8, padding: "10px", borderRadius: 10, border: `1px solid ${T.red}40`, background: T.redBg, color: T.red, fontSize: 12, fontWeight: 700, cursor: "pointer" }}>Delete Job</button>}
                         {job.status !== "in_progress" && (
                           <button onClick={() => deleteJob(job)} style={{ width: "100%", marginTop: 8, padding: "10px", borderRadius: 10, border: `1.5px solid ${T.red}40`, background: T.redBg, color: T.red, fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
                              Delete Job
@@ -1522,6 +1523,137 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
 }
 
 /* ─────────────────────────────────────────────
+   ADMIN SCREEN
+───────────────────────────────────────────── */
+const ADMIN_PIN = "1234";
+
+function AdminScreen({ T, dark, onToggleTheme, onBack }) {
+  const [pin, setPin] = useState("");
+  const [authed, setAuthed] = useState(false);
+  const [contractors, setContractors] = useState([]);
+  const [jobs, setJobs] = useState([]);
+  const [adminTab, setAdminTab] = useState("contractors");
+  const [loading, setLoading] = useState(false);
+  const [msg, setMsg] = useState("");
+
+  const load = async () => {
+    setLoading(true);
+    try {
+      const [cRows, jRows] = await Promise.all([
+        sb.select("users", "?role=eq.contractor&order=created_at.desc"),
+        sb.select("jobs", "?order=created_at.desc"),
+      ]);
+      setContractors(cRows || []);
+      setJobs(jRows || []);
+    } catch {}
+    setLoading(false);
+  };
+
+  const toggleVerify = async (contractor) => {
+    const newVal = !contractor.verified;
+    await sb.update("users", { verified: newVal }, `?id=eq.${contractor.id}`);
+    setMsg(`${contractor.first_name} ${newVal ? "verified" : "unverified"}`);
+    setTimeout(() => setMsg(""), 3000);
+    load();
+  };
+
+  const deleteContractor = async (contractor) => {
+    if (!window.confirm(`Delete ${contractor.first_name} ${contractor.last_name}?`)) return;
+    await sb.query("users", "DELETE", null, `?id=eq.${contractor.id}`);
+    setMsg(`${contractor.first_name} deleted`);
+    setTimeout(() => setMsg(""), 3000);
+    load();
+  };
+
+  const deleteJob = async (job) => {
+    if (!window.confirm(`Delete job "${job.title}"? This cannot be undone.`)) return;
+    await sb.query("jobs", "DELETE", null, `?id=eq.${job.id}`);
+    setMsg(`Job "${job.title}" deleted`);
+    setTimeout(() => setMsg(""), 3000);
+    load();
+  };
+
+  if (!authed) return (
+    <div style={{ minHeight: "100vh", background: T.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24 }}>
+      <p style={{ fontSize: 24, fontWeight: 800, color: T.text, marginBottom: 24 }}>Admin Access</p>
+      <div style={{ width: "100%", maxWidth: 320 }}>
+        <Field label="PIN" icon="" T={T}>
+          <input style={iS(T)} type="password" placeholder="" value={pin} onChange={e => setPin(e.target.value)} onKeyDown={e => e.key === "Enter" && (pin === ADMIN_PIN ? (setAuthed(true), load()) : setPin(""))} />
+        </Field>
+        <Btn onClick={() => pin === ADMIN_PIN ? (setAuthed(true), load()) : setPin("")} T={T}>Enter</Btn>
+        <Btn variant="secondary" onClick={onBack} T={T} style={{ marginTop: 10 }}>Back</Btn>
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{ minHeight: "100vh", background: T.bg, paddingBottom: 40 }}>
+      <Topbar T={T} dark={dark} onToggleTheme={onToggleTheme} onBack={onBack} />
+      <div style={{ padding: "20px 16px" }}>
+        <p style={{ fontSize: 24, fontWeight: 800, color: T.text, marginBottom: 4 }}>Admin Panel</p>
+        <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 14 }}>Manage your platform</p>
+
+        {/* Admin Tabs */}
+        <div style={{ display: "flex", background: T.surface, borderRadius: 12, padding: 4, border: `1px solid ${T.border}`, marginBottom: 16 }}>
+          {[["contractors", "Contractors"], ["jobs", "Jobs"]].map(([t, l]) => (
+            <button key={t} onClick={() => setAdminTab(t)} style={{ flex: 1, padding: "10px", borderRadius: 10, border: "none", fontSize: 13, fontWeight: 700, cursor: "pointer", background: adminTab === t ? T.accent : "transparent", color: adminTab === t ? "#fff" : T.muted }}>{l}</button>
+          ))}
+        </div>
+
+        {msg && <div style={{ background: T.greenBg, border: `1px solid ${T.greenBorder}`, borderRadius: 10, padding: "10px 14px", marginBottom: 14 }}><p style={{ fontSize: 13, fontWeight: 700, color: T.green }}>{msg}</p></div>}
+
+        {loading ? <Spinner T={T} /> : (
+          <>
+            {adminTab === "contractors" && (
+              contractors.length === 0
+                ? <EmptyState T={T} icon="" title="No contractors yet" sub="Contractors will appear here once they sign up." />
+                : contractors.map(c => (
+                  <div key={c.id} style={{ background: T.card, borderRadius: 14, padding: 16, marginBottom: 12, border: `1.5px solid ${c.verified ? T.green : T.border}` }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+                      <div style={{ width: 44, height: 44, borderRadius: "50%", background: T.accentGlow, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>{c.first_name?.[0]}</div>
+                      <div style={{ flex: 1 }}>
+                        <p style={{ fontSize: 15, fontWeight: 800, color: T.text }}>{c.first_name} {c.last_name}</p>
+                        <p style={{ fontSize: 12, color: T.muted, fontWeight: 600 }}>{c.email}</p>
+                        <p style={{ fontSize: 11, color: T.muted, fontWeight: 500 }}>{c.business_name} · {c.city}</p>
+                      </div>
+                      <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 6, background: c.verified ? T.green + "20" : T.gold + "20", color: c.verified ? T.green : T.gold }}>
+                        {c.verified ? "Verified" : "Pending"}
+                      </span>
+                    </div>
+                    <div style={{ display: "flex", gap: 8 }}>
+                      <Btn variant={c.verified ? "secondary" : "primary"} onClick={() => toggleVerify(c)} T={T} style={{ flex: 2 }}>
+                        {c.verified ? "Remove Verification" : "Verify Contractor"}
+                      </Btn>
+                      <button onClick={() => deleteContractor(c)} style={{ flex: 1, padding: "12px", borderRadius: 10, border: `1.5px solid ${T.red}40`, background: T.redBg, color: T.red, fontSize: 12, fontWeight: 700, cursor: "pointer" }}>Delete</button>
+                    </div>
+                  </div>
+                ))
+            )}
+
+            {adminTab === "jobs" && (
+              jobs.length === 0
+                ? <EmptyState T={T} icon="" title="No jobs yet" sub="Jobs will appear here once homeowners start posting." />
+                : jobs.map(job => (
+                  <div key={job.id} style={{ background: T.card, borderRadius: 14, padding: 16, marginBottom: 12, border: `1px solid ${T.border}` }}>
+                    {job.photo_url && <img src={job.photo_url} alt="" style={{ width: "100%", height: 140, objectFit: "cover", borderRadius: 10, marginBottom: 12 }} />}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
+                      <p style={{ fontSize: 15, fontWeight: 800, color: T.text }}>{job.title}</p>
+                      <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 6, background: T.accentGlow, color: T.accent }}>{job.status}</span>
+                    </div>
+                    <p style={{ fontSize: 12, color: T.muted, fontWeight: 600, marginBottom: 4 }}>{job.homeowner_name} · {job.city}</p>
+                    <p style={{ fontSize: 12, color: T.muted, fontWeight: 500, marginBottom: 12, lineHeight: 1.5 }}>{job.description}</p>
+                    <button onClick={() => deleteJob(job)} style={{ width: "100%", padding: "12px", borderRadius: 10, border: `1.5px solid ${T.red}40`, background: T.redBg, color: T.red, fontSize: 13, fontWeight: 700, cursor: "pointer" }}>Delete Job</button>
+                  </div>
+                ))
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
    ROOT APP
 ───────────────────────────────────────────── */
 export default function App() {
@@ -1530,16 +1662,15 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [defaultTab, setDefaultTab] = useState("jobs");
   const [dark, setDark] = useState(getTheme() === "dark");
+  const [logoTaps, setLogoTaps] = useState(0);
 
   const T = dark ? DARK : LIGHT;
 
   useEffect(() => {
     const s = session.get();
     if (s) {
-      // Check if there are multiple accounts for this email
       sb.select("users", `?email=eq.${encodeURIComponent(s.email)}&select=*`).then(rows => {
         if (rows && rows.length > 1) {
-          // Has multiple accounts - go to welcome so they can choose
           session.clear();
           setScreen("welcome");
         } else {
@@ -1551,7 +1682,13 @@ export default function App() {
     } else setScreen("welcome");
   }, []);
 
-  // Allow going home without losing session
+  const handleLogoTap = () => {
+    const next = logoTaps + 1;
+    setLogoTaps(next);
+    if (next >= 5) { setLogoTaps(0); setScreen("admin"); }
+    setTimeout(() => setLogoTaps(0), 3000);
+  };
+
   const goHome = () => setScreen("welcome");
 
   useEffect(() => {
@@ -1591,12 +1728,13 @@ export default function App() {
         body { background: #0a0a0a !important; }
       `}</style>
       <div id="hirehero-root">
-      {screen === "welcome" && <WelcomeScreen {...shared} onSelect={(r, s) => { setRole(r); setScreen(s); }} onLogin={() => setScreen("login")} onDashboard={user ? () => setScreen("dashboard") : null} />}
+      {screen === "welcome" && <WelcomeScreen {...shared} onSelect={(r, s) => { setRole(r); setScreen(s); }} onLogin={() => setScreen("login")} onDashboard={user ? () => setScreen("dashboard") : null} onLogoTap={handleLogoTap} />}
       {screen === "login" && <LoginScreen {...shared} onBack={() => setScreen("welcome")} onLogin={login} />}
       {screen === "signup" && role === "contractor" && <ContractorSignup {...shared} onDone={signup} onLogin={() => setScreen("login")} onBack={() => setScreen("welcome")} />}
       {screen === "signup" && role === "homeowner" && <HomeownerSignup {...shared} onDone={signup} onLogin={() => setScreen("login")} onBack={() => setScreen("welcome")} />}
       {screen === "dashboard" && user?.role === "contractor" && <ContractorDashboard {...shared} user={user} onLogout={logout} onHome={goHome} onSwitch={switchAccount} />}
       {screen === "dashboard" && user?.role === "homeowner" && <HomeownerDashboard {...shared} user={user} onLogout={logout} defaultTab={defaultTab} onHome={goHome} onSwitch={switchAccount} />}
+      {screen === "admin" && <AdminScreen {...shared} onBack={() => setScreen("welcome")} />}
       </div>
     </>
   );
