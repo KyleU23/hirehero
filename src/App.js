@@ -1380,7 +1380,9 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                   </div>
                 </div>
                 <Card T={T}>
-                  <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, lineHeight: 1.7, marginBottom: 20 }}>Your payment is held safely until the job is done right. No risk on either side.</p>
+                  <div style={{ background: T.green + "15", border: `1px solid ${T.green}40`, borderRadius: 10, padding: "12px 14px", marginBottom: 16 }}>
+                    <p style={{ fontSize: 12, fontWeight: 700, color: T.green }}>• Stripe payments coming soon. Escrow protection will be fully live shortly.</p>
+                  </div>
                   {[
                     ["1", T.accent, "You fund escrow", "Once you accept a bid your payment is set aside. The contractor knows the money is there but nobody touches it until the work is done."],
                     ["2", T.gold, "Work gets done", "Your contractor completes the job. If you need to reach them you can message directly through the app."],
