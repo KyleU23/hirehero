@@ -104,15 +104,15 @@ const C_STEPS = ["Account", "Profile", "Verify", "Done"];
 const H_STEPS = ["Account", "Address", "Done"];
 
 const UNSPLASH = {
-  hero: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&q=80",
-  tools: "https://images.unsplash.com/photo-1504148455328-c376907d081c?w=600&q=80",
-  home: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&q=80",
-  handyman1: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&q=80",
-  handyman2: "https://images.unsplash.com/photo-1607400201515-c2c41c07d307?w=400&q=80",
-  handyman3: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80",
-  job1: "https://images.unsplash.com/photo-1545259742-e1d46e3b0072?w=400&q=80",
-  job2: "https://images.unsplash.com/photo-1612833603922-5a3fb742e9d6?w=400&q=80",
-  job3: "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400&q=80",
+  hero: "https://images.pexels.com/photos/1216589/pexels-photo-1216589.jpeg?w=800&q=80",
+  tools: "https://images.pexels.com/photos/1249611/pexels-photo-1249611.jpeg?w=600&q=80",
+  home: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?w=600&q=80",
+  handyman1: "https://images.pexels.com/photos/3862132/pexels-photo-3862132.jpeg?w=400&q=80",
+  handyman2: "https://images.pexels.com/photos/2760243/pexels-photo-2760243.jpeg?w=400&q=80",
+  handyman3: "https://images.pexels.com/photos/1170412/pexels-photo-1170412.jpeg?w=400&q=80",
+  job1: "https://images.pexels.com/photos/585419/pexels-photo-585419.jpeg?w=400&q=80",
+  job2: "https://images.pexels.com/photos/271667/pexels-photo-271667.jpeg?w=400&q=80",
+  job3: "https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?w=400&q=80",
 };
 
 const css = `
@@ -379,12 +379,7 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard 
       <div style={{ position: "relative", overflow: "hidden" }}>
         {/* Background image */}
         <div style={{ position: "relative", height: 420, overflow: "hidden" }}>
-          <img
-            src={UNSPLASH.hero}
-            alt="Handyman at work"
-            onLoad={() => setImgLoaded(true)}
-            style={{ width: "100%", height: "100%", objectFit: "cover", filter: dark ? "brightness(0.3)" : "brightness(0.45)", transition: "opacity 0.5s", opacity: imgLoaded ? 1 : 0 }}
-          />
+          
           <div style={{ position: "absolute", inset: 0, background: dark ? "linear-gradient(to bottom, rgba(13,17,23,0.4) 0%, rgba(13,17,23,0.95) 100%)" : "linear-gradient(to bottom, rgba(15,23,42,0.3) 0%, rgba(15,23,42,0.9) 100%)" }} />
 
           {/* Hero text over image */}
@@ -430,7 +425,7 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard 
             boxShadow: T.shadow, textAlign: "center", transition: "transform 0.2s, box-shadow 0.2s",
           }}>
             <div style={{ position: "relative", height: 120, overflow: "hidden" }}>
-              <img src={UNSPLASH.home} alt="Home" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              
               <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(15,23,42,0.85) 0%, rgba(15,23,42,0.3) 100%)" }} />
               <div style={{ position: "absolute", inset: 0, padding: "18px 20px", display: "flex", alignItems: "center", gap: 16 }}>
                 <div style={{ width: 48, height: 48, borderRadius: 14, background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, flexShrink: 0 }}></div>
@@ -450,7 +445,7 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard 
             boxShadow: T.shadow, textAlign: "center", transition: "transform 0.2s",
           }}>
             <div style={{ position: "relative", height: 120, overflow: "hidden" }}>
-              <img src={UNSPLASH.tools} alt="Tools" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              
               <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(15,23,42,0.85) 0%, rgba(15,23,42,0.3) 100%)" }} />
               <div style={{ position: "absolute", inset: 0, padding: "18px 20px", display: "flex", alignItems: "center", gap: 16 }}>
                 <div style={{ width: 48, height: 48, borderRadius: 14, background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, flexShrink: 0 }}></div>
@@ -500,7 +495,7 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard 
               { name: "Tom W.", img: UNSPLASH.handyman3, rating: "4.8", jobs: "62 jobs" },
             ].map(pro => (
               <div key={pro.name} style={{ flexShrink: 0, width: 130, background: T.card, borderRadius: 14, overflow: "hidden", border: `1px solid ${T.cardBorder}`, boxShadow: T.shadow }}>
-                <img src={pro.img} alt={pro.name} style={{ width: "100%", height: 90, objectFit: "cover" }} />
+                
                 <div style={{ padding: "10px 12px" }}>
                   <p style={{ fontSize: 13, fontWeight: 800, color: T.text, marginBottom: 2 }}>{pro.name}</p>
                   <p style={{ fontSize: 11, color: T.gold, fontWeight: 700 }}>⭐ {pro.rating}</p>
@@ -656,7 +651,7 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
       <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 16 }}>Verified pros get the most jobs and appear first.</p>
 
       <div style={{ position: "relative", borderRadius: 14, overflow: "hidden", marginBottom: 18 }}>
-        <img src={UNSPLASH.tools} alt="" style={{ width: "100%", height: 100, objectFit: "cover", filter: "brightness(0.4)" }} />
+        
         <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", padding: "0 20px", gap: 14 }}>
           <div style={{ fontSize: 32 }}></div>
           <div>
@@ -887,7 +882,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
 
       {/* Hero header */}
       <div style={{ position: "relative", margin: "16px 16px 0", borderRadius: 18, overflow: "hidden" }}>
-        <img src={UNSPLASH.tools} alt="" style={{ width: "100%", height: 160, objectFit: "cover", filter: "brightness(0.3)" }} />
+        
         <div style={{ position: "absolute", inset: 0, background: `linear-gradient(135deg,${T.accent}cc,${T.blueDeep || "#0d2a6e"}cc)`, opacity: 0.7 }} />
         <div style={{ position: "absolute", inset: 0, padding: "20px 20px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
@@ -944,7 +939,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
                     const alreadyBidThis = myBids.some(b => b.job_id === job.id);
                     return (
                       <div key={job.id} style={{ background: T.card, borderRadius: 16, marginBottom: 14, border: `1px solid ${T.cardBorder}`, boxShadow: T.shadow, overflow: "hidden" }}>
-                        <img src={job.photo_url || mockJobImages[idx % 3]} alt="" style={{ width: "100%", height: 150, objectFit: "cover" }} />
+                        
                         <div style={{ padding: 16 }}>
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
                             <p style={{ fontSize: 16, fontWeight: 800, color: T.text, fontFamily: "'Syne',sans-serif" }}>{job.title}</p>
@@ -1001,7 +996,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
               <div className="fu">
                 <Card T={T}>
                   <div style={{ position: "relative", borderRadius: 12, overflow: "hidden", marginBottom: 16 }}>
-                    <img src={UNSPLASH.tools} alt="" style={{ width: "100%", height: 80, objectFit: "cover", filter: "brightness(0.4)" }} />
+                    
                     <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", padding: "0 16px", gap: 12 }}>
                       <div style={{ width: 44, height: 44, borderRadius: "50%", background: T.accentGlow, border: `2px solid ${T.accent}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}></div>
                       <div>
@@ -1034,7 +1029,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
             <div style={{ width: 36, height: 4, background: T.border, borderRadius: 2, margin: "0 auto 20px" }} />
             <h3 style={{ fontFamily: "'Syne',sans-serif", fontSize: 24, fontWeight: 800, color: T.text, marginBottom: 4 }}>Place Your Bid</h3>
             <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 16 }}>{selectedJob.title} · {selectedJob.city}</p>
-            <img src={selectedJob.photo_url || UNSPLASH.job1} alt="" style={{ width: "100%", height: 120, objectFit: "cover", borderRadius: 12, marginBottom: 14 }} />
+            
             <div style={{ background: T.accentGlow, borderRadius: 10, padding: "10px 14px", marginBottom: 14 }}>
               <p style={{ fontSize: 12, fontWeight: 700, color: T.accent }}>Homeowner budget: <strong>${selectedJob.budget_min}–${selectedJob.budget_max}</strong></p>
             </div>
@@ -1140,7 +1135,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
 
       {/* Hero header */}
       <div style={{ position: "relative", margin: "16px 16px 0", borderRadius: 18, overflow: "hidden" }}>
-        <img src={UNSPLASH.home} alt="" style={{ width: "100%", height: 150, objectFit: "cover", filter: "brightness(0.3)" }} />
+        
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg,rgba(5,150,105,0.8),rgba(6,95,70,0.8))" }} />
         <div style={{ position: "absolute", inset: 0, padding: "20px 20px" }}>
           <p style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.65)", marginBottom: 4 }}>Welcome back </p>
@@ -1173,7 +1168,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                   ? <EmptyState T={T} icon="" title="No jobs posted yet" sub="Post your first job and get bids in minutes." action={<Btn onClick={() => setTab("post")} T={T} style={{ maxWidth: 220, margin: "0 auto" }}> Post a Job</Btn>} />
                   : myJobs.map((job, idx) => (
                     <div key={job.id} style={{ background: T.card, borderRadius: 16, marginBottom: 14, border: `1px solid ${T.cardBorder}`, boxShadow: T.shadow, overflow: "hidden" }}>
-                      <img src={job.photo_url || mockJobImages[idx % 3]} alt="" style={{ width: "100%", height: 130, objectFit: "cover" }} />
+                      
                       <div style={{ padding: 16 }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
                           <p style={{ fontSize: 16, fontWeight: 800, color: T.text, fontFamily: "'Syne',sans-serif" }}>{job.title}</p>
@@ -1210,7 +1205,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                         <label style={{ fontSize: 12, fontWeight: 700, color: T.muted, display: "block", marginBottom: 8, letterSpacing: 0.4, textTransform: "uppercase" }}> Job Photo</label>
                         <div onClick={() => document.getElementById("jp").click()} style={{ width: "100%", height: 140, borderRadius: 12, background: pData.photoPreview ? "transparent" : T.surface2, border: `2px dashed ${T.border}`, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", cursor: "pointer", position: "relative" }}>
                           {pData.photoPreview
-                            ? <img src={pData.photoPreview} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt="" />
+                            ? 
                             : <div style={{ textAlign: "center" }}>
                               <div style={{ fontSize: 36, marginBottom: 8 }}></div>
                               <p style={{ fontSize: 13, fontWeight: 700, color: T.muted }}>Tap to add a photo</p>
@@ -1260,7 +1255,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
             {tab === "escrow" && (
               <div className="fu">
                 <div style={{ position: "relative", borderRadius: 16, overflow: "hidden", marginBottom: 16 }}>
-                  <img src={UNSPLASH.home} alt="" style={{ width: "100%", height: 120, objectFit: "cover", filter: "brightness(0.3)" }} />
+                  
                   <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", padding: "0 20px", gap: 14 }}>
                     <span style={{ fontSize: 36 }}></span>
                     <div>
