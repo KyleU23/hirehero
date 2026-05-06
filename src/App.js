@@ -220,13 +220,6 @@ function Topbar({ T, user, onLogout, dark, onToggleTheme, onBack, onHome, onSwit
               WebkitTapHighlightColor: "transparent",
             }}>Home</button>
         )}
-        {onSwitch && (
-          <button onClick={onSwitch} style={{
-            background: T.accentGlow, border: `1.5px solid ${T.accent}`,
-            borderRadius: 8, padding: "6px 10px",
-            fontSize: 11, fontWeight: 700, color: T.accent, cursor: "pointer",
-          }}>Switch</button>
-        )}
         {onLogout && (
           <button onClick={onLogout} style={{
             background: "none", border: `1.5px solid ${T.border}`,
@@ -504,19 +497,22 @@ function LoginScreen({ T, dark, onToggleTheme, onBack, onLogin }) {
         <div className="fu" style={{ width: "100%", maxWidth: 400 }}>
           <div style={{ textAlign: "center", marginBottom: 28 }}>
             <Logo T={T} size={22} />
-            <p style={{ fontSize: 14, color: T.muted, fontWeight: 500, marginTop: 8 }}>Which account?</p>
+            <p style={{ fontSize: 14, color: T.muted, fontWeight: 500, marginTop: 8 }}>Welcome back</p>
           </div>
           <Card T={T}>
-            <p style={{ fontSize: 15, fontWeight: 700, color: T.text, marginBottom: 16 }}>You have multiple accounts. Which would you like to log into?</p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <p style={{ fontSize: 15, fontWeight: 700, color: T.text, marginBottom: 16 }}>Which account would you like to use?</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 14 }}>
               {accounts.map(a => (
-                <button key={a.id} onClick={() => onLogin(a)} style={{ padding: "16px", borderRadius: 12, border: `1.5px solid ${T.accent}`, background: T.accentGlow, cursor: "pointer", textAlign: "left" }}>
-                  <p style={{ fontSize: 15, fontWeight: 800, color: T.text }}>{a.role === "contractor" ? "Handyman / Pro" : "Homeowner"}</p>
-                  <p style={{ fontSize: 12, color: T.muted, fontWeight: 500, marginTop: 2 }}>{a.first_name} {a.last_name}</p>
+                <button key={a.id} onClick={() => onLogin(a)} style={{ padding: "16px 20px", borderRadius: 12, border: `1.5px solid ${T.border}`, background: T.surface2, cursor: "pointer", textAlign: "left", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div>
+                    <p style={{ fontSize: 15, fontWeight: 800, color: T.text }}>{a.role === "contractor" ? "Handyman / Pro" : "Homeowner"}</p>
+                    <p style={{ fontSize: 12, color: T.muted, fontWeight: 500, marginTop: 2 }}>{a.first_name} {a.last_name}</p>
+                  </div>
+                  <span style={{ fontSize: 18, color: T.muted }}>›</span>
                 </button>
               ))}
             </div>
-            <Btn variant="secondary" onClick={() => setAccounts(null)} T={T} style={{ marginTop: 14 }}>← Back</Btn>
+            <Btn variant="secondary" onClick={() => setAccounts(null)} T={T}>← Back</Btn>
           </Card>
         </div>
       </div>
@@ -825,19 +821,29 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome, o
   const eu = (k, v) => setEData(p => ({ ...p, [k]: v }));
 
   const startEdit = () => {
-    setEData({ firstName: user.first_name, lastName: user.last_name, businessName: user.business_name, city: user.city, phone: user.phone, bio: user.bio });
+    setEData({ firstName: user.first_name, lastName: user.last_name, businessName: user.business_name, city: user.city, phone: user.phone, bio: user.bio, email: user.email, newPassword: "", confirmPassword: "" });
     setEditingProfile(true);
   };
 
   const saveProfile = async () => {
+    if (eData.newPassword && eData.newPassword !== eData.confirmPassword) {
+      alert("Passwords don't match"); return;
+    }
+    if (eData.newPassword && eData.newPassword.length < 6) {
+      alert("Password must be at least 6 characters"); return;
+    }
     setSaving(true);
     try {
-      await sb.update("users", {
+      const updates = {
         first_name: eData.firstName, last_name: eData.lastName,
         business_name: eData.businessName, city: eData.city,
-        phone: eData.phone, bio: eData.bio,
-      }, `?id=eq.${user.id}`);
-      session.set({ ...user, first_name: eData.firstName, last_name: eData.lastName, business_name: eData.businessName, city: eData.city, phone: eData.phone, bio: eData.bio });
+        phone: eData.phone, bio: eData.bio, email: eData.email,
+      };
+      if (eData.newPassword) {
+        updates.password = await hashPassword(eData.newPassword);
+      }
+      await sb.update("users", updates, `?id=eq.${user.id}`);
+      session.set({ ...user, ...updates, first_name: eData.firstName, last_name: eData.lastName });
       setEditingProfile(false);
       window.location.reload();
     } catch { }
@@ -1030,7 +1036,13 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome, o
                         <Field label="Business Name" icon="" T={T}><input style={iS(T)} value={eData.businessName || ""} onChange={e => eu("businessName", e.target.value)} /></Field>
                         <Field label="City" icon="" T={T}><input style={iS(T)} value={eData.city || ""} onChange={e => eu("city", e.target.value)} /></Field>
                         <Field label="Phone" icon="" T={T}><input style={iS(T)} value={eData.phone || ""} onChange={e => eu("phone", e.target.value)} /></Field>
+                        <Field label="Email" icon="" T={T}><input style={iS(T)} type="email" value={eData.email || ""} onChange={e => eu("email", e.target.value)} /></Field>
                         <Field label="Bio" icon="" T={T}><textarea style={{ ...iS(T), minHeight: 80 }} value={eData.bio || ""} onChange={e => eu("bio", e.target.value)} /></Field>
+                        <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: 12, marginTop: 4 }}>
+                          <p style={{ fontSize: 11, fontWeight: 700, color: T.muted, letterSpacing: 0.5, textTransform: "uppercase", marginBottom: 10 }}>Change Password</p>
+                          <Field label="New Password" icon="" T={T}><input style={iS(T)} type="password" placeholder="Leave blank to keep current" value={eData.newPassword || ""} onChange={e => eu("newPassword", e.target.value)} /></Field>
+                          <Field label="Confirm Password" icon="" T={T}><input style={iS(T)} type="password" placeholder="Confirm new password" value={eData.confirmPassword || ""} onChange={e => eu("confirmPassword", e.target.value)} /></Field>
+                        </div>
                         <Btn onClick={saveProfile} disabled={saving} T={T}>{saving ? "Saving..." : "Save Changes"}</Btn>
                       </div>
                   )}
@@ -1145,6 +1157,30 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome, o
 ───────────────────────────────────────────── */
 function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab = "jobs", onHome, onSwitch }) {
   const [tab, setTab] = useState(defaultTab);
+  const [hEditingProfile, setHEditingProfile] = useState(false);
+  const [hEData, setHEData] = useState({});
+  const [hSaving, setHSaving] = useState(false);
+  const heu = (k, v) => setHEData(p => ({ ...p, [k]: v }));
+
+  const hStartEdit = () => {
+    setHEData({ firstName: user.first_name, lastName: user.last_name, city: user.city, phone: user.phone, address: user.address, zip: user.zip });
+    setHEditingProfile(true);
+  };
+
+  const hSaveProfile = async () => {
+    setHSaving(true);
+    try {
+      await sb.update("users", {
+        first_name: hEData.firstName, last_name: hEData.lastName,
+        city: hEData.city, phone: hEData.phone,
+        address: hEData.address, zip: hEData.zip,
+      }, `?id=eq.${user.id}`);
+      session.set({ ...user, first_name: hEData.firstName, last_name: hEData.lastName, city: hEData.city, phone: hEData.phone, address: hEData.address, zip: hEData.zip });
+      setHEditingProfile(false);
+      window.location.reload();
+    } catch {}
+    setHSaving(false);
+  };
   const [myJobs, setMyJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedJob, setSelectedJob] = useState(null);
@@ -1241,8 +1277,8 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
 
       {/* Tabs */}
       <div style={{ display: "flex", margin: "14px 16px 0", background: T.surface, borderRadius: 12, padding: 4, border: `1px solid ${T.border}` }}>
-        {[["jobs", " My Jobs"], ["post", " Post Job"], ["escrow", " Escrow"]].map(([t, l]) => (
-          <button key={t} onClick={() => setTab(t)} style={{ flex: 1, padding: "10px 4px", borderRadius: 10, border: "none", fontSize: 12, fontWeight: 700, cursor: "pointer", background: tab === t ? T.green : "transparent", color: tab === t ? "#fff" : T.muted, transition: "all 0.2s" }}>{l}</button>
+        {[["jobs", "My Jobs"], ["post", "Post Job"], ["escrow", "Escrow"], ["profile", "Profile"]].map(([t, l]) => (
+          <button key={t} onClick={() => setTab(t)} style={{ flex: 1, padding: "10px 4px", borderRadius: 10, border: "none", fontSize: 11, fontWeight: 700, cursor: "pointer", background: tab === t ? T.green : "transparent", color: tab === t ? "#fff" : T.muted, transition: "all 0.2s" }}>{l}</button>
         ))}
       </div>
 
@@ -1363,7 +1399,49 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
               </div>
             )}
 
-            {tab === "escrow" && (
+            {tab === "profile" && (
+              <div className="fu">
+                <Card T={T}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 16 }}>
+                    <div style={{ width: 60, height: 60, borderRadius: "50%", background: T.green + "30", border: `3px solid ${T.green}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, flexShrink: 0 }}>
+                      {user.first_name?.[0]}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontSize: 18, fontWeight: 800, color: T.text }}>{user.first_name} {user.last_name}</p>
+                      <p style={{ fontSize: 12, color: T.muted, fontWeight: 600 }}>{user.city}</p>
+                    </div>
+                    <button onClick={() => hEditingProfile ? setHEditingProfile(false) : hStartEdit()} style={{ background: T.green + "20", border: `1.5px solid ${T.green}`, borderRadius: 8, padding: "6px 12px", fontSize: 12, fontWeight: 700, color: T.green, cursor: "pointer" }}>
+                      {hEditingProfile ? "Cancel" : "Edit"}
+                    </button>
+                  </div>
+
+                  {hEditingProfile && (
+                    <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: 16, display: "flex", flexDirection: "column", gap: 10 }}>
+                      <div style={{ display: "flex", gap: 10 }}>
+                        <Field label="First Name" icon="" T={T} style={{ flex: 1 }}><input style={iS(T)} value={hEData.firstName || ""} onChange={e => heu("firstName", e.target.value)} /></Field>
+                        <Field label="Last Name" icon="" T={T} style={{ flex: 1 }}><input style={iS(T)} value={hEData.lastName || ""} onChange={e => heu("lastName", e.target.value)} /></Field>
+                      </div>
+                      <Field label="City" icon="" T={T}><input style={iS(T)} value={hEData.city || ""} onChange={e => heu("city", e.target.value)} /></Field>
+                      <Field label="Phone" icon="" T={T}><input style={iS(T)} value={hEData.phone || ""} onChange={e => heu("phone", e.target.value)} /></Field>
+                      <Field label="Address" icon="" T={T}><input style={iS(T)} value={hEData.address || ""} onChange={e => heu("address", e.target.value)} /></Field>
+                      <Field label="Zip Code" icon="" T={T}><input style={iS(T)} value={hEData.zip || ""} onChange={e => heu("zip", e.target.value)} /></Field>
+                      <Btn onClick={hSaveProfile} disabled={hSaving} T={T} variant="green">{hSaving ? "Saving..." : "Save Changes"}</Btn>
+                    </div>
+                  )}
+
+                  {!hEditingProfile && (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                      {[["Phone", user.phone], ["Address", user.address], ["City", user.city], ["Zip", user.zip]].map(([l, v]) => v ? (
+                        <div key={l} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", background: T.surface2, borderRadius: 10 }}>
+                          <span style={{ fontSize: 13, fontWeight: 600, color: T.text, flex: 1 }}>{l}</span>
+                          <span style={{ fontSize: 12, color: T.muted, fontWeight: 500 }}>{v}</span>
+                        </div>
+                      ) : null)}
+                    </div>
+                  )}
+                </Card>
+              </div>
+            )}
               <div className="fu">
                 <div style={{ position: "relative", borderRadius: 16, overflow: "hidden", marginBottom: 16 }}>
                   
