@@ -1342,10 +1342,6 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                         <label style={{ fontSize: 12, fontWeight: 700, color: T.muted, display: "block", marginBottom: 6, letterSpacing: 0.4, textTransform: "uppercase" }}>Describe the Job</label>
                         <textarea placeholder="What needs to be done? Any details the handyman should know? Access instructions?" value={pData.description || ""} onChange={e => up("description", e.target.value)} style={{ width: "100%", minHeight: 100, padding: "12px 14px", background: T.surface2, border: `1.5px solid ${T.border}`, borderRadius: 10, fontSize: 13, fontWeight: 500, color: T.text, outline: "none", lineHeight: 1.6 }} />
                       </div>
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                        <Field label="Min Budget ($)" icon="" T={T}><input style={iS(T)} type="number" placeholder="50" value={pData.budgetMin || ""} onChange={e => up("budgetMin", e.target.value)} /></Field>
-                        <Field label="Max Budget ($)" icon="" T={T}><input style={iS(T)} type="number" placeholder="300" value={pData.budgetMax || ""} onChange={e => up("budgetMax", e.target.value)} /></Field>
-                      </div>
                       <Field label="When do you need it?" icon="" T={T}>
                         <select style={{ ...iS(T), cursor: "pointer" }} value={pData.timeline || ""} onChange={e => up("timeline", e.target.value)}>
                           <option value="">Select timeline…</option>
