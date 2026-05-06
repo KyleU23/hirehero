@@ -213,10 +213,12 @@ function Topbar({ T, user, onLogout, dark, onToggleTheme, onBack, onHome }) {
             style={{
               minWidth: 44, minHeight: 44, borderRadius: 8,
               background: T.surface2, border: `1.5px solid ${T.border}`,
-              cursor: "pointer", fontSize: 18, display: "flex",
+              cursor: "pointer", fontSize: 12, fontWeight: 700,
+              color: T.text, display: "flex",
               alignItems: "center", justifyContent: "center",
+              padding: "0 12px",
               WebkitTapHighlightColor: "transparent",
-            }}></button>
+            }}>Home</button>
         )}
 
         {onLogout && (
@@ -473,6 +475,7 @@ function LoginScreen({ T, dark, onToggleTheme, onBack, onLogin }) {
   const [pw, setPw] = useState("");
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
+  const [accounts, setAccounts] = useState(null);
 
   const handle = async () => {
     setLoading(true); setErr("");
@@ -480,11 +483,39 @@ function LoginScreen({ T, dark, onToggleTheme, onBack, onLogin }) {
       const rows = await sb.select("users", `?email=eq.${encodeURIComponent(email)}&select=*`);
       if (!rows.length) { setErr("No account found with that email."); setLoading(false); return; }
       const hashed = await hashPassword(pw);
-      if (rows[0].password !== hashed) { setErr("Incorrect password."); setLoading(false); return; }
-      onLogin(rows[0]);
+      const matched = rows.filter(r => r.password === hashed);
+      if (!matched.length) { setErr("Incorrect password."); setLoading(false); return; }
+      if (matched.length === 1) { onLogin(matched[0]); }
+      else { setAccounts(matched); }
     } catch { setErr("Connection error. Please try again."); }
     setLoading(false);
   };
+
+  if (accounts) return (
+    <div style={{ minHeight: "100vh", background: T.bg }}>
+      <Topbar T={T} dark={dark} onToggleTheme={onToggleTheme} onBack={onBack} />
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "40px 20px" }}>
+        <div className="fu" style={{ width: "100%", maxWidth: 400 }}>
+          <div style={{ textAlign: "center", marginBottom: 28 }}>
+            <Logo T={T} size={22} />
+            <p style={{ fontSize: 14, color: T.muted, fontWeight: 500, marginTop: 8 }}>Which account?</p>
+          </div>
+          <Card T={T}>
+            <p style={{ fontSize: 15, fontWeight: 700, color: T.text, marginBottom: 16 }}>You have multiple accounts. Which would you like to log into?</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {accounts.map(a => (
+                <button key={a.id} onClick={() => onLogin(a)} style={{ padding: "16px", borderRadius: 12, border: `1.5px solid ${T.accent}`, background: T.accentGlow, cursor: "pointer", textAlign: "left" }}>
+                  <p style={{ fontSize: 15, fontWeight: 800, color: T.text }}>{a.role === "contractor" ? "Handyman / Pro" : "Homeowner"}</p>
+                  <p style={{ fontSize: 12, color: T.muted, fontWeight: 500, marginTop: 2 }}>{a.first_name} {a.last_name}</p>
+                </button>
+              ))}
+            </div>
+            <Btn variant="secondary" onClick={() => setAccounts(null)} T={T} style={{ marginTop: 14 }}>← Back</Btn>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div style={{ minHeight: "100vh", background: T.bg }}>
@@ -496,11 +527,11 @@ function LoginScreen({ T, dark, onToggleTheme, onBack, onLogin }) {
             <p style={{ fontSize: 14, color: T.muted, fontWeight: 500, marginTop: 8 }}>Welcome back</p>
           </div>
           <Card T={T}>
-            <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 20 }}>Sign In</h2>
+            <h2 style={{ fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 20 }}>Sign In</h2>
             <Field label="Email" icon="" T={T}><input style={iS(T)} type="email" placeholder="" value={email} onChange={e => setEmail(e.target.value)} /></Field>
             <Field label="Password" icon="" T={T}><input style={iS(T)} type="password" placeholder="Your password" value={pw} onChange={e => setPw(e.target.value)} onKeyDown={e => e.key === "Enter" && handle()} /></Field>
-            {err && <p style={{ fontSize: 12, color: T.red, fontWeight: 600, marginBottom: 12 }}> {err}</p>}
-            <Btn onClick={handle} disabled={loading} T={T}>{loading ? <div className="spin" style={{ width: 18, height: 18, border: `2px solid rgba(255,255,255,0.3)`, borderTopColor: "#fff", borderRadius: "50%", margin: "0 auto" }} /> : "Sign In →"}</Btn>
+            {err && <p style={{ fontSize: 12, color: T.red, fontWeight: 600, marginBottom: 12 }}>{err}</p>}
+            <Btn onClick={handle} disabled={loading} T={T}>{loading ? <div className="spin" style={{ width: 18, height: 18, border: `2px solid rgba(255,255,255,0.3)`, borderTopColor: "#fff", borderRadius: "50%", margin: "0 auto" }} /> : "Sign In"}</Btn>
             <Btn variant="secondary" onClick={onBack} T={T} style={{ marginTop: 10 }}>← Back</Btn>
           </Card>
         </div>
@@ -889,7 +920,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
                     const alreadyBidThis = myBids.some(b => b.job_id === job.id);
                     return (
                       <div key={job.id} style={{ background: T.card, borderRadius: 16, marginBottom: 14, border: `1px solid ${T.cardBorder}`, boxShadow: T.shadow, overflow: "hidden" }}>
-                        
+                        {job.photo_url && <img src={job.photo_url} alt="" style={{ width: "100%", height: 180, objectFit: "cover" }} />}
                         <div style={{ padding: 16 }}>
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
                             <p style={{ fontSize: 16, fontWeight: 800, color: T.text, fontFamily: "'Syne',sans-serif" }}>{job.title}</p>
@@ -944,27 +975,84 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
 
             {tab === "profile" && (
               <div className="fu">
-                <Card T={T}>
-                  <div style={{ position: "relative", borderRadius: 12, overflow: "hidden", marginBottom: 16 }}>
-                    
-                    <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", padding: "0 16px", gap: 12 }}>
-                      <div style={{ width: 44, height: 44, borderRadius: "50%", background: T.accentGlow, border: `2px solid ${T.accent}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}></div>
-                      <div>
-                        <p style={{ fontSize: 16, fontWeight: 800, color: "#fff" }}>{user.business_name || `${user.first_name} ${user.last_name}`}</p>
-                        <p style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}> {user.city}</p>
-                      </div>
+                {/* Profile Header */}
+                <Card T={T} style={{ marginBottom: 14 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 16 }}>
+                    <div style={{ width: 60, height: 60, borderRadius: "50%", background: T.accentGlow, border: `3px solid ${T.accent}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, flexShrink: 0 }}>
+                      {user.avatar_url ? <img src={user.avatar_url} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }} alt="" /> : user.first_name?.[0]}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontSize: 18, fontWeight: 800, color: T.text }}>{user.business_name || `${user.first_name} ${user.last_name}`}</p>
+                      <p style={{ fontSize: 12, color: T.muted, fontWeight: 600 }}>{user.city}</p>
+                      {verified && <span style={{ background: T.green + "20", color: T.green, fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 4, marginTop: 4, display: "inline-block" }}>Verified Pro</span>}
                     </div>
                   </div>
-                  {user.bio && <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, lineHeight: 1.6, marginBottom: 16 }}>{user.bio}</p>}
+                  {user.bio && <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, lineHeight: 1.6, marginBottom: 14, padding: "12px 14px", background: T.surface2, borderRadius: 10 }}>{user.bio}</p>}
                   <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                    {[["", "Insurance", user.insurance], ["", "License", user.license], ["🪪", "ID Verified", user.id_doc]].map(([ic, l, v]) => (
+                    {[["Insurance", user.insurance], ["License", user.license], ["ID Verified", user.id_doc]].map(([l, v]) => (
                       <div key={l} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", background: T.surface2, borderRadius: 10 }}>
-                        <span style={{ fontSize: 16 }}>{ic}</span>
                         <span style={{ fontSize: 13, fontWeight: 600, color: T.text, flex: 1 }}>{l}</span>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: v ? T.green : T.muted }}>{v ? " Verified" : "Pending"}</span>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: v ? T.green : T.muted }}>{v ? "Verified" : "Pending"}</span>
                       </div>
                     ))}
                   </div>
+                </Card>
+
+                {/* Past Work Photos */}
+                <Card T={T} style={{ marginBottom: 14 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                    <p style={{ fontSize: 16, fontWeight: 800, color: T.text }}>Past Work</p>
+                    <div onClick={() => document.getElementById("work-photo-upload").click()} style={{ background: T.accentGlow, border: `1.5px solid ${T.accent}`, borderRadius: 8, padding: "6px 12px", fontSize: 12, fontWeight: 700, color: T.accent, cursor: "pointer" }}>+ Add Photo</div>
+                    <input id="work-photo-upload" type="file" accept="image/*" multiple style={{ display: "none" }} onChange={async e => {
+                      const files = Array.from(e.target.files).slice(0, 3);
+                      const existing = JSON.parse(user.work_photos || "[]");
+                      const newUrls = [];
+                      for (const f of files) { const url = await uploadPhoto(f, "work"); if (url) newUrls.push(url); }
+                      const merged = [...existing, ...newUrls].slice(0, 12);
+                      await sb.update("users", { work_photos: JSON.stringify(merged) }, `?id=eq.${user.id}`);
+                      session.set({ ...user, work_photos: JSON.stringify(merged) }); window.location.reload();
+                    }} />
+                  </div>
+                  {(() => {
+                    const photos = JSON.parse(user.work_photos || "[]");
+                    return photos.length === 0
+                      ? <div style={{ textAlign: "center", padding: "24px 0", color: T.muted }}>
+                          <p style={{ fontSize: 13, fontWeight: 600 }}>Add photos of your past work</p>
+                          <p style={{ fontSize: 11, fontWeight: 500, marginTop: 4 }}>Homeowners hire contractors they can see</p>
+                        </div>
+                      : <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 }}>
+                          {photos.map((url, i) => (
+                            <div key={i} style={{ aspectRatio: "1", borderRadius: 10, overflow: "hidden", border: `1px solid ${T.border}` }}>
+                              <img src={url} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt="" />
+                            </div>
+                          ))}
+                        </div>;
+                  })()}
+                </Card>
+
+                {/* Google Reviews */}
+                <Card T={T}>
+                  <p style={{ fontSize: 16, fontWeight: 800, color: T.text, marginBottom: 4 }}>Google Reviews</p>
+                  <p style={{ fontSize: 12, color: T.muted, fontWeight: 500, marginBottom: 14 }}>Paste your Google Business URL so homeowners can see your reviews.</p>
+                  <Field label="Google Business URL" icon="" T={T}>
+                    <input style={iS(T)} placeholder="maps.google.com/your-business" value={user.google_url || ""} onChange={async e => {
+                      const val = e.target.value;
+                      await sb.update("users", { google_url: val }, `?id=eq.${user.id}`);
+                      session.set({ ...user, google_url: val });
+                    }} />
+                  </Field>
+                  {user.google_url
+                    ? <a href={user.google_url.startsWith("http") ? user.google_url : `https://${user.google_url}`} target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", gap: 10, background: T.surface2, borderRadius: 10, padding: "12px 14px", textDecoration: "none", border: `1px solid ${T.border}` }}>
+                        <div>
+                          <p style={{ fontSize: 13, fontWeight: 700, color: T.text }}>View My Google Reviews</p>
+                          <p style={{ fontSize: 11, color: T.muted, fontWeight: 500 }}>Tap to open in Google Maps</p>
+                        </div>
+                        <span style={{ marginLeft: "auto", color: T.muted }}>›</span>
+                      </a>
+                    : <div style={{ background: T.goldGlow, border: `1px solid ${T.gold}40`, borderRadius: 10, padding: "10px 14px" }}>
+                        <p style={{ fontSize: 12, fontWeight: 600, color: T.gold }}>Adding your Google reviews builds trust and gets you more jobs.</p>
+                      </div>
+                  }
                 </Card>
               </div>
             )}
@@ -1118,7 +1206,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                   ? <EmptyState T={T} icon="" title="No jobs posted yet" sub="Post your first job and get bids in minutes." action={<Btn onClick={() => setTab("post")} T={T} style={{ maxWidth: 220, margin: "0 auto" }}> Post a Job</Btn>} />
                   : myJobs.map((job, idx) => (
                     <div key={job.id} style={{ background: T.card, borderRadius: 16, marginBottom: 14, border: `1px solid ${T.cardBorder}`, boxShadow: T.shadow, overflow: "hidden" }}>
-                      
+                      {job.photo_url && <img src={job.photo_url} alt="" style={{ width: "100%", height: 180, objectFit: "cover" }} />}
                       <div style={{ padding: 16 }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
                           <p style={{ fontSize: 16, fontWeight: 800, color: T.text, fontFamily: "'Syne',sans-serif" }}>{job.title}</p>
