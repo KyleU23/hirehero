@@ -880,6 +880,11 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome, o
 
   useEffect(() => { load(); }, [tab]);
 
+  useEffect(() => {
+    const interval = setInterval(() => load(), 30000);
+    return () => clearInterval(interval);
+  }, []);
+
   const submitBid = async () => {
     if (!bidAmount) return;
     setSubmitting(true);
