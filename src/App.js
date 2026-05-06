@@ -29,13 +29,12 @@ const sb = {
         "apikey": SUPABASE_KEY,
         "Authorization": `Bearer ${SUPABASE_KEY}`,
         "Content-Type": "application/json",
-        "Prefer": method === "POST" ? "return=representation" : method === "DELETE" ? "return=minimal" : "",
+        "Prefer": method === "POST" ? "return=representation" : "return=minimal",
       },
       body: body ? JSON.stringify(body) : null,
     });
-    if (method === "DELETE") return true;
     if (!res.ok) { const e = await res.text(); throw new Error(e); }
-    if (res.status === 204) return true;
+    if (method === "DELETE" || method === "PATCH" || res.status === 204) return true;
     const text = await res.text();
     return text ? JSON.parse(text) : [];
   },
