@@ -814,6 +814,29 @@ function HomeownerSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
 function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome }) {
   const [tab, setTab] = useState("jobs");
   const [editingProfile, setEditingProfile] = useState(false);
+  const [eData, setEData] = useState({});
+  const [saving, setSaving] = useState(false);
+  const eu = (k, v) => setEData(p => ({ ...p, [k]: v }));
+
+  const startEdit = () => {
+    setEData({ firstName: user.first_name, lastName: user.last_name, businessName: user.business_name, city: user.city, phone: user.phone, bio: user.bio });
+    setEditingProfile(true);
+  };
+
+  const saveProfile = async () => {
+    setSaving(true);
+    try {
+      await sb.update("users", {
+        first_name: eData.firstName, last_name: eData.lastName,
+        business_name: eData.businessName, city: eData.city,
+        phone: eData.phone, bio: eData.bio,
+      }, `?id=eq.${user.id}`);
+      session.set({ ...user, first_name: eData.firstName, last_name: eData.lastName, business_name: eData.businessName, city: eData.city, phone: eData.phone, bio: eData.bio });
+      setEditingProfile(false);
+      window.location.reload();
+    } catch { }
+    setSaving(false);
+  };
   const [jobs, setJobs] = useState([]);
   const [myBids, setMyBids] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -987,28 +1010,12 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
                       <p style={{ fontSize: 12, color: T.muted, fontWeight: 600 }}>{user.city}</p>
                       {verified && <span style={{ background: T.green + "20", color: T.green, fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 4, marginTop: 4, display: "inline-block" }}>Verified Pro</span>}
                     </div>
-                    <button onClick={() => setEditingProfile(p => !p)} style={{ background: T.accentGlow, border: `1.5px solid ${T.accent}`, borderRadius: 8, padding: "6px 12px", fontSize: 12, fontWeight: 700, color: T.accent, cursor: "pointer" }}>
+                    <button onClick={() => editingProfile ? setEditingProfile(false) : startEdit()} style={{ background: T.accentGlow, border: `1.5px solid ${T.accent}`, borderRadius: 8, padding: "6px 12px", fontSize: 12, fontWeight: 700, color: T.accent, cursor: "pointer" }}>
                       {editingProfile ? "Cancel" : "Edit"}
                     </button>
                   </div>
 
-                  {editingProfile && (() => {
-                    const [eData, setEData] = useState({ firstName: user.first_name, lastName: user.last_name, businessName: user.business_name, city: user.city, phone: user.phone, bio: user.bio });
-                    const [saving, setSaving] = useState(false);
-                    const eu = (k, v) => setEData(p => ({ ...p, [k]: v }));
-                    const saveProfile = async () => {
-                      setSaving(true);
-                      await sb.update("users", {
-                        first_name: eData.firstName, last_name: eData.lastName,
-                        business_name: eData.businessName, city: eData.city,
-                        phone: eData.phone, bio: eData.bio,
-                      }, `?id=eq.${user.id}`);
-                      session.set({ ...user, first_name: eData.firstName, last_name: eData.lastName, business_name: eData.businessName, city: eData.city, phone: eData.phone, bio: eData.bio });
-                      setSaving(false);
-                      setEditingProfile(false);
-                      window.location.reload();
-                    };
-                    return (
+                  {editingProfile && (
                       <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: 16, display: "flex", flexDirection: "column", gap: 10 }}>
                         <div style={{ display: "flex", gap: 10 }}>
                           <Field label="First Name" icon="" T={T} style={{ flex: 1 }}><input style={iS(T)} value={eData.firstName || ""} onChange={e => eu("firstName", e.target.value)} /></Field>
@@ -1020,8 +1027,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
                         <Field label="Bio" icon="" T={T}><textarea style={{ ...iS(T), minHeight: 80 }} value={eData.bio || ""} onChange={e => eu("bio", e.target.value)} /></Field>
                         <Btn onClick={saveProfile} disabled={saving} T={T}>{saving ? "Saving..." : "Save Changes"}</Btn>
                       </div>
-                    );
-                  })()}
+                  )}
 
                   {!editingProfile && user.bio && <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, lineHeight: 1.6, marginBottom: 14, padding: "12px 14px", background: T.surface2, borderRadius: 10 }}>{user.bio}</p>}
                   <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: editingProfile ? 0 : 0 }}>
@@ -1417,8 +1423,20 @@ export default function App() {
 
   useEffect(() => {
     const s = session.get();
-    if (s) { setUser(s); setRole(s.role); setScreen("dashboard"); }
-    else setScreen("welcome");
+    if (s) {
+      // Check if there are multiple accounts for this email
+      sb.select("users", `?email=eq.${encodeURIComponent(s.email)}&select=*`).then(rows => {
+        if (rows && rows.length > 1) {
+          // Has multiple accounts - go to welcome so they can choose
+          session.clear();
+          setScreen("welcome");
+        } else {
+          setUser(s); setRole(s.role); setScreen("dashboard");
+        }
+      }).catch(() => {
+        setUser(s); setRole(s.role); setScreen("dashboard");
+      });
+    } else setScreen("welcome");
   }, []);
 
   // Allow going home without losing session
