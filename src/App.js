@@ -1442,6 +1442,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                 </Card>
               </div>
             )}
+            {tab === "escrow" && (
               <div className="fu">
                 <div style={{ position: "relative", borderRadius: 16, overflow: "hidden", marginBottom: 16 }}>
                   
