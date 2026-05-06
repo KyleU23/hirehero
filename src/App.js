@@ -343,7 +343,7 @@ function EmptyState({ icon, title, sub, action, T }) {
   return (
     <div style={{ textAlign: "center", padding: "48px 20px" }}>
       <div style={{ fontSize: 52, marginBottom: 14 }}>{icon}</div>
-      <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 20, fontWeight: 800, color: T.text, marginBottom: 8 }}>{title}</p>
+      <p style={{ fontSize: 20, fontWeight: 800, color: T.text, marginBottom: 8 }}>{title}</p>
       <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: action ? 24 : 0, lineHeight: 1.6 }}>{sub}</p>
       {action}
     </div>
@@ -357,7 +357,7 @@ function StatCard({ icon, value, label, T, color }) {
       textAlign: "center", border: `1px solid ${T.border}`,
     }}>
       <div style={{ fontSize: 22, marginBottom: 4 }}>{icon}</div>
-      <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 28, fontWeight: 800, color: color || T.accent, lineHeight: 1 }}>{value}</div>
+      <div style={{ fontSize: 28, fontWeight: 800, color: color || T.accent, lineHeight: 1 }}>{value}</div>
       <div style={{ fontSize: 10, fontWeight: 700, color: T.muted, marginTop: 4, letterSpacing: 0.5, textTransform: "uppercase" }}>{label}</div>
     </div>
   );
@@ -588,7 +588,7 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
   const screens = [
     // Account
     <div className="fu" key="c0">
-      <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 4 }}>Create Account</h2>
+      <h2 style={{ fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 4 }}>Create Account</h2>
       <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 20 }}>Free to join. No fees until you're earning.</p>
       <div style={{ background: T.green + "15", border: `1px solid ${T.green}40`, borderRadius: 10, padding: "12px 14px", marginBottom: 18, display: "flex", gap: 10 }}>
         <span style={{ fontSize: 18 }}></span>
@@ -612,7 +612,7 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
 
     // Profile
     <div className="fu" key="c1">
-      <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 4 }}>Your Profile</h2>
+      <h2 style={{ fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 4 }}>Your Profile</h2>
       <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 18 }}>What homeowners will see when you bid.</p>
       <Field label="Business or Your Name" icon="" T={T}><input style={iS(T)} placeholder="" value={d.businessName || ""} onChange={e => u("businessName", e.target.value)} /></Field>
       <Field label="City & State" icon="" T={T}><input style={iS(T)} placeholder="" value={d.city || ""} onChange={e => u("city", e.target.value)} /></Field>
@@ -634,7 +634,7 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
 
     // Verify
     <div className="fu" key="c2">
-      <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 4 }}>Get Verified</h2>
+      <h2 style={{ fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 4 }}>Get Verified</h2>
       <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 16 }}>Verified pros get the most jobs and appear first.</p>
 
       <div style={{ position: "relative", borderRadius: 14, overflow: "hidden", marginBottom: 18 }}>
@@ -690,7 +690,7 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
     // Done
     <div className="fu" key="c3" style={{ textAlign: "center" }}>
       <div className="pop" style={{ fontSize: 64, marginBottom: 16 }}></div>
-      <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 30, fontWeight: 800, color: T.text, marginBottom: 10 }}>You're In, {d.firstName}!</h2>
+      <h2 style={{ fontSize: 30, fontWeight: 800, color: T.text, marginBottom: 10 }}>You're In, {d.firstName}!</h2>
       <p style={{ fontSize: 14, color: T.muted, fontWeight: 500, lineHeight: 1.7, marginBottom: 24 }}>
         Profile submitted. Send your verification photos to <strong style={{ color: T.accent }}>verify@usehirehero.com</strong> and we'll activate your badge within 1–2 days.
       </p>
@@ -759,7 +759,7 @@ function HomeownerSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
 
   const screens = [
     <div className="fu" key="h0">
-      <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 4 }}>Create Account</h2>
+      <h2 style={{ fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 4 }}>Create Account</h2>
       <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 18 }}>Free to join. Post your first job in minutes.</p>
       <div style={{ background: T.greenBg, border: `1px solid ${T.greenBorder}`, borderRadius: 10, padding: "12px 14px", marginBottom: 18, display: "flex", gap: 10 }}>
         <span></span><p style={{ fontSize: 12, fontWeight: 700, color: T.green }}>Your payment is held in escrow until you approve the finished work.</p>
@@ -778,7 +778,7 @@ function HomeownerSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
     </div>,
 
     <div className="fu" key="h1">
-      <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 4 }}>Your Home</h2>
+      <h2 style={{ fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 4 }}>Your Home</h2>
       <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 18 }}>Helps us match nearby handymen to you.</p>
       <Field label="Street Address" icon="" T={T}><input style={iS(T)} placeholder="" value={d.address || ""} onChange={e => u("address", e.target.value)} /></Field>
       <Field label="City & State" icon="" T={T}><input style={iS(T)} placeholder="" value={d.city || ""} onChange={e => u("city", e.target.value)} /></Field>
@@ -794,7 +794,7 @@ function HomeownerSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
 
     <div className="fu" key="h2" style={{ textAlign: "center" }}>
       <div className="pop" style={{ fontSize: 64, marginBottom: 16 }}></div>
-      <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 30, fontWeight: 800, color: T.text, marginBottom: 10 }}>Welcome, {d.firstName}!</h2>
+      <h2 style={{ fontSize: 30, fontWeight: 800, color: T.text, marginBottom: 10 }}>Welcome, {d.firstName}!</h2>
       <p style={{ fontSize: 14, color: T.muted, fontWeight: 500, lineHeight: 1.7, marginBottom: 24 }}>Your account is ready. Post your first job now and get bids fast.</p>
       <Btn onClick={() => onDone(session.get())} T={T}>Post My First Job →</Btn>
     </div>,
@@ -899,7 +899,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome, o
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
             <div>
               <p style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.65)", marginBottom: 4, letterSpacing: 0.5 }}>Welcome back </p>
-              <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 20, fontWeight: 800, color: "#fff", marginBottom: 10 }}>{user.business_name || `${user.first_name} ${user.last_name}`}</p>
+              <p style={{ fontSize: 20, fontWeight: 800, color: "#fff", marginBottom: 10 }}>{user.business_name || `${user.first_name} ${user.last_name}`}</p>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                 <span style={{ background: (verified ? "#3fb950" : T.gold) + "30", border: `1px solid ${verified ? "#3fb950" : T.gold}60`, borderRadius: 6, padding: "3px 10px", fontSize: 11, fontWeight: 700, color: verified ? "#3fb950" : T.gold }}>
                   {verified ? " Verified Pro" : "⏳ Pending Verification"}
@@ -914,7 +914,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome, o
             {[["", jobs.length, "Open Jobs"], ["", myBids.length, "My Bids"], ["", wonBids.length, "Won"]].map(([ic, v, l]) => (
               <div key={l} style={{ background: "rgba(255,255,255,0.1)", backdropFilter: "blur(8px)", borderRadius: 10, padding: "10px 8px", textAlign: "center", border: "1px solid rgba(255,255,255,0.15)" }}>
                 <div style={{ fontSize: 16 }}>{ic}</div>
-                <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 24, fontWeight: 800, color: "#fff" }}>{v}</div>
+                <div style={{ fontSize: 24, fontWeight: 800, color: "#fff" }}>{v}</div>
                 <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.6)", letterSpacing: 0.5, textTransform: "uppercase" }}>{l}</div>
               </div>
             ))}
@@ -953,7 +953,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome, o
                         {job.photo_url && <img src={job.photo_url} alt="" style={{ width: "100%", height: 180, objectFit: "cover" }} />}
                         <div style={{ padding: 16 }}>
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
-                            <p style={{ fontSize: 16, fontWeight: 800, color: T.text, fontFamily: "'Syne',sans-serif" }}>{job.title}</p>
+                            <p style={{ fontSize: 16, fontWeight: 800, color: T.text }}>{job.title}</p>
                             <span style={{ background: T.greenBg, color: T.green, borderRadius: 6, padding: "3px 10px", fontSize: 12, fontWeight: 700, flexShrink: 0, marginLeft: 8 }}>${job.budget_min}–${job.budget_max}</span>
                           </div>
                           <p style={{ fontSize: 12, color: T.muted, fontWeight: 600, marginBottom: 8 }}> {job.city} · {timeAgo(job.created_at)}</p>
@@ -1113,7 +1113,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome, o
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 200, display: "flex", alignItems: "flex-end" }} onClick={e => e.target === e.currentTarget && setSelectedJob(null)}>
           <div className="fu" style={{ background: T.card, borderRadius: "20px 20px 0 0", padding: 24, width: "100%", maxHeight: "88vh", overflowY: "auto", border: `1px solid ${T.border}` }}>
             <div style={{ width: 36, height: 4, background: T.border, borderRadius: 2, margin: "0 auto 20px" }} />
-            <h3 style={{ fontFamily: "'Syne',sans-serif", fontSize: 24, fontWeight: 800, color: T.text, marginBottom: 4 }}>Place Your Bid</h3>
+            <h3 style={{ fontSize: 24, fontWeight: 800, color: T.text, marginBottom: 4 }}>Place Your Bid</h3>
             <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 16 }}>{selectedJob.title} · {selectedJob.city}</p>
             
             <div style={{ background: T.accentGlow, borderRadius: 10, padding: "10px 14px", marginBottom: 14 }}>
@@ -1225,12 +1225,12 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg,rgba(5,150,105,0.8),rgba(6,95,70,0.8))" }} />
         <div style={{ position: "absolute", inset: 0, padding: "20px 20px" }}>
           <p style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.65)", marginBottom: 4 }}>Welcome back </p>
-          <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 20, fontWeight: 800, color: "#fff", marginBottom: 14 }}>{user.first_name} {user.last_name}</p>
+          <p style={{ fontSize: 20, fontWeight: 800, color: "#fff", marginBottom: 14 }}>{user.first_name} {user.last_name}</p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
             {[["", myJobs.length, "My Jobs"], ["", myJobs.reduce((a, j) => a + (j.bid_count || 0), 0), "Bids Received"], ["", myJobs.filter(j => j.status === "complete").length, "Completed"]].map(([ic, v, l]) => (
               <div key={l} style={{ background: "rgba(255,255,255,0.12)", backdropFilter: "blur(8px)", borderRadius: 10, padding: "10px 8px", textAlign: "center", border: "1px solid rgba(255,255,255,0.15)" }}>
                 <div style={{ fontSize: 16 }}>{ic}</div>
-                <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 24, fontWeight: 800, color: "#fff" }}>{v}</div>
+                <div style={{ fontSize: 24, fontWeight: 800, color: "#fff" }}>{v}</div>
                 <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.6)", letterSpacing: 0.5, textTransform: "uppercase" }}>{l}</div>
               </div>
             ))}
@@ -1257,7 +1257,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                       {job.photo_url && <img src={job.photo_url} alt="" style={{ width: "100%", height: 180, objectFit: "cover" }} />}
                       <div style={{ padding: 16 }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
-                          <p style={{ fontSize: 16, fontWeight: 800, color: T.text, fontFamily: "'Syne',sans-serif" }}>{job.title}</p>
+                          <p style={{ fontSize: 16, fontWeight: 800, color: T.text }}>{job.title}</p>
                           <span style={{ background: statusColor[job.status] + "20", color: statusColor[job.status], border: `1px solid ${statusColor[job.status]}40`, borderRadius: 6, padding: "3px 10px", fontSize: 11, fontWeight: 700, flexShrink: 0, marginLeft: 8 }}>{statusLabel[job.status]}</span>
                         </div>
                         <p style={{ fontSize: 12, color: T.muted, fontWeight: 600, marginBottom: 10 }}> {job.city} · {timeAgo(job.created_at)}</p>
@@ -1285,7 +1285,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                 <Card T={T}>
                   {pStep === 0 && (
                     <div>
-                      <h3 style={{ fontFamily: "'Syne',sans-serif", fontSize: 24, fontWeight: 800, color: T.text, marginBottom: 4 }}>Post a Job</h3>
+                      <h3 style={{ fontSize: 24, fontWeight: 800, color: T.text, marginBottom: 4 }}>Post a Job</h3>
                       <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 18 }}>Snap a photo, describe the job, get bids fast.</p>
                       <div style={{ marginBottom: 16 }}>
                         <label style={{ fontSize: 12, fontWeight: 700, color: T.muted, display: "block", marginBottom: 8, letterSpacing: 0.4, textTransform: "uppercase" }}> Job Photo</label>
@@ -1307,7 +1307,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                   )}
                   {pStep === 1 && (
                     <div>
-                      <h3 style={{ fontFamily: "'Syne',sans-serif", fontSize: 24, fontWeight: 800, color: T.text, marginBottom: 4 }}>Job Details</h3>
+                      <h3 style={{ fontSize: 24, fontWeight: 800, color: T.text, marginBottom: 4 }}>Job Details</h3>
                       <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 18 }}>More detail = better, more accurate bids.</p>
                       <div style={{ marginBottom: 14 }}>
                         <label style={{ fontSize: 12, fontWeight: 700, color: T.muted, display: "block", marginBottom: 6, letterSpacing: 0.4, textTransform: "uppercase" }}>Describe the Job</label>
@@ -1345,18 +1345,18 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                   <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", padding: "0 20px", gap: 14 }}>
                     <span style={{ fontSize: 36 }}></span>
                     <div>
-                      <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 20, fontWeight: 800, color: "#fff" }}>Escrow Protection</p>
+                      <p style={{ fontSize: 20, fontWeight: 800, color: "#fff" }}>Escrow Protection</p>
                       <p style={{ fontSize: 12, color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>Your money is safe until you're satisfied</p>
                     </div>
                   </div>
                 </div>
                 <Card T={T}>
-                  <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, lineHeight: 1.7, marginBottom: 20 }}>HireHero holds your payment safely in the middle. Nobody gets burned — ever.</p>
+                  <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, lineHeight: 1.7, marginBottom: 20 }}>Your payment is held safely until the job is done right. No risk on either side.</p>
                   {[
-                    ["1", T.accent, "You fund escrow", "Accept a bid and fund the escrow. Contractor sees money is there — can't touch it yet."],
-                    ["2", T.gold, "Work gets done", "Your handyman completes the job. You can message them directly through the app."],
-                    ["3", T.green, "You approve", "Happy with the work? Tap Approve — payment releases instantly to the contractor."],
-                    ["!", T.red, "Have a problem?", "Dispute within 72 hours. Our team reviews and mediates a fair resolution."],
+                    ["1", T.accent, "You fund escrow", "Once you accept a bid your payment is set aside. The contractor knows the money is there but nobody touches it until the work is done."],
+                    ["2", T.gold, "Work gets done", "Your contractor completes the job. If you need to reach them you can message directly through the app."],
+                    ["3", T.green, "You approve", "Happy with the work? Tap Approve and the payment goes straight to the contractor."],
+                    ["!", T.red, "Have a problem?", "If something isn't right open a dispute within 72 hours and we'll step in to help work it out."],
                   ].map(([n, color, title, desc]) => (
                     <div key={title} style={{ display: "flex", gap: 14, alignItems: "flex-start", padding: "14px 16px", background: T.surface2, borderRadius: 12, border: `1px solid ${T.border}`, marginBottom: 10 }}>
                       <div style={{ width: 34, height: 34, borderRadius: "50%", background: color, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 900, flexShrink: 0 }}>{n}</div>
@@ -1367,7 +1367,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                     </div>
                   ))}
                   <div style={{ background: T.accentGlow, borderRadius: 10, padding: "12px 14px", marginTop: 6 }}>
-                    <p style={{ fontSize: 12, fontWeight: 700, color: T.accent }}>⏰ Funds auto-release after 72 hours if no dispute is filed.</p>
+                    <p style={{ fontSize: 12, fontWeight: 700, color: T.accent }}>• Funds release automatically after 72 hours if no dispute is filed.</p>
                   </div>
                 </Card>
               </div>
@@ -1381,7 +1381,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 200, display: "flex", alignItems: "flex-end" }} onClick={e => e.target === e.currentTarget && setSelectedJob(null)}>
           <div className="fu" style={{ background: T.card, borderRadius: "20px 20px 0 0", padding: 24, width: "100%", maxHeight: "88vh", overflowY: "auto", border: `1px solid ${T.border}` }}>
             <div style={{ width: 36, height: 4, background: T.border, borderRadius: 2, margin: "0 auto 18px" }} />
-            <h3 style={{ fontFamily: "'Syne',sans-serif", fontSize: 22, fontWeight: 800, color: T.text, marginBottom: 4 }}>Bids for "{selectedJob.title}"</h3>
+            <h3 style={{ fontSize: 22, fontWeight: 800, color: T.text, marginBottom: 4 }}>Bids for "{selectedJob.title}"</h3>
             <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 18 }}>{jobBids.length} contractor{jobBids.length !== 1 ? "s" : ""} responded · sorted by price</p>
             {jobBids.length === 0
               ? <EmptyState T={T} icon="⏳" title="Waiting for bids" sub="Handymen in your area will see your job and respond soon." />
@@ -1398,7 +1398,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                         </div>
                         <p style={{ fontSize: 11, color: T.muted, fontWeight: 600 }}>{timeAgo(bid.created_at)}</p>
                       </div>
-                      <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 26, fontWeight: 800, color: T.accent }}>${bid.amount}</div>
+                      <div style={{ fontSize: 26, fontWeight: 800, color: T.accent }}>${bid.amount}</div>
                     </div>
                     {bid.note && <div style={{ background: T.surface, borderRadius: 8, padding: "10px 12px", marginBottom: 12, border: `1px solid ${T.border}` }}><p style={{ fontSize: 13, color: T.muted, fontWeight: 500, lineHeight: 1.55, fontStyle: "italic" }}>"{bid.note}"</p></div>}
                     {!selectedJob.accepted_contractor_id && <Btn variant="green" onClick={() => acceptBid(bid)} T={T}> Accept This Bid — ${bid.amount}</Btn>}
