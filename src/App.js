@@ -104,15 +104,15 @@ const C_STEPS = ["Account", "Profile", "Verify", "Done"];
 const H_STEPS = ["Account", "Address", "Done"];
 
 const UNSPLASH = {
-  hero: "https://images.pexels.com/photos/1216589/pexels-photo-1216589.jpeg?w=800&q=80",
-  tools: "https://images.pexels.com/photos/1249611/pexels-photo-1249611.jpeg?w=600&q=80",
-  home: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?w=600&q=80",
-  handyman1: "https://images.pexels.com/photos/3862132/pexels-photo-3862132.jpeg?w=400&q=80",
-  handyman2: "https://images.pexels.com/photos/2760243/pexels-photo-2760243.jpeg?w=400&q=80",
-  handyman3: "https://images.pexels.com/photos/1170412/pexels-photo-1170412.jpeg?w=400&q=80",
-  job1: "https://images.pexels.com/photos/585419/pexels-photo-585419.jpeg?w=400&q=80",
-  job2: "https://images.pexels.com/photos/271667/pexels-photo-271667.jpeg?w=400&q=80",
-  job3: "https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?w=400&q=80",
+  hero: "https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=800",
+  tools: "https://images.pexels.com/photos/1249611/pexels-photo-1249611.jpeg?auto=compress&cs=tinysrgb&w=600",
+  home: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600",
+  handyman1: "https://images.pexels.com/photos/3862132/pexels-photo-3862132.jpeg?auto=compress&cs=tinysrgb&w=400",
+  handyman2: "https://images.pexels.com/photos/2760243/pexels-photo-2760243.jpeg?auto=compress&cs=tinysrgb&w=400",
+  handyman3: "https://images.pexels.com/photos/1170412/pexels-photo-1170412.jpeg?auto=compress&cs=tinysrgb&w=400",
+  job1: "https://images.pexels.com/photos/585419/pexels-photo-585419.jpeg?auto=compress&cs=tinysrgb&w=400",
+  job2: "https://images.pexels.com/photos/271667/pexels-photo-271667.jpeg?auto=compress&cs=tinysrgb&w=400",
+  job3: "https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?auto=compress&cs=tinysrgb&w=400",
 };
 
 const css = `
@@ -379,36 +379,23 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard 
       <div style={{ position: "relative", overflow: "hidden" }}>
         {/* Background image */}
         <div style={{ position: "relative", height: 420, overflow: "hidden" }}>
-          
+          <img src={UNSPLASH.hero} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           <div style={{ position: "absolute", inset: 0, background: dark ? "linear-gradient(to bottom, rgba(13,17,23,0.4) 0%, rgba(13,17,23,0.95) 100%)" : "linear-gradient(to bottom, rgba(15,23,42,0.3) 0%, rgba(15,23,42,0.9) 100%)" }} />
 
           {/* Hero text over image */}
-          <div className="fu" style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0 24px 32px", paddingTop: "80px" }}>
+          <div className="fu" style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0 24px 32px", paddingTop: "80px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.1)", backdropFilter: "blur(8px)", borderRadius: 50, padding: "6px 14px", marginBottom: 16, border: "1px solid rgba(255,255,255,0.15)" }}>
               <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#3fb950", animation: "shimmer 2s infinite" }} />
               <span style={{ fontSize: 12, fontWeight: 700, color: "#fff", letterSpacing: 0.5 }}>Now launching in Marysville, OH</span>
             </div>
-            <h1 style={{ fontFamily: "'Syne',sans-serif", fontSize: "clamp(26px,6vw,40px)", fontWeight: 800, color: "#fff", lineHeight: 1.1, letterSpacing: -0.5, marginBottom: 12 }}>
+            <h1 style={{ fontSize: "clamp(28px,6vw,40px)", fontWeight: 800, color: "#fff", lineHeight: 1.1, letterSpacing: -0.5, marginBottom: 12, textAlign: "center" }}>
               The Safer &<br />
               <span style={{ color: T.goldLight }}>Smarter Way</span><br />
               to Hire.
             </h1>
             <p style={{ fontSize: 15, fontWeight: 500, color: "rgba(255,255,255,0.75)", lineHeight: 1.6, maxWidth: 340 }}>
-              Snap a photo. Get bids from verified local handymen. Money held in escrow until you approve.
+              The easiest way for connecting homeowners with trusted local pros.
             </p>
-          </div>
-        </div>
-
-        {/* Floating stats */}
-        <div className="fu" style={{ margin: "-20px 16px 0", position: "relative", zIndex: 5 }}>
-          <div style={{ background: T.card, borderRadius: 16, padding: "16px 20px", boxShadow: T.shadowLg, border: `1px solid ${T.cardBorder}`, display: "flex", justifyContent: "space-around" }}>
-            {[["", "100%", "Free to join"], ["", "Escrow", "Protected pay"], ["", "Verified", "Pros only"]].map(([ic, v, l]) => (
-              <div key={l} style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 18, marginBottom: 2 }}>{ic}</div>
-                <div style={{ fontSize: 14, fontWeight: 800, color: T.accent }}>{v}</div>
-                <div style={{ fontSize: 10, color: T.muted, fontWeight: 600, letterSpacing: 0.3 }}>{l}</div>
-              </div>
-            ))}
           </div>
         </div>
       </div>
@@ -424,9 +411,13 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard 
             borderRadius: 16, padding: 0, cursor: "pointer", overflow: "hidden",
             boxShadow: T.shadow, textAlign: "center", transition: "transform 0.2s, box-shadow 0.2s",
           }}>
-            <div style={{ background: "linear-gradient(135deg, #1e3a5f, #0d2137)", height: 120, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "18px 20px" }}>
-              <p style={{ fontSize: 20, fontWeight: 800, color: "#fff", marginBottom: 6 }}>Homeowner</p>
-              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>Post a job, get bids, pay safely</p>
+            <div style={{ position: "relative", height: 120, overflow: "hidden" }}>
+              <img src={UNSPLASH.home} alt="Home" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(15,23,42,0.3) 0%, rgba(15,23,42,0.75) 100%)" }} />
+              <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                <p style={{ fontSize: 20, fontWeight: 800, color: "#fff", marginBottom: 4 }}>Homeowner</p>
+                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.8)", fontWeight: 500 }}>Post a job, get bids, pay safely</p>
+              </div>
             </div>
           </button>
 
@@ -436,19 +427,19 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard 
             borderRadius: 16, padding: 0, cursor: "pointer", overflow: "hidden",
             boxShadow: T.shadow, textAlign: "center", transition: "transform 0.2s",
           }}>
-            <div style={{ background: "linear-gradient(135deg, #1a3a2a, #0d2118)", height: 120, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "18px 20px" }}>
-              <p style={{ fontSize: 20, fontWeight: 800, color: "#fff", marginBottom: 6 }}>Handyman / Pro</p>
-              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>Browse jobs, place bids, get hired</p>
-            </div>
-            {/* Banner */}
-            <div style={{ padding: "12px 20px", background: T.surface2, borderTop: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <p style={{ fontSize: 13, fontWeight: 700, color: T.accent }}>Sign up · Start bidding on jobs near you</p>
+            <div style={{ position: "relative", height: 120, overflow: "hidden" }}>
+              <img src={UNSPLASH.tools} alt="Tools" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(15,23,42,0.3) 0%, rgba(15,23,42,0.75) 100%)" }} />
+              <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                <p style={{ fontSize: 20, fontWeight: 800, color: "#fff", marginBottom: 4 }}>Handyman / Pro</p>
+                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.8)", fontWeight: 500 }}>Browse jobs, place bids, get hired</p>
+              </div>
             </div>
           </button>
         </div>
 
         {/* How it works strip */}
-        <div style={{ margin: "28px 0 0", background: T.surface2, borderRadius: 16, padding: "20px 18px", border: `1px solid ${T.border}` }}>
+        <div style={{ margin: "40px 0 0", background: T.surface2, borderRadius: 16, padding: "20px 18px", border: `1px solid ${T.border}` }}>
           <p style={{ fontSize: 12, fontWeight: 700, color: T.muted, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 16 }}>How It Works</p>
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {[
