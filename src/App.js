@@ -189,7 +189,7 @@ function ThemeToggle({ dark, onToggle, T }) { return null; } function ThemeToggl
   );
 }
 
-function Topbar({ T, user, onLogout, dark, onToggleTheme, onBack, onHome }) {
+function Topbar({ T, user, onLogout, dark, onToggleTheme, onBack, onHome, onSwitch }) {
   return (
     <div style={{
       position: "sticky", top: 0, zIndex: 100,
@@ -220,7 +220,13 @@ function Topbar({ T, user, onLogout, dark, onToggleTheme, onBack, onHome }) {
               WebkitTapHighlightColor: "transparent",
             }}>Home</button>
         )}
-
+        {onSwitch && (
+          <button onClick={onSwitch} style={{
+            background: T.accentGlow, border: `1.5px solid ${T.accent}`,
+            borderRadius: 8, padding: "6px 10px",
+            fontSize: 11, fontWeight: 700, color: T.accent, cursor: "pointer",
+          }}>Switch</button>
+        )}
         {onLogout && (
           <button onClick={onLogout} style={{
             background: "none", border: `1.5px solid ${T.border}`,
@@ -529,7 +535,7 @@ function LoginScreen({ T, dark, onToggleTheme, onBack, onLogin }) {
           <Card T={T}>
             <h2 style={{ fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 20 }}>Sign In</h2>
             <Field label="Email" icon="" T={T}><input style={iS(T)} type="email" placeholder="" value={email} onChange={e => setEmail(e.target.value)} /></Field>
-            <Field label="Password" icon="" T={T}><input style={iS(T)} type="password" placeholder="Your password" value={pw} onChange={e => setPw(e.target.value)} onKeyDown={e => e.key === "Enter" && handle()} /></Field>
+            <Field label="Password" icon="" T={T}><input style={iS(T)} type="password" placeholder="" value={pw} onChange={e => setPw(e.target.value)} onKeyDown={e => e.key === "Enter" && handle()} /></Field>
             {err && <p style={{ fontSize: 12, color: T.red, fontWeight: 600, marginBottom: 12 }}>{err}</p>}
             <Btn onClick={handle} disabled={loading} T={T}>{loading ? <div className="spin" style={{ width: 18, height: 18, border: `2px solid rgba(255,255,255,0.3)`, borderTopColor: "#fff", borderRadius: "50%", margin: "0 auto" }} /> : "Sign In"}</Btn>
             <Btn variant="secondary" onClick={onBack} T={T} style={{ marginTop: 10 }}>← Back</Btn>
@@ -811,7 +817,7 @@ function HomeownerSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
 /* ─────────────────────────────────────────────
    CONTRACTOR DASHBOARD
 ───────────────────────────────────────────── */
-function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome }) {
+function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome, onSwitch }) {
   const [tab, setTab] = useState("jobs");
   const [editingProfile, setEditingProfile] = useState(false);
   const [eData, setEData] = useState({});
@@ -883,7 +889,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
 
   return (
     <div style={{ background: T.bg, minHeight: "100vh", paddingBottom: 80 }}>
-      <Topbar T={T} user={user} onLogout={onLogout} dark={dark} onToggleTheme={onToggleTheme} onHome={onHome} />
+      <Topbar T={T} user={user} onLogout={onLogout} dark={dark} onToggleTheme={onToggleTheme} onHome={onHome} onSwitch={onSwitch} />
 
       {/* Hero header */}
       <div style={{ position: "relative", margin: "16px 16px 0", borderRadius: 18, overflow: "hidden" }}>
@@ -1137,7 +1143,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
 /* ─────────────────────────────────────────────
    HOMEOWNER DASHBOARD
 ───────────────────────────────────────────── */
-function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab = "jobs", onHome }) {
+function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab = "jobs", onHome, onSwitch }) {
   const [tab, setTab] = useState(defaultTab);
   const [myJobs, setMyJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -1211,7 +1217,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
 
   return (
     <div style={{ background: T.bg, minHeight: "100vh", paddingBottom: 80 }}>
-      <Topbar T={T} user={user} onLogout={onLogout} dark={dark} onToggleTheme={onToggleTheme} onHome={onHome} />
+      <Topbar T={T} user={user} onLogout={onLogout} dark={dark} onToggleTheme={onToggleTheme} onHome={onHome} onSwitch={onSwitch} />
 
       {/* Hero header */}
       <div style={{ position: "relative", margin: "16px 16px 0", borderRadius: 18, overflow: "hidden" }}>
@@ -1448,6 +1454,15 @@ export default function App() {
   }, [dark]);
 
   const toggleTheme = () => { const nd = !dark; setDark(nd); setTheme(nd ? "dark" : "light"); };
+  const switchAccount = async () => {
+    if (!user) return;
+    const rows = await sb.select("users", `?email=eq.${encodeURIComponent(user.email)}&select=*`);
+    if (rows && rows.length > 1) {
+      const other = rows.find(r => r.id !== user.id);
+      if (other) { session.set(other); setUser(other); setRole(other.role); setScreen("dashboard"); }
+    }
+  };
+
   const logout = () => { session.clear(); setUser(null); setRole(null); setScreen("welcome"); };
   const login = (u) => { session.set(u); setUser(u); setRole(u.role); setScreen("dashboard"); };
   const signup = (u) => { setUser(u); setRole(u.role); setDefaultTab(u.role === "homeowner" ? "post" : "jobs"); setScreen("dashboard"); };
@@ -1474,8 +1489,8 @@ export default function App() {
       {screen === "login" && <LoginScreen {...shared} onBack={() => setScreen("welcome")} onLogin={login} />}
       {screen === "signup" && role === "contractor" && <ContractorSignup {...shared} onDone={signup} onLogin={() => setScreen("login")} onBack={() => setScreen("welcome")} />}
       {screen === "signup" && role === "homeowner" && <HomeownerSignup {...shared} onDone={signup} onLogin={() => setScreen("login")} onBack={() => setScreen("welcome")} />}
-      {screen === "dashboard" && user?.role === "contractor" && <ContractorDashboard {...shared} user={user} onLogout={logout} onHome={goHome} />}
-      {screen === "dashboard" && user?.role === "homeowner" && <HomeownerDashboard {...shared} user={user} onLogout={logout} defaultTab={defaultTab} onHome={goHome} />}
+      {screen === "dashboard" && user?.role === "contractor" && <ContractorDashboard {...shared} user={user} onLogout={logout} onHome={goHome} onSwitch={switchAccount} />}
+      {screen === "dashboard" && user?.role === "homeowner" && <HomeownerDashboard {...shared} user={user} onLogout={logout} defaultTab={defaultTab} onHome={goHome} onSwitch={switchAccount} />}
       </div>
     </>
   );
