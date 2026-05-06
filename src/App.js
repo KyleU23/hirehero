@@ -146,7 +146,7 @@ const session = {
   clear: () => { try { localStorage.removeItem("hh_user"); } catch {} },
 };
 
-const getTheme = () => { try { return localStorage.getItem("hh_theme") || "light"; } catch { return "light"; } };
+const getTheme = () => "dark";
 const setTheme = (t) => { try { localStorage.setItem("hh_theme", t); } catch {} };
 
 function timeAgo(ts) {
@@ -169,7 +169,7 @@ function Logo({ T, size = 22 }) {
   );
 }
 
-function ThemeToggle({ dark, onToggle, T }) {
+function ThemeToggle({ dark, onToggle, T }) { return null; }
   return (
     <button onClick={onToggle} style={{
       width: 52, height: 28, borderRadius: 14,
@@ -335,7 +335,7 @@ function EmptyState({ icon, title, sub, action, T }) {
   return (
     <div style={{ textAlign: "center", padding: "48px 20px" }}>
       <div style={{ fontSize: 52, marginBottom: 14 }}>{icon}</div>
-      <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 20, fontWeight: 800, color: T.text, marginBottom: 8 }}>{title}</p>
+      <p style={{ fontSize: 20, fontWeight: 800, color: T.text, marginBottom: 8 }}>{title}</p>
       <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: action ? 24 : 0, lineHeight: 1.6 }}>{sub}</p>
       {action}
     </div>
@@ -349,7 +349,7 @@ function StatCard({ icon, value, label, T, color }) {
       textAlign: "center", border: `1px solid ${T.border}`,
     }}>
       <div style={{ fontSize: 22, marginBottom: 4 }}>{icon}</div>
-      <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 28, fontWeight: 800, color: color || T.accent, lineHeight: 1 }}>{value}</div>
+      <div style={{ fontSize: 28, fontWeight: 800, color: color || T.accent, lineHeight: 1 }}>{value}</div>
       <div style={{ fontSize: 10, fontWeight: 700, color: T.muted, marginTop: 4, letterSpacing: 0.5, textTransform: "uppercase" }}>{label}</div>
     </div>
   );
@@ -393,7 +393,7 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard,
               <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#3fb950", animation: "shimmer 2s infinite" }} />
               <span style={{ fontSize: 12, fontWeight: 700, color: "#fff", letterSpacing: 0.5 }}>Now launching in Marysville, OH</span>
             </div>
-            <h1 style={{ fontFamily: "'Syne',sans-serif", fontSize: "clamp(26px,6vw,40px)", fontWeight: 800, color: "#fff", lineHeight: 1.1, letterSpacing: -0.5, marginBottom: 12 }}>
+            <h1 style={{ fontSize: "clamp(26px,6vw,40px)", fontWeight: 800, color: "#fff", lineHeight: 1.1, letterSpacing: -0.5, marginBottom: 12 }}>
               The Safer &<br />
               <span style={{ color: T.goldLight }}>Smarter Way</span><br />
               to Hire.
@@ -406,9 +406,9 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard,
 
         {/* Floating stats */}
         <div className="fu" style={{ margin: "-20px 16px 0", position: "relative", zIndex: 5 }}>
-          <div style={{ background: T.card, borderRadius: 16, padding: "16px 20px", boxShadow: T.shadowLg, border: `1px solid ${T.cardBorder}`, display: "flex", justifyContent: "space-around" }}>
-            {[["🔧", "Free", "To join"], ["🔒", "Escrow", "Protected pay"], ["⚡", "Fast", "Get bids quickly"]].map(([ic, v, l]) => (
-              <div key={l} style={{ textAlign: "center" }}>
+          <div style={{ background: T.card, borderRadius: 16, padding: "16px 20px", boxShadow: T.shadowLg, border: `1px solid ${T.cardBorder}`, display: "flex", justifyContent: "center", alignItems: "center", gap: 0 }}>
+            {[["🔧", "Free", "To join"], ["🔒", "Escrow", "Protected pay"], ["⚡", "Fast", "Get bids quickly"]].map(([ic, v, l], i) => (
+              <div key={l} style={{ flex: 1, textAlign: "center", borderRight: i < 2 ? `1px solid ${T.border}` : "none", padding: "0 8px" }}>
                 <div style={{ fontSize: 18, marginBottom: 2 }}>{ic}</div>
                 <div style={{ fontSize: 14, fontWeight: 800, color: T.accent }}>{v}</div>
                 <div style={{ fontSize: 10, color: T.muted, fontWeight: 600, letterSpacing: 0.3 }}>{l}</div>
@@ -432,13 +432,9 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard,
             <div style={{ position: "relative", height: 120, overflow: "hidden" }}>
               <img src={UNSPLASH.home} alt="Home" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(15,23,42,0.65) 0%, rgba(15,23,42,0.1) 100%)" }} />
-              <div style={{ position: "absolute", inset: 0, padding: "18px 20px", display: "flex", alignItems: "center", gap: 16 }}>
-                <div style={{ width: 48, height: 48, borderRadius: 14, background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, flexShrink: 0 }}>🏠</div>
-                <div>
-                  <p style={{ fontSize: 18, fontWeight: 800, color: "#fff", fontFamily: "'Syne',sans-serif" }}>Homeowner</p>
-                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>Post a job, get bids, pay safely</p>
-                </div>
-                <span style={{ marginLeft: "auto", fontSize: 22, color: "rgba(255,255,255,0.5)" }}>›</span>
+              <div style={{ position: "absolute", inset: 0, padding: "18px 20px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center" }}>
+                <p style={{ fontSize: 20, fontWeight: 800, color: "#fff", marginBottom: 4 }}>Homeowner</p>
+                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>Post a job, get bids, pay safely</p>
               </div>
             </div>
           </button>
@@ -452,18 +448,13 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard,
             <div style={{ position: "relative", height: 120, overflow: "hidden" }}>
               <img src={UNSPLASH.tools} alt="Tools" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(15,23,42,0.65) 0%, rgba(15,23,42,0.1) 100%)" }} />
-              <div style={{ position: "absolute", inset: 0, padding: "18px 20px", display: "flex", alignItems: "center", gap: 16 }}>
-                <div style={{ width: 48, height: 48, borderRadius: 14, background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, flexShrink: 0 }}>🔧</div>
-                <div>
-                  <p style={{ fontSize: 18, fontWeight: 800, color: "#fff", fontFamily: "'Syne',sans-serif" }}>Handyman / Pro</p>
-                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>Browse jobs, place bids, get hired</p>
-                </div>
-                <span style={{ marginLeft: "auto", fontSize: 22, color: "rgba(255,255,255,0.5)" }}>›</span>
+              <div style={{ position: "absolute", inset: 0, padding: "18px 20px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center" }}>
+                <p style={{ fontSize: 20, fontWeight: 800, color: "#fff", marginBottom: 4 }}>Handyman / Pro</p>
+                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>Browse jobs, place bids, get hired</p>
               </div>
             </div>
             {/* Join banner */}
-            <div style={{ padding: "12px 20px", background: T.surface2, borderTop: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ fontSize: 16 }}>🚀</span>
+            <div style={{ padding: "12px 20px", background: T.surface2, borderTop: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}>
               <p style={{ fontSize: 13, fontWeight: 700, color: T.accent }}>Sign up · Start bidding on jobs near you</p>
             </div>
           </button>
@@ -493,7 +484,7 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard,
         {/* Be a founding member CTA */}
         <div style={{ margin: "24px 0 0", background: `linear-gradient(135deg,${T.accentGlow},${T.goldGlow})`, borderRadius: 16, padding: "20px 18px", border: `1px solid ${T.accent}30` }}>
           <p style={{ fontSize: 11, fontWeight: 700, color: T.accent, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 8 }}>🚀 Now Launching in Marysville, OH</p>
-          <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 20, fontWeight: 800, color: T.text, marginBottom: 8 }}>Be a Founding Member</p>
+          <p style={{ fontSize: 20, fontWeight: 800, color: T.text, marginBottom: 8 }}>Be a Founding Member</p>
           <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, lineHeight: 1.6, marginBottom: 14 }}>HireHero is brand new and growing. Sign up now and lock in the founding member rate — the best deal we'll ever offer.</p>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {[["🔒", "Founding rate locked in forever"], ["⭐", "Be first in your area"], ["💰", "Only pay when you earn"]].map(([ic, text]) => (
@@ -549,8 +540,8 @@ function LoginScreen({ T, dark, onToggleTheme, onBack, onLogin }) {
             <p style={{ fontSize: 14, color: T.muted, fontWeight: 500, marginTop: 8 }}>Welcome back</p>
           </div>
           <Card T={T}>
-            <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 20 }}>Sign In</h2>
-            <Field label="Email" icon="✉️" T={T}><input style={iS(T)} type="email" placeholder="Email address" value={email} onChange={e => setEmail(e.target.value)} /></Field>
+            <h2 style={{ fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 20 }}>Sign In</h2>
+            <Field label="Email" icon="✉️" T={T}><input style={iS(T)} type="email" placeholder="" value={email} onChange={e => setEmail(e.target.value)} /></Field>
             <Field label="Password" icon="🔒" T={T}><input style={iS(T)} type="password" placeholder="Your password" value={pw} onChange={e => setPw(e.target.value)} onKeyDown={e => e.key === "Enter" && handle()} /></Field>
             {err && <p style={{ fontSize: 12, color: T.red, fontWeight: 600, marginBottom: 12 }}>⚠ {err}</p>}
             <Btn onClick={handle} disabled={loading} T={T}>{loading ? <div className="spin" style={{ width: 18, height: 18, border: `2px solid rgba(255,255,255,0.3)`, borderTopColor: "#fff", borderRadius: "50%", margin: "0 auto" }} /> : "Sign In →"}</Btn>
@@ -604,7 +595,7 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
   const screens = [
     // Account
     <div className="fu" key="c0">
-      <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 4 }}>Create Account</h2>
+      <h2 style={{ fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 4 }}>Create Account</h2>
       <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 20 }}>Free to join. No fees until you're earning.</p>
       <div style={{ background: T.green + "15", border: `1px solid ${T.green}40`, borderRadius: 10, padding: "12px 14px", marginBottom: 18, display: "flex", gap: 10 }}>
         <span style={{ fontSize: 18 }}>💰</span>
@@ -614,11 +605,11 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
         </div>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-        <Field label="First Name" icon="👤" error={errors.firstName} T={T}><input style={iS(T)} placeholder="First name" value={d.firstName || ""} onChange={e => u("firstName", e.target.value)} /></Field>
-        <Field label="Last Name" icon="👤" error={errors.lastName} T={T}><input style={iS(T)} placeholder="Last name" value={d.lastName || ""} onChange={e => u("lastName", e.target.value)} /></Field>
+        <Field label="First Name" icon="👤" error={errors.firstName} T={T}><input style={iS(T)} placeholder="" value={d.firstName || ""} onChange={e => u("firstName", e.target.value)} /></Field>
+        <Field label="Last Name" icon="👤" error={errors.lastName} T={T}><input style={iS(T)} placeholder="" value={d.lastName || ""} onChange={e => u("lastName", e.target.value)} /></Field>
       </div>
-      <Field label="Email" icon="✉️" error={errors.email} T={T}><input style={iS(T)} type="email" placeholder="Email address" value={d.email || ""} onChange={e => u("email", e.target.value)} /></Field>
-      <Field label="Phone (10 digits)" icon="📱" error={errors.phone} T={T}><input style={iS(T)} type="tel" placeholder="Your phone number" value={d.phone || ""} onChange={e => u("phone", e.target.value)} /></Field>
+      <Field label="Email" icon="✉️" error={errors.email} T={T}><input style={iS(T)} type="email" placeholder="" value={d.email || ""} onChange={e => u("email", e.target.value)} /></Field>
+      <Field label="Phone (10 digits)" icon="📱" error={errors.phone} T={T}><input style={iS(T)} type="tel" placeholder="" value={d.phone || ""} onChange={e => u("phone", e.target.value)} /></Field>
       <Field label="Password" icon="🔒" error={errors.password} T={T}><input style={iS(T)} type="password" placeholder="Min 6 characters" value={d.password || ""} onChange={e => u("password", e.target.value)} /></Field>
       <Btn onClick={() => validate0() && setStep(1)} T={T}>Continue →</Btn>
       <div style={{ textAlign: "center", marginTop: 14 }}>
@@ -628,10 +619,10 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
 
     // Profile
     <div className="fu" key="c1">
-      <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 4 }}>Your Profile</h2>
+      <h2 style={{ fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 4 }}>Your Profile</h2>
       <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 18 }}>What homeowners will see when you bid.</p>
-      <Field label="Business or Your Name" icon="🏢" T={T}><input style={iS(T)} placeholder="Business or your name" value={d.businessName || ""} onChange={e => u("businessName", e.target.value)} /></Field>
-      <Field label="City & State" icon="📍" T={T}><input style={iS(T)} placeholder="City, State" value={d.city || ""} onChange={e => u("city", e.target.value)} /></Field>
+      <Field label="Business or Your Name" icon="🏢" T={T}><input style={iS(T)} placeholder="" value={d.businessName || ""} onChange={e => u("businessName", e.target.value)} /></Field>
+      <Field label="City & State" icon="📍" T={T}><input style={iS(T)} placeholder="" value={d.city || ""} onChange={e => u("city", e.target.value)} /></Field>
       <Field label="How far will you travel?" icon="🗺️" T={T}>
         <select style={{ ...iS(T), cursor: "pointer" }} value={d.radius || ""} onChange={e => u("radius", e.target.value)}>
           <option value="">Select radius…</option>
@@ -640,7 +631,7 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
       </Field>
       <div style={{ marginBottom: 14 }}>
         <label style={{ fontSize: 12, fontWeight: 700, color: T.muted, display: "block", marginBottom: 6, letterSpacing: 0.4, textTransform: "uppercase" }}>About Your Work</label>
-        <textarea placeholder="Describe what you do, what you specialize in, why homeowners should hire you…" value={d.bio || ""} onChange={e => u("bio", e.target.value)} style={{ width: "100%", minHeight: 90, padding: "12px 14px", background: T.surface2, border: `1.5px solid ${T.border}`, borderRadius: 10, fontSize: 13, fontWeight: 500, color: T.text, outline: "none", lineHeight: 1.6 }} />
+        <textarea placeholder="" , lineHeight: 1.6 }} />
       </div>
       <div style={{ display: "flex", gap: 10 }}>
         <Btn variant="secondary" onClick={() => setStep(0)} T={T} style={{ width: 48, padding: "14px 0", flexShrink: 0 }}>←</Btn>
@@ -650,7 +641,7 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
 
     // Verify
     <div className="fu" key="c2">
-      <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 4 }}>Get Verified</h2>
+      <h2 style={{ fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 4 }}>Get Verified</h2>
       <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 16 }}>Verified pros get the most jobs and appear first.</p>
 
       <div style={{ position: "relative", borderRadius: 14, overflow: "hidden", marginBottom: 18 }}>
@@ -706,7 +697,7 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
     // Done
     <div className="fu" key="c3" style={{ textAlign: "center" }}>
       <div className="pop" style={{ fontSize: 64, marginBottom: 16 }}>🎉</div>
-      <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 30, fontWeight: 800, color: T.text, marginBottom: 10 }}>You're In, {d.firstName}!</h2>
+      <h2 style={{ fontSize: 30, fontWeight: 800, color: T.text, marginBottom: 10 }}>You're In, {d.firstName}!</h2>
       <p style={{ fontSize: 14, color: T.muted, fontWeight: 500, lineHeight: 1.7, marginBottom: 24 }}>
         Profile submitted. Send your verification photos to <strong style={{ color: T.accent }}>verify@usehirehero.com</strong> and we'll activate your badge within 1–2 days.
       </p>
@@ -776,17 +767,17 @@ function HomeownerSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
 
   const screens = [
     <div className="fu" key="h0">
-      <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 4 }}>Create Account</h2>
+      <h2 style={{ fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 4 }}>Create Account</h2>
       <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 18 }}>Free to join. Post your first job in minutes.</p>
       <div style={{ background: T.greenBg, border: `1px solid ${T.greenBorder}`, borderRadius: 10, padding: "12px 14px", marginBottom: 18, display: "flex", gap: 10 }}>
         <span>🔒</span><p style={{ fontSize: 12, fontWeight: 700, color: T.green }}>Your payment is held in escrow until you approve the finished work.</p>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-        <Field label="First Name" icon="👤" error={errors.firstName} T={T}><input style={iS(T)} placeholder="First name" value={d.firstName || ""} onChange={e => u("firstName", e.target.value)} /></Field>
-        <Field label="Last Name" icon="👤" error={errors.lastName} T={T}><input style={iS(T)} placeholder="Last name" value={d.lastName || ""} onChange={e => u("lastName", e.target.value)} /></Field>
+        <Field label="First Name" icon="👤" error={errors.firstName} T={T}><input style={iS(T)} placeholder="" value={d.firstName || ""} onChange={e => u("firstName", e.target.value)} /></Field>
+        <Field label="Last Name" icon="👤" error={errors.lastName} T={T}><input style={iS(T)} placeholder="" value={d.lastName || ""} onChange={e => u("lastName", e.target.value)} /></Field>
       </div>
-      <Field label="Email" icon="✉️" error={errors.email} T={T}><input style={iS(T)} type="email" placeholder="Email address" value={d.email || ""} onChange={e => u("email", e.target.value)} /></Field>
-      <Field label="Phone (10 digits)" icon="📱" error={errors.phone} T={T}><input style={iS(T)} type="tel" placeholder="Your phone number" value={d.phone || ""} onChange={e => u("phone", e.target.value)} /></Field>
+      <Field label="Email" icon="✉️" error={errors.email} T={T}><input style={iS(T)} type="email" placeholder="" value={d.email || ""} onChange={e => u("email", e.target.value)} /></Field>
+      <Field label="Phone (10 digits)" icon="📱" error={errors.phone} T={T}><input style={iS(T)} type="tel" placeholder="" value={d.phone || ""} onChange={e => u("phone", e.target.value)} /></Field>
       <Field label="Password" icon="🔒" error={errors.password} T={T}><input style={iS(T)} type="password" placeholder="Min 6 characters" value={d.password || ""} onChange={e => u("password", e.target.value)} /></Field>
       <Btn onClick={() => validate0() && setStep(1)} T={T}>Continue →</Btn>
       <div style={{ textAlign: "center", marginTop: 14 }}>
@@ -795,11 +786,11 @@ function HomeownerSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
     </div>,
 
     <div className="fu" key="h1">
-      <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 4 }}>Your Home</h2>
+      <h2 style={{ fontSize: 26, fontWeight: 800, color: T.text, marginBottom: 4 }}>Your Home</h2>
       <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 18 }}>Helps us match nearby handymen to you.</p>
-      <Field label="Street Address" icon="🏠" T={T}><input style={iS(T)} placeholder="Street address" value={d.address || ""} onChange={e => u("address", e.target.value)} /></Field>
-      <Field label="City & State" icon="📍" T={T}><input style={iS(T)} placeholder="City, State" value={d.city || ""} onChange={e => u("city", e.target.value)} /></Field>
-      <Field label="Zip Code" icon="📮" T={T}><input style={iS(T)} placeholder="Zip code" value={d.zip || ""} onChange={e => u("zip", e.target.value)} /></Field>
+      <Field label="Street Address" icon="🏠" T={T}><input style={iS(T)} placeholder="" value={d.address || ""} onChange={e => u("address", e.target.value)} /></Field>
+      <Field label="City & State" icon="📍" T={T}><input style={iS(T)} placeholder="" value={d.city || ""} onChange={e => u("city", e.target.value)} /></Field>
+      <Field label="Zip Code" icon="📮" T={T}><input style={iS(T)} placeholder="" value={d.zip || ""} onChange={e => u("zip", e.target.value)} /></Field>
       {err && <p style={{ fontSize: 12, color: T.red, fontWeight: 600, marginBottom: 12 }}>⚠ {err}</p>}
       <div style={{ display: "flex", gap: 10 }}>
         <Btn variant="secondary" onClick={() => setStep(0)} T={T} style={{ width: 48, padding: "14px 0", flexShrink: 0 }}>←</Btn>
@@ -811,7 +802,7 @@ function HomeownerSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
 
     <div className="fu" key="h2" style={{ textAlign: "center" }}>
       <div className="pop" style={{ fontSize: 64, marginBottom: 16 }}>🏠</div>
-      <h2 style={{ fontFamily: "'Syne',sans-serif", fontSize: 30, fontWeight: 800, color: T.text, marginBottom: 10 }}>Welcome, {d.firstName}!</h2>
+      <h2 style={{ fontSize: 30, fontWeight: 800, color: T.text, marginBottom: 10 }}>Welcome, {d.firstName}!</h2>
       <p style={{ fontSize: 14, color: T.muted, fontWeight: 500, lineHeight: 1.7, marginBottom: 24 }}>Your account is ready. Post your first job now and get bids fast.</p>
       <Btn onClick={() => onDone(session.get())} T={T}>Post My First Job →</Btn>
     </div>,
@@ -892,7 +883,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
             <div>
               <p style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.65)", marginBottom: 4, letterSpacing: 0.5 }}>Welcome back</p>
-              <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 22, fontWeight: 800, color: "#fff" }}>{user.business_name || `${user.first_name} ${user.last_name}`}</p>
+              <p style={{ fontSize: 22, fontWeight: 800, color: "#fff" }}>{user.business_name || `${user.first_name} ${user.last_name}`}</p>
             </div>
             <span style={{ background: (verified ? "#3fb950" : T.gold) + "30", border: `1px solid ${verified ? "#3fb950" : T.gold}60`, borderRadius: 6, padding: "4px 12px", fontSize: 11, fontWeight: 700, color: verified ? "#3fb950" : T.gold, flexShrink: 0 }}>
               {verified ? "✓ Verified" : "⏳ Pending"}
@@ -901,7 +892,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
             {[["Open Jobs", jobs.length], ["My Bids", myBids.length], ["Won", wonBids.length]].map(([l, v]) => (
               <div key={l} style={{ background: "rgba(255,255,255,0.1)", backdropFilter: "blur(8px)", borderRadius: 10, padding: "10px 8px", textAlign: "center", border: "1px solid rgba(255,255,255,0.15)" }}>
-                <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 24, fontWeight: 800, color: "#fff" }}>{v}</div>
+                <div style={{ fontSize: 24, fontWeight: 800, color: "#fff" }}>{v}</div>
                 <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.6)", letterSpacing: 0.5, textTransform: "uppercase" }}>{l}</div>
               </div>
             ))}
@@ -942,7 +933,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
                         <img src={job.photo_url || mockJobImages[idx % 3]} alt="" style={{ width: "100%", height: 150, objectFit: "cover" }} />
                         <div style={{ padding: 16 }}>
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
-                            <p style={{ fontSize: 16, fontWeight: 800, color: T.text, fontFamily: "'Syne',sans-serif" }}>{job.title}</p>
+                            <p style={{ fontSize: 16, fontWeight: 800, color: T.text }}>{job.title}</p>
                             <span style={{ background: T.greenBg, color: T.green, borderRadius: 6, padding: "3px 10px", fontSize: 12, fontWeight: 700, flexShrink: 0, marginLeft: 8 }}>${job.budget_min}–${job.budget_max}</span>
                           </div>
                           <p style={{ fontSize: 12, color: T.muted, fontWeight: 600, marginBottom: 8 }}>📍 {job.city} · {timeAgo(job.created_at)}</p>
@@ -1011,7 +1002,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
                       }} />
                     </div>
                     <div style={{ flex: 1 }}>
-                      <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 18, fontWeight: 800, color: T.text }}>{user.business_name || `${user.first_name} ${user.last_name}`}</p>
+                      <p style={{ fontSize: 18, fontWeight: 800, color: T.text }}>{user.business_name || `${user.first_name} ${user.last_name}`}</p>
                       <p style={{ fontSize: 12, color: T.muted, fontWeight: 600 }}>📍 {user.city}</p>
                       {user.verified && <span style={{ background: T.green + "20", color: T.green, fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 4, marginTop: 4, display: "inline-block" }}>✓ VERIFIED PRO</span>}
                     </div>
@@ -1031,7 +1022,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
                 {/* Past Work Photos */}
                 <Card T={T} style={{ marginBottom: 14 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                    <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 16, fontWeight: 800, color: T.text }}>📸 Past Work</p>
+                    <p style={{ fontSize: 16, fontWeight: 800, color: T.text }}>📸 Past Work</p>
                     <div onClick={() => document.getElementById("work-photo-upload").click()} style={{ background: T.accentGlow, border: `1.5px solid ${T.accent}`, borderRadius: 8, padding: "6px 12px", fontSize: 12, fontWeight: 700, color: T.accent, cursor: "pointer" }}>+ Add Photo</div>
                     <input id="work-photo-upload" type="file" accept="image/*" multiple style={{ display: "none" }} onChange={async e => {
                       const files = Array.from(e.target.files).slice(0, 3);
@@ -1063,10 +1054,10 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
 
                 {/* Google Reviews */}
                 <Card T={T}>
-                  <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 16, fontWeight: 800, color: T.text, marginBottom: 4 }}>⭐ Google Reviews</p>
+                  <p style={{ fontSize: 16, fontWeight: 800, color: T.text, marginBottom: 4 }}>⭐ Google Reviews</p>
                   <p style={{ fontSize: 12, color: T.muted, fontWeight: 500, marginBottom: 14 }}>Paste your Google Business URL so homeowners can see your reviews.</p>
                   <Field label="Google Business URL" icon="🔗" T={T}>
-                    <input style={iS(T)} placeholder="maps.google.com/your-business" value={user.google_url || ""} onChange={async e => {
+                    <input style={iS(T)} placeholder="" value={user.google_url || ""} onChange={async e => {
                       const val = e.target.value;
                       await sb.update("users", { google_url: val }, `?id=eq.${user.id}`);
                       session.set({ ...user, google_url: val });
@@ -1097,7 +1088,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome })
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 200, display: "flex", alignItems: "flex-end" }} onClick={e => e.target === e.currentTarget && setSelectedJob(null)}>
           <div className="fu" style={{ background: T.card, borderRadius: "20px 20px 0 0", padding: 24, width: "100%", maxHeight: "88vh", overflowY: "auto", border: `1px solid ${T.border}` }}>
             <div style={{ width: 36, height: 4, background: T.border, borderRadius: 2, margin: "0 auto 20px" }} />
-            <h3 style={{ fontFamily: "'Syne',sans-serif", fontSize: 24, fontWeight: 800, color: T.text, marginBottom: 4 }}>Place Your Bid</h3>
+            <h3 style={{ fontSize: 24, fontWeight: 800, color: T.text, marginBottom: 4 }}>Place Your Bid</h3>
             <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 16 }}>{selectedJob.title} · {selectedJob.city}</p>
             <img src={selectedJob.photo_url || UNSPLASH.job1} alt="" style={{ width: "100%", height: 120, objectFit: "cover", borderRadius: 12, marginBottom: 14 }} />
             <div style={{ background: T.accentGlow, borderRadius: 10, padding: "10px 14px", marginBottom: 14 }}>
@@ -1215,13 +1206,12 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
         <img src={UNSPLASH.home} alt="" style={{ width: "100%", height: 150, objectFit: "cover", filter: "brightness(0.5)" }} />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg,rgba(5,150,105,0.8),rgba(6,95,70,0.8))" }} />
         <div style={{ position: "absolute", inset: 0, padding: "20px 20px" }}>
-          <p style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.65)", marginBottom: 4 }}>Welcome back 👋</p>
-          <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 20, fontWeight: 800, color: "#fff", marginBottom: 14 }}>{user.first_name} {user.last_name}</p>
+          <p style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.65)", marginBottom: 4 }}>Welcome back</p>
+          <p style={{ fontSize: 22, fontWeight: 800, color: "#fff", marginBottom: 14 }}>{user.first_name} {user.last_name}</p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
-            {[["📋", myJobs.length, "My Jobs"], ["💬", myJobs.reduce((a, j) => a + (j.bid_count || 0), 0), "Bids Received"], ["✅", myJobs.filter(j => j.status === "complete").length, "Completed"]].map(([ic, v, l]) => (
+            {[["My Jobs", myJobs.length], ["Bids Received", myJobs.reduce((a, j) => a + (j.bid_count || 0), 0)], ["Completed", myJobs.filter(j => j.status === "complete").length]].map(([l, v]) => (
               <div key={l} style={{ background: "rgba(255,255,255,0.12)", backdropFilter: "blur(8px)", borderRadius: 10, padding: "10px 8px", textAlign: "center", border: "1px solid rgba(255,255,255,0.15)" }}>
-                <div style={{ fontSize: 16 }}>{ic}</div>
-                <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 24, fontWeight: 800, color: "#fff" }}>{v}</div>
+                <div style={{ fontSize: 22, fontWeight: 800, color: "#fff" }}>{v}</div>
                 <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.6)", letterSpacing: 0.5, textTransform: "uppercase" }}>{l}</div>
               </div>
             ))}
@@ -1231,7 +1221,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
 
       {/* Tabs */}
       <div style={{ display: "flex", margin: "14px 16px 0", background: T.surface, borderRadius: 12, padding: 4, border: `1px solid ${T.border}` }}>
-        {[["jobs", "📋 My Jobs"], ["post", "➕ Post Job"], ["escrow", "🔒 Escrow"]].map(([t, l]) => (
+        {[["jobs", "My Jobs"], ["post", "Post Job"], ["escrow", "Escrow"]].map(([t, l]) => (
           <button key={t} onClick={() => setTab(t)} style={{ flex: 1, padding: "10px 4px", borderRadius: 10, border: "none", fontSize: 12, fontWeight: 700, cursor: "pointer", background: tab === t ? T.green : "transparent", color: tab === t ? "#fff" : T.muted, transition: "all 0.2s" }}>{l}</button>
         ))}
       </div>
@@ -1248,7 +1238,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                       <img src={job.photo_url || mockJobImages[idx % 3]} alt="" style={{ width: "100%", height: 130, objectFit: "cover" }} />
                       <div style={{ padding: 16 }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
-                          <p style={{ fontSize: 16, fontWeight: 800, color: T.text, fontFamily: "'Syne',sans-serif" }}>{job.title}</p>
+                          <p style={{ fontSize: 16, fontWeight: 800, color: T.text }}>{job.title}</p>
                           <span style={{ background: statusColor[job.status] + "20", color: statusColor[job.status], border: `1px solid ${statusColor[job.status]}40`, borderRadius: 6, padding: "3px 10px", fontSize: 11, fontWeight: 700, flexShrink: 0, marginLeft: 8 }}>{statusLabel[job.status]}</span>
                         </div>
                         <p style={{ fontSize: 12, color: T.muted, fontWeight: 600, marginBottom: 10 }}>📍 {job.city} · {timeAgo(job.created_at)}</p>
@@ -1276,7 +1266,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                 <Card T={T}>
                   {pStep === 0 && (
                     <div>
-                      <h3 style={{ fontFamily: "'Syne',sans-serif", fontSize: 24, fontWeight: 800, color: T.text, marginBottom: 4 }}>Post a Job</h3>
+                      <h3 style={{ fontSize: 24, fontWeight: 800, color: T.text, marginBottom: 4 }}>Post a Job</h3>
                       <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 18 }}>Snap photos, describe the job, get bids fast.</p>
 
                       {/* MULTIPLE PHOTO UPLOAD */}
@@ -1340,7 +1330,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                   )}
                   {pStep === 1 && (
                     <div>
-                      <h3 style={{ fontFamily: "'Syne',sans-serif", fontSize: 24, fontWeight: 800, color: T.text, marginBottom: 4 }}>Job Details</h3>
+                      <h3 style={{ fontSize: 24, fontWeight: 800, color: T.text, marginBottom: 4 }}>Job Details</h3>
                       <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 18 }}>More detail = better, more accurate bids.</p>
                       <div style={{ marginBottom: 14 }}>
                         <label style={{ fontSize: 12, fontWeight: 700, color: T.muted, display: "block", marginBottom: 6, letterSpacing: 0.4, textTransform: "uppercase" }}>Describe the Job</label>
@@ -1378,7 +1368,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                   <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", padding: "0 20px", gap: 14 }}>
                     <span style={{ fontSize: 36 }}>🔒</span>
                     <div>
-                      <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 20, fontWeight: 800, color: "#fff" }}>Escrow Protection</p>
+                      <p style={{ fontSize: 20, fontWeight: 800, color: "#fff" }}>Escrow Protection</p>
                       <p style={{ fontSize: 12, color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>Your money is safe until you're satisfied</p>
                     </div>
                   </div>
@@ -1414,7 +1404,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 200, display: "flex", alignItems: "flex-end" }} onClick={e => e.target === e.currentTarget && setSelectedJob(null)}>
           <div className="fu" style={{ background: T.card, borderRadius: "20px 20px 0 0", padding: 24, width: "100%", maxHeight: "88vh", overflowY: "auto", border: `1px solid ${T.border}` }}>
             <div style={{ width: 36, height: 4, background: T.border, borderRadius: 2, margin: "0 auto 18px" }} />
-            <h3 style={{ fontFamily: "'Syne',sans-serif", fontSize: 22, fontWeight: 800, color: T.text, marginBottom: 4 }}>Bids for "{selectedJob.title}"</h3>
+            <h3 style={{ fontSize: 22, fontWeight: 800, color: T.text, marginBottom: 4 }}>Bids for "{selectedJob.title}"</h3>
             <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 18 }}>{jobBids.length} contractor{jobBids.length !== 1 ? "s" : ""} responded · sorted by price</p>
             {jobBids.length === 0
               ? <EmptyState T={T} icon="⏳" title="Waiting for bids" sub="Handymen in your area will see your job and respond soon." />
@@ -1431,7 +1421,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                         </div>
                         <p style={{ fontSize: 11, color: T.muted, fontWeight: 600 }}>{timeAgo(bid.created_at)}</p>
                       </div>
-                      <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 26, fontWeight: 800, color: T.accent }}>${bid.amount}</div>
+                      <div style={{ fontSize: 26, fontWeight: 800, color: T.accent }}>${bid.amount}</div>
                     </div>
                     {bid.note && <div style={{ background: T.surface, borderRadius: 8, padding: "10px 12px", marginBottom: 12, border: `1px solid ${T.border}` }}><p style={{ fontSize: 13, color: T.muted, fontWeight: 500, lineHeight: 1.55, fontStyle: "italic" }}>"{bid.note}"</p></div>}
                     {!selectedJob.accepted_contractor_id && <Btn variant="green" onClick={() => acceptBid(bid)} T={T}>✓ Accept This Bid — ${bid.amount}</Btn>}
@@ -1488,7 +1478,7 @@ function AdminScreen({ T, dark, onToggleTheme, onBack }) {
   if (!authed) return (
     <div style={{ minHeight: "100vh", background: T.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24 }}>
       <div style={{ fontSize: 48, marginBottom: 16 }}>🔐</div>
-      <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 24, fontWeight: 800, color: T.text, marginBottom: 24 }}>Admin Access</p>
+      <p style={{ fontSize: 24, fontWeight: 800, color: T.text, marginBottom: 24 }}>Admin Access</p>
       <div style={{ width: "100%", maxWidth: 320 }}>
         <Field label="PIN" icon="🔒" T={T}>
           <input style={iS(T)} type="password" placeholder="Enter admin PIN" value={pin} onChange={e => setPin(e.target.value)} onKeyDown={e => e.key === "Enter" && (pin === ADMIN_PIN ? (setAuthed(true), load()) : setPin(""))} />
@@ -1503,7 +1493,7 @@ function AdminScreen({ T, dark, onToggleTheme, onBack }) {
     <div style={{ minHeight: "100vh", background: T.bg, paddingBottom: 40 }}>
       <Topbar T={T} dark={dark} onToggleTheme={onToggleTheme} onBack={onBack} />
       <div style={{ padding: "20px 16px" }}>
-        <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 24, fontWeight: 800, color: T.text, marginBottom: 4 }}>🛡️ Admin Panel</p>
+        <p style={{ fontSize: 24, fontWeight: 800, color: T.text, marginBottom: 4 }}>🛡️ Admin Panel</p>
         <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 16 }}>Manage contractor verifications</p>
         {msg && <div style={{ background: T.greenBg, border: `1px solid ${T.greenBorder}`, borderRadius: 10, padding: "10px 14px", marginBottom: 14 }}><p style={{ fontSize: 13, fontWeight: 700, color: T.green }}>{msg}</p></div>}
         {loading ? <Spinner T={T} /> : contractors.length === 0
@@ -1539,7 +1529,7 @@ export default function App() {
   const [role, setRole] = useState(null);
   const [user, setUser] = useState(null);
   const [defaultTab, setDefaultTab] = useState("jobs");
-  const [dark, setDark] = useState(getTheme() === "dark");
+  const [dark, setDark] = useState(true);
   const [logoTaps, setLogoTaps] = useState(0);
 
   const T = dark ? DARK : LIGHT;
@@ -1568,7 +1558,7 @@ export default function App() {
     document.body.style.color = T.text;
   }, [dark]);
 
-  const toggleTheme = () => { const nd = !dark; setDark(nd); setTheme(nd ? "dark" : "light"); };
+  const toggleTheme = () => {};
   const logout = () => { session.clear(); setUser(null); setRole(null); setScreen("welcome"); };
   const login = (u) => { session.set(u); setUser(u); setRole(u.role); setScreen("dashboard"); };
   const signup = (u) => { setUser(u); setRole(u.role); setDefaultTab(u.role === "homeowner" ? "post" : "jobs"); setScreen("dashboard"); };
