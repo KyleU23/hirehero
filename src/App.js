@@ -1582,18 +1582,18 @@ function AdminScreen({ T, dark, onToggleTheme, onBack }) {
 
   const deleteContractor = async (contractor) => {
     if (!window.confirm(`Delete ${contractor.first_name} ${contractor.last_name}?`)) return;
-    await sb.query("users", "DELETE", null, `?id=eq.${contractor.id}`);
+    await sb.delete("users", `?id=eq.${contractor.id}`);
+    setContractors(prev => prev.filter(c => c.id !== contractor.id));
     setMsg(`${contractor.first_name} deleted`);
     setTimeout(() => setMsg(""), 3000);
-    load();
   };
 
   const deleteJob = async (job) => {
     if (!window.confirm(`Delete job "${job.title}"? This cannot be undone.`)) return;
-    await sb.query("jobs", "DELETE", null, `?id=eq.${job.id}`);
+    await sb.delete("jobs", `?id=eq.${job.id}`);
+    setJobs(prev => prev.filter(j => j.id !== job.id));
     setMsg(`Job "${job.title}" deleted`);
     setTimeout(() => setMsg(""), 3000);
-    load();
   };
 
   if (!authed) return (
