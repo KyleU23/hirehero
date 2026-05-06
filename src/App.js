@@ -1203,7 +1203,8 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
         budget_min: parseFloat(pData.budgetMin) || 50,
         budget_max: parseFloat(pData.budgetMax) || 200,
         city: user.city || "Marysville, OH",
-        photo_url: pData.photoUrl || null,
+        photo_url: (pData.photoUrls || [])[0] || pData.photoUrl || null,
+        photo_urls: JSON.stringify(pData.photoUrls || []),
         timeline: pData.timeline, status: "open", bid_count: 0,
       });
       setPData({}); setPStep(0); setTab("jobs"); load();
@@ -1286,23 +1287,51 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                   {pStep === 0 && (
                     <div>
                       <h3 style={{ fontSize: 24, fontWeight: 800, color: T.text, marginBottom: 4 }}>Post a Job</h3>
-                      <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 18 }}>Snap a photo, describe the job, get bids fast.</p>
+                      <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 18 }}>Add photos and describe what needs to be done.</p>
+
+                      {/* Multiple photo upload */}
                       <div style={{ marginBottom: 16 }}>
-                        <label style={{ fontSize: 12, fontWeight: 700, color: T.muted, display: "block", marginBottom: 8, letterSpacing: 0.4, textTransform: "uppercase" }}> Job Photo</label>
-                        <div onClick={() => document.getElementById("jp").click()} style={{ width: "100%", height: 140, borderRadius: 12, background: pData.photoPreview ? "transparent" : T.surface2, border: `2px dashed ${T.border}`, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", cursor: "pointer", position: "relative" }}>
-                          {pData.photoPreview
-                            ? <div style={{ width: "100%", height: "100%", background: T.surface2, display: "flex", alignItems: "center", justifyContent: "center" }}><p style={{ fontSize: 12, color: T.green, fontWeight: 700 }}>Photo added</p></div>
-                            : <div style={{ textAlign: "center" }}>
-                              <div style={{ fontSize: 36, marginBottom: 8 }}>+</div>
-                              <p style={{ fontSize: 13, fontWeight: 700, color: T.muted }}>Tap to add a photo</p>
-                              <p style={{ fontSize: 11, color: T.muted, marginTop: 4 }}>Helps pros give accurate bids</p>
+                        <label style={{ fontSize: 12, fontWeight: 700, color: T.muted, display: "block", marginBottom: 8, letterSpacing: 0.4, textTransform: "uppercase" }}>Job Photos (up to 5)</label>
+                        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 8 }}>
+                          {(pData.photoPreviews || []).map((src, i) => (
+                            <div key={i} style={{ position: "relative", width: 80, height: 80, borderRadius: 10, overflow: "hidden", border: `2px solid ${T.border}` }}>
+                              <img src={src} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt="" />
+                              <button onClick={() => {
+                                const newPreviews = (pData.photoPreviews || []).filter((_, j) => j !== i);
+                                const newUrls = (pData.photoUrls || []).filter((_, j) => j !== i);
+                                up("photoPreviews", newPreviews); up("photoUrls", newUrls);
+                              }} style={{ position: "absolute", top: 2, right: 2, width: 20, height: 20, borderRadius: "50%", background: "rgba(0,0,0,0.7)", border: "none", color: "#fff", fontSize: 10, cursor: "pointer" }}>x</button>
                             </div>
-                          }
+                          ))}
+                          {(pData.photoPreviews || []).length < 5 && (
+                            <div onClick={() => document.getElementById("jp").click()} style={{ width: 80, height: 80, borderRadius: 10, background: T.surface2, border: `2px dashed ${T.border}`, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+                              <div style={{ fontSize: 24, color: T.muted }}>+</div>
+                              <p style={{ fontSize: 9, fontWeight: 700, color: T.muted }}>Add Photo</p>
+                            </div>
+                          )}
                         </div>
-                        <input id="jp" type="file" accept="image/*" style={{ display: "none" }} onChange={async e => { const f = e.target.files[0]; if (f) { const r = new FileReader(); r.onload = ev => up("photoPreview", ev.target.result); r.readAsDataURL(f); const url = await uploadPhoto(f, "jobs"); if (url) up("photoUrl", url); } }} />
+                        <input id="jp" type="file" accept="image/*" multiple style={{ display: "none" }} onChange={async e => {
+                          const files = Array.from(e.target.files).slice(0, 5 - (pData.photoPreviews || []).length);
+                          for (const f of files) {
+                            const r = new FileReader();
+                            r.onload = ev => up("photoPreviews", [...(pData.photoPreviews || []), ev.target.result]);
+                            r.readAsDataURL(f);
+                            const url = await uploadPhoto(f, "jobs");
+                            if (url) up("photoUrls", [...(pData.photoUrls || []), url]);
+                          }
+                          e.target.value = "";
+                        }} />
+                        <p style={{ fontSize: 11, color: T.muted, fontWeight: 500 }}>More photos help contractors give accurate bids</p>
                       </div>
-                      <Field label="Job Title" icon="" T={T}><input style={iS(T)} placeholder="e.g. Fix leaky faucet, install ceiling fan…" value={pData.title || ""} onChange={e => up("title", e.target.value)} /></Field>
-                      <Btn onClick={() => pData.title && setPStep(1)} disabled={!pData.title} T={T}>Continue →</Btn>
+
+                      <Field label="Job Title" icon="" T={T}><input style={iS(T)} placeholder="e.g. Fix leaky faucet, install ceiling fan" value={pData.title || ""} onChange={e => up("title", e.target.value)} /></Field>
+
+                      <div style={{ marginBottom: 14 }}>
+                        <label style={{ fontSize: 12, fontWeight: 700, color: T.muted, display: "block", marginBottom: 6, letterSpacing: 0.4, textTransform: "uppercase" }}>Description</label>
+                        <textarea placeholder="Tell contractors what needs to be done. The more detail the better." value={pData.description || ""} onChange={e => up("description", e.target.value)} style={{ width: "100%", minHeight: 90, padding: "12px 14px", background: T.surface2, border: `1.5px solid ${T.border}`, borderRadius: 10, fontSize: 13, fontWeight: 500, color: T.text, outline: "none", lineHeight: 1.6 }} />
+                      </div>
+
+                      <Btn onClick={() => pData.title && setPStep(1)} disabled={!pData.title} T={T}>Continue</Btn>
                     </div>
                   )}
                   {pStep === 1 && (
