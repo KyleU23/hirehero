@@ -189,44 +189,47 @@ function ThemeToggle({ dark, onToggle, T }) { return null; } function ThemeToggl
   );
 }
 
-function Topbar({ T, user, onLogout, dark, onToggleTheme, onBack, onHome, onSwitch }) {
+function Topbar({ T, user, onLogout, dark, onToggleTheme, onBack, onHome, onSwitch, notifications, onNotifClick }) {
+  const unread = (notifications || []).filter(n => !n.read).length;
+  const [showNotifs, setShowNotifs] = useState(false);
+
   return (
-    <div style={{
-      position: "sticky", top: 0, zIndex: 100,
-      background: T.topbar,
-      backdropFilter: "blur(16px)",
-      borderBottom: `1px solid ${T.border}`,
-      padding: "12px 20px",
-      display: "flex", alignItems: "center", justifyContent: "space-between",
-      boxShadow: T.shadow,
-    }}>
+    <div style={{ position: "sticky", top: 0, zIndex: 100, background: T.topbar, backdropFilter: "blur(16px)", borderBottom: `1px solid ${T.border}`, padding: "12px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: T.shadow }}>
       {onBack
         ? <button onClick={onBack} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", fontSize: 14, fontWeight: 700, color: T.accent, padding: "4px 0", minHeight: 44, minWidth: 44 }}>← Back</button>
         : <Logo T={T} size={18} />
       }
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <ThemeToggle dark={dark} onToggle={onToggleTheme} T={T} />
+        {notifications && (
+          <div style={{ position: "relative" }}>
+            <button onClick={() => { setShowNotifs(p => !p); if (onNotifClick) onNotifClick(); }} style={{ minWidth: 40, minHeight: 40, borderRadius: 8, background: T.surface2, border: `1.5px solid ${T.border}`, cursor: "pointer", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
+              {unread > 0 && <span style={{ position: "absolute", top: -4, right: -4, width: 18, height: 18, borderRadius: "50%", background: T.red, color: "#fff", fontSize: 10, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center" }}>{unread}</span>}
+              {unread > 0 ? "🔔" : "🔕"}
+            </button>
+            {showNotifs && (
+              <div style={{ position: "absolute", right: 0, top: 48, width: 300, background: T.card, borderRadius: 14, border: `1px solid ${T.border}`, boxShadow: T.shadowLg, zIndex: 200, maxHeight: 400, overflowY: "auto" }}>
+                <div style={{ padding: "12px 16px", borderBottom: `1px solid ${T.border}` }}>
+                  <p style={{ fontSize: 14, fontWeight: 800, color: T.text }}>Notifications</p>
+                </div>
+                {(notifications || []).length === 0
+                  ? <div style={{ padding: "20px 16px", textAlign: "center" }}><p style={{ fontSize: 13, color: T.muted }}>No notifications yet</p></div>
+                  : (notifications || []).map((n, i) => (
+                    <div key={i} style={{ padding: "12px 16px", borderBottom: `1px solid ${T.border}`, background: n.read ? "transparent" : T.accentGlow }}>
+                      <p style={{ fontSize: 13, fontWeight: n.read ? 500 : 700, color: T.text, lineHeight: 1.5 }}>{n.message}</p>
+                      <p style={{ fontSize: 11, color: T.muted, fontWeight: 500, marginTop: 4 }}>{timeAgo(n.created_at)}</p>
+                    </div>
+                  ))
+                }
+              </div>
+            )}
+          </div>
+        )}
         {onHome && (
-          <button
-            onTouchEnd={(e) => { e.preventDefault(); onHome(); }}
-            onClick={onHome}
-            style={{
-              minWidth: 44, minHeight: 44, borderRadius: 8,
-              background: T.surface2, border: `1.5px solid ${T.border}`,
-              cursor: "pointer", fontSize: 12, fontWeight: 700,
-              color: T.text, display: "flex",
-              alignItems: "center", justifyContent: "center",
-              padding: "0 12px",
-              WebkitTapHighlightColor: "transparent",
-            }}>Home</button>
+          <button onTouchEnd={(e) => { e.preventDefault(); onHome(); }} onClick={onHome} style={{ minWidth: 44, minHeight: 44, borderRadius: 8, background: T.surface2, border: `1.5px solid ${T.border}`, cursor: "pointer", fontSize: 12, fontWeight: 700, color: T.text, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 12px", WebkitTapHighlightColor: "transparent" }}>Home</button>
         )}
         {onLogout && (
-          <button onClick={onLogout} style={{
-            background: "none", border: `1.5px solid ${T.border}`,
-            borderRadius: 8, padding: "6px 14px",
-            fontSize: 12, fontWeight: 700, color: T.muted, cursor: "pointer",
-            transition: "all 0.2s",
-          }}>Sign Out</button>
+          <button onClick={onLogout} style={{ background: "none", border: `1.5px solid ${T.border}`, borderRadius: 8, padding: "6px 14px", fontSize: 12, fontWeight: 700, color: T.muted, cursor: "pointer", transition: "all 0.2s" }}>Sign Out</button>
         )}
       </div>
     </div>
@@ -818,6 +821,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome, o
   const [editingProfile, setEditingProfile] = useState(false);
   const [eData, setEData] = useState({});
   const [saving, setSaving] = useState(false);
+  const [notifications, setNotifications] = useState([]);
   const eu = (k, v) => setEData(p => ({ ...p, [k]: v }));
 
   const startEdit = () => {
@@ -862,11 +866,12 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome, o
   const load = async () => {
     setLoading(true);
     try {
-      const [j, b] = await Promise.all([
+      const [j, b, n] = await Promise.all([
         sb.select("jobs", "?status=eq.open&order=created_at.desc"),
         sb.select("bids", `?contractor_id=eq.${user.id}&order=created_at.desc`),
+        sb.select("notifications", `?user_id=eq.${user.id}&order=created_at.desc`),
       ]);
-      setJobs(j || []); setMyBids(b || []);
+      setJobs(j || []); setMyBids(b || []); setNotifications(n || []);
     } catch {}
     setLoading(false);
   };
@@ -883,6 +888,12 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome, o
         contractor_verified: verified, amount: parseFloat(bidAmount), note: bidNote, status: "pending",
       });
       await sb.update("jobs", { bid_count: (selectedJob.bid_count || 0) + 1 }, `?id=eq.${selectedJob.id}`);
+      // Notify homeowner
+      await sb.insert("notifications", {
+        user_id: selectedJob.homeowner_id,
+        message: `${user.business_name || user.first_name} placed a $${bidAmount} bid on your job "${selectedJob.title}"`,
+        type: "bid", read: false,
+      });
       setSelectedJob(null); setBidAmount(""); setBidNote(""); setTab("bids"); load();
     } catch {}
     setSubmitting(false);
@@ -895,7 +906,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome, o
 
   return (
     <div style={{ background: T.bg, minHeight: "100vh", paddingBottom: 80 }}>
-      <Topbar T={T} user={user} onLogout={onLogout} dark={dark} onToggleTheme={onToggleTheme} onHome={onHome} onSwitch={onSwitch} />
+      <Topbar T={T} user={user} onLogout={onLogout} dark={dark} onToggleTheme={onToggleTheme} onHome={onHome} onSwitch={onSwitch} notifications={notifications} onNotifClick={async () => { await Promise.all(notifications.filter(n => !n.read).map(n => sb.update("notifications", { read: true }, `?id=eq.${n.id}`))); load(); }} />
 
       {/* Hero header */}
       <div style={{ position: "relative", margin: "16px 16px 0", borderRadius: 18, overflow: "hidden" }}>
@@ -1160,6 +1171,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
   const [hEditingProfile, setHEditingProfile] = useState(false);
   const [hEData, setHEData] = useState({});
   const [hSaving, setHSaving] = useState(false);
+  const [notifications, setNotifications] = useState([]);
   const heu = (k, v) => setHEData(p => ({ ...p, [k]: v }));
 
   const hStartEdit = () => {
@@ -1193,8 +1205,11 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
   const load = async () => {
     setLoading(true);
     try {
-      const j = await sb.select("jobs", `?homeowner_id=eq.${user.id}&order=created_at.desc`);
-      setMyJobs(j || []);
+      const [j, n] = await Promise.all([
+        sb.select("jobs", `?homeowner_id=eq.${user.id}&order=created_at.desc`),
+        sb.select("notifications", `?user_id=eq.${user.id}&order=created_at.desc`),
+      ]);
+      setMyJobs(j || []); setNotifications(n || []);
     } catch {}
     setLoading(false);
   };
@@ -1211,6 +1226,12 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
     await sb.update("jobs", { status: "in_progress", accepted_bid_id: bid.id, accepted_contractor_id: bid.contractor_id }, `?id=eq.${selectedJob.id}`);
     await sb.update("bids", { status: "accepted" }, `?id=eq.${bid.id}`);
     for (const b of jobBids.filter(b => b.id !== bid.id)) await sb.update("bids", { status: "declined" }, `?id=eq.${b.id}`);
+    // Notify contractor their bid was accepted
+    await sb.insert("notifications", {
+      user_id: bid.contractor_id,
+      message: `Your bid of $${bid.amount} was accepted for "${selectedJob.title}". Get in touch with the homeowner!`,
+      type: "accepted", read: false,
+    });
     setSelectedJob(j => ({ ...j, status: "in_progress", accepted_contractor_id: bid.contractor_id }));
     load();
   };
