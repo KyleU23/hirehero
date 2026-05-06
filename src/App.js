@@ -680,8 +680,8 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
       <div style={{ background: T.greenBg, border: `1.5px solid ${T.greenBorder}`, borderRadius: 12, padding: "16px 18px", marginBottom: 16, textAlign: "center" }}>
         <p style={{ fontSize: 22, marginBottom: 8 }}></p>
         <p style={{ fontSize: 14, fontWeight: 800, color: T.green, marginBottom: 8 }}>Email your photos directly to us</p>
-        <a href={`mailto:verify@usehirehero.com?subject=HireHero Verification - ${d.firstName || ""} ${d.lastName || ""}`} style={{ display: "block", background: T.card, borderRadius: 10, padding: "12px", border: `1.5px solid ${T.border}`, fontSize: 15, fontWeight: 800, color: T.accent, textDecoration: "none", marginBottom: 8 }}>
-          verify@usehirehero.com
+        <a href={`mailto:kyle@usehirehero.com?subject=HireHero Verification - ${d.firstName || ""} ${d.lastName || ""}`} style={{ display: "block", background: T.accent, borderRadius: 10, padding: "14px", border: "none", fontSize: 15, fontWeight: 800, color: "#fff", textDecoration: "none", marginBottom: 8, textAlign: "center" }}>
+          Send Verification Docs
         </a>
         <p style={{ fontSize: 11, color: T.muted, fontWeight: 600 }}>Tap above — your name is pre-filled in the subject line</p>
       </div>
@@ -704,7 +704,7 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
       <div className="pop" style={{ fontSize: 64, marginBottom: 16 }}></div>
       <h2 style={{ fontSize: 30, fontWeight: 800, color: T.text, marginBottom: 10 }}>You're In, {d.firstName}!</h2>
       <p style={{ fontSize: 14, color: T.muted, fontWeight: 500, lineHeight: 1.7, marginBottom: 24 }}>
-        Profile submitted. Send your verification photos to <strong style={{ color: T.accent }}>verify@usehirehero.com</strong> and we'll activate your badge within 1–2 days.
+        Profile submitted. Send your verification photos to our team and we'll activate your badge within 1–2 days.
       </p>
       <div style={{ background: T.surface2, borderRadius: 14, padding: 18, marginBottom: 24, textAlign: "left" }}>
         {[["", "Confirmation sent", `Check ${d.email}`], ["", "We review your docs", "1–2 business days"], ["", "Verified Pro Badge", "Added to your profile"], ["", "Jobs start coming in", "From homeowners near you"]].map(([ic, title, sub]) => (
@@ -959,7 +959,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome, o
           <span style={{ fontSize: 18 }}></span>
           <div>
             <p style={{ fontSize: 13, fontWeight: 700, color: T.gold }}>Verification in progress</p>
-            <p style={{ fontSize: 11, fontWeight: 500, color: T.muted }}>Email your docs to verify@usehirehero.com · Approved in 1–2 days</p>
+            <p style={{ fontSize: 11, fontWeight: 500, color: T.muted }}>Tap below to send your docs · Approved in 1–2 days</p>
           </div>
         </div>
       )}
