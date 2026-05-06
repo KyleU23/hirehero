@@ -424,17 +424,9 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard 
             borderRadius: 16, padding: 0, cursor: "pointer", overflow: "hidden",
             boxShadow: T.shadow, textAlign: "center", transition: "transform 0.2s, box-shadow 0.2s",
           }}>
-            <div style={{ position: "relative", height: 120, overflow: "hidden" }}>
-              
-              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(15,23,42,0.85) 0%, rgba(15,23,42,0.3) 100%)" }} />
-              <div style={{ position: "absolute", inset: 0, padding: "18px 20px", display: "flex", alignItems: "center", gap: 16 }}>
-                <div style={{ width: 48, height: 48, borderRadius: 14, background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, flexShrink: 0 }}></div>
-                <div>
-                  <p style={{ fontSize: 18, fontWeight: 800, color: "#fff", fontFamily: "'Syne',sans-serif" }}>Homeowner</p>
-                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>Post a job, get bids, pay safely</p>
-                </div>
-                <span style={{ marginLeft: "auto", fontSize: 22, color: "rgba(255,255,255,0.5)" }}>›</span>
-              </div>
+            <div style={{ background: "linear-gradient(135deg, #1e3a5f, #0d2137)", height: 120, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "18px 20px" }}>
+              <p style={{ fontSize: 20, fontWeight: 800, color: "#fff", marginBottom: 6 }}>Homeowner</p>
+              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>Post a job, get bids, pay safely</p>
             </div>
           </button>
 
@@ -444,22 +436,13 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard 
             borderRadius: 16, padding: 0, cursor: "pointer", overflow: "hidden",
             boxShadow: T.shadow, textAlign: "center", transition: "transform 0.2s",
           }}>
-            <div style={{ position: "relative", height: 120, overflow: "hidden" }}>
-              
-              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(15,23,42,0.85) 0%, rgba(15,23,42,0.3) 100%)" }} />
-              <div style={{ position: "absolute", inset: 0, padding: "18px 20px", display: "flex", alignItems: "center", gap: 16 }}>
-                <div style={{ width: 48, height: 48, borderRadius: 14, background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, flexShrink: 0 }}></div>
-                <div>
-                  <p style={{ fontSize: 18, fontWeight: 800, color: "#fff", fontFamily: "'Syne',sans-serif" }}>Handyman / Pro</p>
-                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>Find jobs, bid, get paid free</p>
-                </div>
-                <span style={{ marginLeft: "auto", fontSize: 22, color: "rgba(255,255,255,0.5)" }}>›</span>
-              </div>
+            <div style={{ background: "linear-gradient(135deg, #1a3a2a, #0d2118)", height: 120, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "18px 20px" }}>
+              <p style={{ fontSize: 20, fontWeight: 800, color: "#fff", marginBottom: 6 }}>Handyman / Pro</p>
+              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>Browse jobs, place bids, get hired</p>
             </div>
-            {/* Free banner */}
-            <div style={{ padding: "12px 20px", background: T.surface2, borderTop: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ fontSize: 16 }}></span>
-              <p style={{ fontSize: 13, fontWeight: 700, color: T.green }}>Join free · Bid on jobs near you today</p>
+            {/* Banner */}
+            <div style={{ padding: "12px 20px", background: T.surface2, borderTop: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <p style={{ fontSize: 13, fontWeight: 700, color: T.accent }}>Sign up · Start bidding on jobs near you</p>
             </div>
           </button>
         </div>
@@ -469,40 +452,16 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard 
           <p style={{ fontSize: 12, fontWeight: 700, color: T.muted, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 16 }}>How It Works</p>
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {[
-              ["", "Snap a Photo", "Homeowner takes a photo of the job and posts it"],
-              ["", "Get Real Bids", "Verified local handymen see it and send their price"],
-              ["", "Escrow Holds Payment", "Money is secured — contractor can't touch it yet"],
-              ["", "Approve & Release", "Happy with the work? Tap approve. Money releases instantly."],
-            ].map(([ic, title, desc], i) => (
+              ["1", "Snap a Photo", "Homeowner takes a photo of the job and posts it"],
+              ["2", "Get Real Bids", "Verified local handymen see it and send their price"],
+              ["3", "Escrow Holds Payment", "Money is secured — contractor can't touch it yet"],
+              ["4", "Approve & Release", "Happy with the work? Tap approve. Money releases instantly."],
+            ].map(([num, title, desc]) => (
               <div key={title} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, background: T.accentGlow, border: `1px solid ${T.accent}30`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>{ic}</div>
+                <div style={{ width: 28, height: 28, borderRadius: "50%", background: T.accent, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: "#fff", flexShrink: 0 }}>{num}</div>
                 <div>
                   <p style={{ fontSize: 14, fontWeight: 700, color: T.text }}>{title}</p>
                   <p style={{ fontSize: 12, color: T.muted, fontWeight: 500, lineHeight: 1.5 }}>{desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Sample contractor profiles */}
-        <div style={{ margin: "24px 0 0" }}>
-          <p style={{ fontSize: 12, fontWeight: 700, color: T.muted, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 14 }}>Local Pros Near You</p>
-          <div style={{ display: "flex", gap: 12, overflowX: "auto", paddingBottom: 8 }}>
-            {[
-              { name: "Mike R.", img: UNSPLASH.handyman1, rating: "4.9", jobs: "47 jobs" },
-              { name: "Dave S.", img: UNSPLASH.handyman2, rating: "5.0", jobs: "31 jobs" },
-              { name: "Tom W.", img: UNSPLASH.handyman3, rating: "4.8", jobs: "62 jobs" },
-            ].map(pro => (
-              <div key={pro.name} style={{ flexShrink: 0, width: 130, background: T.card, borderRadius: 14, overflow: "hidden", border: `1px solid ${T.cardBorder}`, boxShadow: T.shadow }}>
-                
-                <div style={{ padding: "10px 12px" }}>
-                  <p style={{ fontSize: 13, fontWeight: 800, color: T.text, marginBottom: 2 }}>{pro.name}</p>
-                  <p style={{ fontSize: 11, color: T.gold, fontWeight: 700 }}>⭐ {pro.rating}</p>
-                  <p style={{ fontSize: 10, color: T.muted, fontWeight: 600, marginTop: 2 }}>{pro.jobs}</p>
-                  <div style={{ marginTop: 6, background: T.green + "20", borderRadius: 4, padding: "2px 6px", display: "inline-block" }}>
-                    <span style={{ fontSize: 9, fontWeight: 700, color: T.green }}> VERIFIED</span>
-                  </div>
                 </div>
               </div>
             ))}
