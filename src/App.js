@@ -1164,9 +1164,9 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                         <label style={{ fontSize: 12, fontWeight: 700, color: T.muted, display: "block", marginBottom: 8, letterSpacing: 0.4, textTransform: "uppercase" }}> Job Photo</label>
                         <div onClick={() => document.getElementById("jp").click()} style={{ width: "100%", height: 140, borderRadius: 12, background: pData.photoPreview ? "transparent" : T.surface2, border: `2px dashed ${T.border}`, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", cursor: "pointer", position: "relative" }}>
                           {pData.photoPreview
-                            ? 
+                            ? <div style={{ width: "100%", height: "100%", background: T.surface2, display: "flex", alignItems: "center", justifyContent: "center" }}><p style={{ fontSize: 12, color: T.green, fontWeight: 700 }}>Photo added</p></div>
                             : <div style={{ textAlign: "center" }}>
-                              <div style={{ fontSize: 36, marginBottom: 8 }}></div>
+                              <div style={{ fontSize: 36, marginBottom: 8 }}>+</div>
                               <p style={{ fontSize: 13, fontWeight: 700, color: T.muted }}>Tap to add a photo</p>
                               <p style={{ fontSize: 11, color: T.muted, marginTop: 4 }}>Helps pros give accurate bids</p>
                             </div>
