@@ -1026,9 +1026,18 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome, o
                       <span style={{ background: T.accentGlow, color: T.accent, borderRadius: 6, padding: "4px 12px", fontSize: 14, fontWeight: 800 }}>Your bid: ${bid.amount}</span>
                       {bid.note && <p style={{ fontSize: 12, color: T.muted, fontWeight: 500, marginTop: 10, fontStyle: "italic", lineHeight: 1.5 }}>"{bid.note}"</p>}
                       {bid.status === "accepted" && (
-                        <div style={{ marginTop: 12, background: T.greenBg, borderRadius: 10, padding: 12, border: `1px solid ${T.greenBorder}` }}>
-                          <p style={{ fontSize: 13, fontWeight: 700, color: T.green }}> Job awarded to you!</p>
-                          <p style={{ fontSize: 12, color: T.muted, fontWeight: 500, marginTop: 4 }}>Contact the homeowner to schedule. Payment releases when they approve.</p>
+                        <div style={{ marginTop: 12 }}>
+                          <div style={{ background: T.greenBg, border: `1px solid ${T.greenBorder}`, borderRadius: 10, padding: "12px 14px", marginBottom: 10, textAlign: "center" }}>
+                            <p style={{ fontSize: 18, fontWeight: 800, color: T.green, marginBottom: 4 }}>Congratulations!</p>
+                            <p style={{ fontSize: 13, color: T.muted, fontWeight: 500 }}>You won the bid for ${bid.amount}. Reach out to the homeowner to get started.</p>
+                          </div>
+                          <a href={`tel:${bid.homeowner_phone}`} style={{ display: "flex", alignItems: "center", gap: 10, background: T.surface2, borderRadius: 10, padding: "10px 12px", textDecoration: "none", border: `1px solid ${T.border}` }}>
+                            <div>
+                              <p style={{ fontSize: 13, fontWeight: 700, color: T.text }}>{bid.homeowner_name}</p>
+                              <p style={{ fontSize: 12, color: T.accent, fontWeight: 600 }}>{bid.homeowner_phone || "Contact via app"}</p>
+                            </div>
+                            <span style={{ marginLeft: "auto", fontSize: 20 }}>📞</span>
+                          </a>
                         </div>
                       )}
                     </div>
@@ -1232,16 +1241,24 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
   };
 
   const acceptBid = async (bid) => {
-    await sb.update("jobs", { status: "in_progress", accepted_bid_id: bid.id, accepted_contractor_id: bid.contractor_id }, `?id=eq.${selectedJob.id}`);
-    await sb.update("bids", { status: "accepted" }, `?id=eq.${bid.id}`);
+    // Get contractor's phone number
+    const contractorRows = await sb.select("users", `?id=eq.${bid.contractor_id}`);
+    const contractor = contractorRows?.[0];
+    await sb.update("jobs", { 
+      status: "in_progress", 
+      accepted_bid_id: bid.id, 
+      accepted_contractor_id: bid.contractor_id,
+      contractor_name: bid.contractor_name,
+      contractor_phone: contractor?.phone || null,
+    }, `?id=eq.${selectedJob.id}`);
+    await sb.update("bids", { status: "accepted", homeowner_name: `${user.first_name} ${user.last_name}`, homeowner_phone: user.phone || null }, `?id=eq.${bid.id}`);
     for (const b of jobBids.filter(b => b.id !== bid.id)) await sb.update("bids", { status: "declined" }, `?id=eq.${b.id}`);
-    // Notify contractor their bid was accepted
     await sb.insert("notifications", {
       user_id: bid.contractor_id,
-      message: `Your bid of $${bid.amount} was accepted for "${selectedJob.title}". Get in touch with the homeowner!`,
+      message: `Your bid of $${bid.amount} was accepted for "${selectedJob.title}". Contact the homeowner: ${user.first_name} ${user.last_name} - ${user.phone || "check your app for details"}`,
       type: "accepted", read: false,
     });
-    setSelectedJob(j => ({ ...j, status: "in_progress", accepted_contractor_id: bid.contractor_id }));
+    setSelectedJob(j => ({ ...j, status: "in_progress", accepted_contractor_id: bid.contractor_id, contractor_name: bid.contractor_name, contractor_phone: contractor?.phone }));
     load();
   };
 
@@ -1333,7 +1350,23 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                           <span style={{ background: T.greenBg, color: T.green, borderRadius: 6, padding: "3px 10px", fontSize: 12, fontWeight: 700 }}>${job.budget_min}–${job.budget_max}</span>
                         </div>
                         {job.status === "open" && <Btn onClick={() => viewBids(job)} variant={(job.bid_count || 0) > 0 ? "primary" : "secondary"} T={T}>{(job.bid_count || 0) > 0 ? `View ${job.bid_count} Bid${job.bid_count > 1 ? "s" : ""} →` : "Waiting for bids…"}</Btn>}
-                        {job.status === "in_progress" && <Btn variant="green" onClick={() => completeJob(job)} T={T}> Approve & Release Payment</Btn>}
+                        {job.status === "in_progress" && (() => {
+                          const acceptedBid = job.accepted_bid_id;
+                          return (
+                            <div style={{ background: T.greenBg, border: `1px solid ${T.greenBorder}`, borderRadius: 12, padding: "14px 16px" }}>
+                              <p style={{ fontSize: 13, fontWeight: 800, color: T.green, marginBottom: 10 }}>Bid Accepted! Here is your contractor's contact info:</p>
+                              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                                <a href={`tel:${job.contractor_phone}`} style={{ display: "flex", alignItems: "center", gap: 10, background: T.surface2, borderRadius: 10, padding: "12px 14px", textDecoration: "none", border: `1px solid ${T.border}` }}>
+                                  <div>
+                                    <p style={{ fontSize: 13, fontWeight: 700, color: T.text }}>{job.contractor_name}</p>
+                                    <p style={{ fontSize: 12, color: T.accent, fontWeight: 600 }}>{job.contractor_phone || "Phone not available"}</p>
+                                  </div>
+                                  <span style={{ marginLeft: "auto", fontSize: 20 }}>📞</span>
+                                </a>
+                              </div>
+                            </div>
+                          );
+                        })()}
                         {job.status === "complete" && <div style={{ background: T.greenBg, borderRadius: 10, padding: 10, textAlign: "center", fontSize: 13, fontWeight: 700, color: T.green }}> Job complete — payment released</div>}
                         {job.status === "open" && <button onClick={async () => { if (window.confirm("Delete this job?")) { await sb.delete("bids", `?job_id=eq.${job.id}`); await sb.delete("jobs", `?id=eq.${job.id}`); setMyJobs(prev => prev.filter(j => j.id !== job.id)); } }} style={{ width: "100%", marginTop: 8, padding: "10px", borderRadius: 10, border: `1px solid ${T.red}40`, background: T.redBg, color: T.red, fontSize: 12, fontWeight: 700, cursor: "pointer" }}>Delete Job</button>}
                         {job.status !== "in_progress" && (
