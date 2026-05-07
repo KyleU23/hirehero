@@ -630,8 +630,8 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
       <Field label="City & State" icon="" T={T}><input style={iS(T)} placeholder="" value={d.city || ""} onChange={e => u("city", e.target.value)} /></Field>
       <Field label="How far will you travel?" icon="" T={T}>
         <select style={{ ...iS(T), cursor: "pointer" }} value={d.radius || ""} onChange={e => u("radius", e.target.value)}>
-          <option value="">Select radius…</option>
-          {["Within 10 miles", "Within 25 miles", "Within 50 miles"].map(r => <option key={r}>{r}</option>)}
+          <option value="" style={{ background: "#1e293b", color: "#fff" }}>Select radius…</option>
+          {["Within 10 miles", "Within 25 miles", "Within 50 miles"].map(r => <option key={r} style={{ background: "#1e293b", color: "#fff" }}>{r}</option>)}
         </select>
       </Field>
       <div style={{ marginBottom: 14 }}>
@@ -1165,9 +1165,6 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome, o
               <label style={{ fontSize: 12, fontWeight: 700, color: T.muted, display: "block", marginBottom: 6, letterSpacing: 0.4, textTransform: "uppercase" }}>Message to Homeowner</label>
               <textarea placeholder="Introduce yourself, describe your approach…" value={bidNote} onChange={e => setBidNote(e.target.value)} style={{ width: "100%", minHeight: 80, padding: "12px 14px", background: T.surface2, border: `1.5px solid ${T.border}`, borderRadius: 10, fontSize: 13, fontWeight: 500, color: T.text, outline: "none", lineHeight: 1.6 }} />
             </div>
-            <div style={{ background: T.greenBg, border: `1px solid ${T.greenBorder}`, borderRadius: 10, padding: "10px 14px", marginBottom: 14 }}>
-              <p style={{ fontSize: 12, fontWeight: 700, color: T.green }}> You only get paid when the homeowner approves your work.</p>
-            </div>
             <div style={{ display: "flex", gap: 10 }}>
               <Btn variant="secondary" onClick={() => setSelectedJob(null)} T={T} style={{ flex: 1 }}>Cancel</Btn>
               <Btn onClick={submitBid} disabled={!bidAmount || submitting || alreadyBid} T={T} style={{ flex: 2 }}>
@@ -1282,16 +1279,13 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
         homeowner_name: `${user.first_name} ${user.last_name}`,
         homeowner_city: user.city,
         title: pData.title, trade: "handyman",
-        description: pData.description,
-        budget_min: parseFloat(pData.budgetMin) || 50,
-        budget_max: parseFloat(pData.budgetMax) || 200,
+        description: pData.description || "",
         city: user.city || "Marysville, OH",
-        photo_url: (pData.photoUrls || [])[0] || pData.photoUrl || null,
-        photo_urls: JSON.stringify(pData.photoUrls || []),
+        photo_url: (pData.photoUrls || [])[0] || null,
         timeline: pData.timeline, status: "open", bid_count: 0,
       });
       setPData({}); setPStep(0); setTab("jobs"); load();
-    } catch {}
+    } catch (e) { alert("Error posting job: " + e.message); }
     setPosting(false);
   };
 
@@ -1443,9 +1437,9 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                         <textarea placeholder="What needs to be done? Any details the handyman should know? Access instructions?" value={pData.description || ""} onChange={e => up("description", e.target.value)} style={{ width: "100%", minHeight: 100, padding: "12px 14px", background: T.surface2, border: `1.5px solid ${T.border}`, borderRadius: 10, fontSize: 13, fontWeight: 500, color: T.text, outline: "none", lineHeight: 1.6 }} />
                       </div>
                       <Field label="When do you need it?" icon="" T={T}>
-                        <select style={{ ...iS(T), cursor: "pointer" }} value={pData.timeline || ""} onChange={e => up("timeline", e.target.value)}>
-                          <option value="">Select timeline…</option>
-                          {["ASAP", "Within a week", "Within a month", "Flexible"].map(t => <option key={t}>{t}</option>)}
+                        <select style={{ ...iS(T), cursor: "pointer", colorScheme: "dark" }} value={pData.timeline || ""} onChange={e => up("timeline", e.target.value)}>
+                          <option value="" style={{ background: "#1e293b", color: "#fff" }}>Select timeline…</option>
+                          {["ASAP", "Within a week", "Within a month", "Flexible"].map(t => <option key={t} style={{ background: "#1e293b", color: "#fff" }}>{t}</option>)}
                         </select>
                       </Field>
                       <div style={{ display: "flex", gap: 10 }}>
