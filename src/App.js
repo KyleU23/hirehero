@@ -1363,11 +1363,6 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                         })()}
                         {job.status === "complete" && <div style={{ background: T.greenBg, borderRadius: 10, padding: 10, textAlign: "center", fontSize: 13, fontWeight: 700, color: T.green }}> Job complete — payment released</div>}
                         {job.status === "open" && <button onClick={async () => { if (window.confirm("Delete this job?")) { await sb.delete("bids", `?job_id=eq.${job.id}`); await sb.delete("jobs", `?id=eq.${job.id}`); setMyJobs(prev => prev.filter(j => j.id !== job.id)); } }} style={{ width: "100%", marginTop: 8, padding: "10px", borderRadius: 10, border: `1px solid ${T.red}40`, background: T.redBg, color: T.red, fontSize: 12, fontWeight: 700, cursor: "pointer" }}>Delete Job</button>}
-                        {job.status !== "in_progress" && (
-                          <button onClick={() => deleteJob(job)} style={{ width: "100%", marginTop: 8, padding: "10px", borderRadius: 10, border: `1.5px solid ${T.red}40`, background: T.redBg, color: T.red, fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
-                             Delete Job
-                          </button>
-                        )}
                       </div>
                     </div>
                   ))
