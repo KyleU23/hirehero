@@ -1274,7 +1274,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
   };
 
   const postJob = async () => {
-    if (!pData.title || !pData.description) return;
+    if (!pData.title) return;
     setPosting(true);
     try {
       await sb.insert("jobs", {
@@ -1448,13 +1448,10 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                           {["ASAP", "Within a week", "Within a month", "Flexible"].map(t => <option key={t}>{t}</option>)}
                         </select>
                       </Field>
-                      <div style={{ background: T.greenBg, border: `1px solid ${T.greenBorder}`, borderRadius: 10, padding: "12px 14px", marginBottom: 16 }}>
-                        <p style={{ fontSize: 12, fontWeight: 700, color: T.green }}> Your payment is held in escrow. Released only when you approve the work.</p>
-                      </div>
                       <div style={{ display: "flex", gap: 10 }}>
                         <Btn variant="secondary" onClick={() => setPStep(0)} T={T} style={{ width: 48, padding: "14px 0", flexShrink: 0 }}>←</Btn>
-                        <Btn onClick={() => pData.description && postJob()} disabled={!pData.description || posting} T={T}>
-                          {posting ? <div className="spin" style={{ width: 18, height: 18, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", margin: "0 auto" }} /> : " Post & Get Bids"}
+                        <Btn onClick={() => postJob()} disabled={posting} T={T}>
+                          {posting ? <div className="spin" style={{ width: 18, height: 18, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", margin: "0 auto" }} /> : "Post & Get Bids"}
                         </Btn>
                       </div>
                     </div>
@@ -1519,9 +1516,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                   </div>
                 </div>
                 <Card T={T}>
-                  <div style={{ background: T.green + "15", border: `1px solid ${T.green}40`, borderRadius: 10, padding: "12px 14px", marginBottom: 16 }}>
-                    <p style={{ fontSize: 12, fontWeight: 700, color: T.green }}>• Stripe payments coming soon. Escrow protection will be fully live shortly.</p>
-                  </div>
+                  <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, lineHeight: 1.7, marginBottom: 20 }}>Your payment is held safely until the job is done right. No risk on either side.</p>
                   {[
                     ["1", T.accent, "You fund escrow", "Once you accept a bid your payment is set aside. The contractor knows the money is there but nobody touches it until the work is done."],
                     ["2", T.gold, "Work gets done", "Your contractor completes the job. If you need to reach them you can message directly through the app."],
