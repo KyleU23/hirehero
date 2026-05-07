@@ -876,12 +876,14 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome, o
   const load = async () => {
     setLoading(true);
     try {
-      const [j, b, n] = await Promise.all([
+      const [j, b, n, freshUser] = await Promise.all([
         sb.select("jobs", "?status=eq.open&order=created_at.desc"),
         sb.select("bids", `?contractor_id=eq.${user.id}&order=created_at.desc`),
         sb.select("notifications", `?user_id=eq.${user.id}&order=created_at.desc`),
+        sb.select("users", `?id=eq.${user.id}`),
       ]);
       setJobs(j || []); setMyBids(b || []); setNotifications(n || []);
+      if (freshUser && freshUser[0]) session.set({ ...user, ...freshUser[0] });
     } catch {}
     setLoading(false);
   };
