@@ -1075,15 +1075,7 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome, o
                       </div>
                   )}
 
-                  {!editingProfile && user.bio && <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, lineHeight: 1.6, marginBottom: 14, padding: "12px 14px", background: T.surface2, borderRadius: 10 }}>{user.bio}</p>}
-                  <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: editingProfile ? 0 : 0 }}>
-                    {[["Insurance", user.insurance], ["License", user.license], ["ID Verified", user.id_doc]].map(([l, v]) => (
-                      <div key={l} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", background: T.surface2, borderRadius: 10 }}>
-                        <span style={{ fontSize: 13, fontWeight: 600, color: T.text, flex: 1 }}>{l}</span>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: v ? T.green : T.muted }}>{v ? "Verified" : "Pending"}</span>
-                      </div>
-                    ))}
-                  </div>
+                  {user.bio && <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, lineHeight: 1.6, marginBottom: 14, padding: "12px 14px", background: T.surface2, borderRadius: 10 }}>{user.bio}</p>}
                 </Card>
 
                 {/* Past Work Photos */}
