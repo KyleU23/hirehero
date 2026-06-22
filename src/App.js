@@ -487,9 +487,9 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard,
 
         <div style={{ padding: "0 20px 32px", textAlign: "center" }}>
           <p style={{ fontSize: 11, color: T.muted, fontWeight: 500 }}>
-            <span onClick={() => onLogin && onLogin("terms")} style={{ color: T.accent, cursor: "pointer", textDecoration: "underline" }}>Terms of Service</span>
+            <span onClick={() => onShowTerms && onShowTerms()} style={{ color: T.accent, cursor: "pointer", textDecoration: "underline" }}>Terms of Service</span>
             {" · "}
-            <span onClick={() => onLogin && onLogin("privacy")} style={{ color: T.accent, cursor: "pointer", textDecoration: "underline" }}>Privacy Policy</span>
+            <span onClick={() => onShowPrivacy && onShowPrivacy()} style={{ color: T.accent, cursor: "pointer", textDecoration: "underline" }}>Privacy Policy</span>
           </p>
           <p style={{ fontSize: 11, color: T.muted, fontWeight: 500, marginTop: 4 }}>Must be 18 or older to use</p>
         </div>
@@ -1540,11 +1540,11 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                           {CATEGORIES.map(c => <option key={c.id} value={c.id} style={{ background: "#1e293b", color: "#fff" }}>{c.label}</option>)}
                         </select>
                       </Field>
-                      <Field label="Job Title" icon="" T={T}><input style={iS(T)} placeholder="e.g. Fix leaky faucet, install ceiling fan" value={pData.title || ""} onChange={e => up("title", e.target.value)} /></Field>
+                      <Field label="Job Title" icon="" T={T}><input style={iS(T)} placeholder="" value={pData.title || ""} onChange={e => up("title", e.target.value)} /></Field>
 
                       <div style={{ marginBottom: 14 }}>
                         <label style={{ fontSize: 12, fontWeight: 700, color: T.muted, display: "block", marginBottom: 6, letterSpacing: 0.4, textTransform: "uppercase" }}>Description</label>
-                        <textarea placeholder="Tell contractors what needs to be done. The more detail the better." value={pData.description || ""} onChange={e => up("description", e.target.value)} style={{ width: "100%", minHeight: 90, padding: "12px 14px", background: T.surface2, border: `1.5px solid ${T.border}`, borderRadius: 10, fontSize: 13, fontWeight: 500, color: T.text, outline: "none", lineHeight: 1.6 }} />
+                        <textarea placeholder="Additional details for your service pro." value={pData.description || ""} onChange={e => up("description", e.target.value)} style={{ width: "100%", minHeight: 90, padding: "12px 14px", background: T.surface2, border: `1.5px solid ${T.border}`, borderRadius: 10, fontSize: 13, fontWeight: 500, color: T.text, outline: "none", lineHeight: 1.6 }} />
                       </div>
 
                       <Btn onClick={() => pData.title && pData.category && setPStep(1)} disabled={!pData.title || !pData.category} T={T}>Continue</Btn>
