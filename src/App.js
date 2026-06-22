@@ -72,6 +72,13 @@ const LIGHT = {
   shadowLg: "0 12px 40px rgba(15,23,42,0.12)",
 };
 
+const CATEGORIES = [
+  { id: "handyman", label: "Handyman", color: "#3b82f6" },
+  { id: "power_washing", label: "Power Washing", color: "#06b6d4" },
+  { id: "painting", label: "Painting", color: "#f59e0b" },
+  { id: "junk_removal", label: "Junk Removal", color: "#ef4444" },
+];
+
 const DARK = {
   bg: "#0d1117", surface: "#161b22", surface2: "#1c2333",
   border: "#30363d", text: "#e6edf3", muted: "#8b949e",
@@ -375,7 +382,7 @@ function StatCard({ icon, value, label, T, color }) {
 /* ─────────────────────────────────────────────
    WELCOME SCREEN
 ───────────────────────────────────────────── */
-function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard, onLogoTap }) {
+function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard, onLogoTap, onShowTerms, onShowPrivacy }) {
   const [imgLoaded, setImgLoaded] = useState(false);
 
   return (
@@ -410,8 +417,11 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard,
               <span style={{ color: T.goldLight }}>Smarter Way</span><br />
               to Hire.
             </h1>
-            <p style={{ fontSize: 15, fontWeight: 500, color: "rgba(255,255,255,0.75)", lineHeight: 1.6, maxWidth: 340 }}>
-              The easiest way for connecting homeowners with trusted local pros.
+            <p style={{ fontSize: 15, fontWeight: 500, color: "rgba(255,255,255,0.75)", lineHeight: 1.6, maxWidth: 340, textAlign: "center" }}>
+              The easiest way to connect homeowners with trusted local pros.
+            </p>
+            <p style={{ fontSize: 12, fontWeight: 600, color: "#f0b429", textAlign: "center", marginTop: 10, letterSpacing: 0.5 }}>
+              Handyman · Power Washing · Painting · Junk Removal
             </p>
           </div>
         </div>
@@ -448,7 +458,7 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard,
               <img src={UNSPLASH.tools} alt="Tools" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(15,23,42,0.3) 0%, rgba(15,23,42,0.75) 100%)" }} />
               <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                <p style={{ fontSize: 20, fontWeight: 800, color: "#fff", marginBottom: 4 }}>Handyman / Pro</p>
+                <p style={{ fontSize: 20, fontWeight: 800, color: "#fff", marginBottom: 4 }}>Service Pro</p>
                 <p style={{ fontSize: 13, color: "rgba(255,255,255,0.8)", fontWeight: 500 }}>Browse jobs, place bids, get hired</p>
               </div>
             </div>
@@ -461,9 +471,8 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard,
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {[
               ["1", "Snap a Photo", "Homeowner takes a photo of the job and posts it"],
-              ["2", "Get Real Bids", "Verified local handymen see it and send their price"],
-              ["3", "Escrow Holds Payment", "Money is secured — contractor can't touch it yet"],
-              ["4", "Approve & Release", "Happy with the work? Tap approve. Money releases instantly."],
+              ["2", "Get Real Bids", "Verified local pros see it and send their price"],
+              ["3", "Get Hired", "Homeowner picks the best bid and contacts the pro directly"],
             ].map(([num, title, desc]) => (
               <div key={title} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
                 <div style={{ width: 28, height: 28, borderRadius: "50%", background: T.accent, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: "#fff", flexShrink: 0 }}>{num}</div>
@@ -476,7 +485,14 @@ function WelcomeScreen({ T, dark, onToggleTheme, onSelect, onLogin, onDashboard,
           </div>
         </div>
 
-        <div style={{ height: 40 }} />
+        <div style={{ padding: "0 20px 32px", textAlign: "center" }}>
+          <p style={{ fontSize: 11, color: T.muted, fontWeight: 500 }}>
+            <span onClick={() => onLogin && onLogin("terms")} style={{ color: T.accent, cursor: "pointer", textDecoration: "underline" }}>Terms of Service</span>
+            {" · "}
+            <span onClick={() => onLogin && onLogin("privacy")} style={{ color: T.accent, cursor: "pointer", textDecoration: "underline" }}>Privacy Policy</span>
+          </p>
+          <p style={{ fontSize: 11, color: T.muted, fontWeight: 500, marginTop: 4 }}>Must be 18 or older to use</p>
+        </div>
       </div>
     </div>
   );
@@ -491,6 +507,8 @@ function LoginScreen({ T, dark, onToggleTheme, onBack, onLogin }) {
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
   const [accounts, setAccounts] = useState(null);
+  const [forgotMode, setForgotMode] = useState(false);
+  const [newPw, setNewPw] = useState("");
 
   const handle = async () => {
     setLoading(true); setErr("");
@@ -521,7 +539,7 @@ function LoginScreen({ T, dark, onToggleTheme, onBack, onLogin }) {
               {accounts.map(a => (
                 <button key={a.id} onClick={() => onLogin(a)} style={{ padding: "16px 20px", borderRadius: 12, border: `1.5px solid ${T.border}`, background: T.surface2, cursor: "pointer", textAlign: "left", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div>
-                    <p style={{ fontSize: 15, fontWeight: 800, color: T.text }}>{a.role === "contractor" ? "Handyman / Pro" : "Homeowner"}</p>
+                    <p style={{ fontSize: 15, fontWeight: 800, color: T.text }}>{a.role === "contractor" ? "Service Pro" : "Homeowner"}</p>
                     <p style={{ fontSize: 12, color: T.muted, fontWeight: 500, marginTop: 2 }}>{a.first_name} {a.last_name}</p>
                   </div>
                   <span style={{ fontSize: 18, color: T.muted }}>›</span>
@@ -549,7 +567,26 @@ function LoginScreen({ T, dark, onToggleTheme, onBack, onLogin }) {
             <Field label="Email" icon="" T={T}><input style={iS(T)} type="email" placeholder="" value={email} onChange={e => setEmail(e.target.value)} /></Field>
             <Field label="Password" icon="" T={T}><input style={iS(T)} type="password" placeholder="" value={pw} onChange={e => setPw(e.target.value)} onKeyDown={e => e.key === "Enter" && handle()} /></Field>
             {err && <p style={{ fontSize: 12, color: T.red, fontWeight: 600, marginBottom: 12 }}>{err}</p>}
-            <Btn onClick={handle} disabled={loading} T={T}>{loading ? <div className="spin" style={{ width: 18, height: 18, border: `2px solid rgba(255,255,255,0.3)`, borderTopColor: "#fff", borderRadius: "50%", margin: "0 auto" }} /> : "Sign In"}</Btn>
+            {forgotMode ? (
+              <div style={{ marginBottom: 14 }}>
+                <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 10, lineHeight: 1.6 }}>Enter your email and new password below.</p>
+                <Field label="New Password" icon="" T={T}><input style={iS(T)} type="password" placeholder="Min 6 characters" value={newPw} onChange={e => setNewPw(e.target.value)} /></Field>
+                <Btn onClick={async () => {
+                  if (!email || newPw.length < 6) return;
+                  const rows = await sb.select("users", `?email=eq.${encodeURIComponent(email)}`);
+                  if (!rows.length) { setErr("No account found with that email."); return; }
+                  const hashed = await hashPassword(newPw);
+                  await Promise.all(rows.map(r => sb.update("users", { password: hashed }, `?id=eq.${r.id}`)));
+                  setForgotMode(false); setNewPw(""); setErr(""); alert("Password updated. Please sign in.");
+                }} T={T}>Update Password</Btn>
+                <Btn variant="secondary" onClick={() => setForgotMode(false)} T={T} style={{ marginTop: 8 }}>Back to Sign In</Btn>
+              </div>
+            ) : (
+              <>
+                <Btn onClick={handle} disabled={loading} T={T}>{loading ? <div className="spin" style={{ width: 18, height: 18, border: `2px solid rgba(255,255,255,0.3)`, borderTopColor: "#fff", borderRadius: "50%", margin: "0 auto" }} /> : "Sign In"}</Btn>
+                <p onClick={() => setForgotMode(true)} style={{ textAlign: "center", fontSize: 12, color: T.accent, fontWeight: 600, marginTop: 12, cursor: "pointer", textDecoration: "underline" }}>Forgot Password?</p>
+              </>
+            )}
             <Btn variant="secondary" onClick={onBack} T={T} style={{ marginTop: 10 }}>← Back</Btn>
           </Card>
         </div>
@@ -567,6 +604,9 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
+  const [termsAgreed, setTermsAgreed] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
   const u = (k, v) => setD(p => ({ ...p, [k]: v }));
 
   const validate0 = () => {
@@ -589,7 +629,7 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
         email: d.email, password: hashed, role: "contractor",
         first_name: d.firstName, last_name: d.lastName, phone: d.phone,
         business_name: d.businessName || `${d.firstName} ${d.lastName}`,
-        city: d.city, bio: d.bio, trades: ["handyman"], radius: d.radius,
+        city: d.city, bio: d.bio, trades: JSON.stringify(d.trades || ["handyman"]), radius: d.radius,
         insurance: null, license: null, id_doc: null, verified: false,
       });
       if (rows && rows[0]) { session.set(rows[0]); onDone(rows[0]); }
@@ -634,13 +674,33 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
           {["Within 10 miles", "Within 25 miles", "Within 50 miles"].map(r => <option key={r} style={{ background: "#1e293b", color: "#fff" }}>{r}</option>)}
         </select>
       </Field>
+
+      <div style={{ marginBottom: 14 }}>
+        <label style={{ fontSize: 12, fontWeight: 700, color: T.muted, display: "block", marginBottom: 10, letterSpacing: 0.4, textTransform: "uppercase" }}>What services do you offer?</label>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {CATEGORIES.map(cat => {
+            const selected = (d.trades || []).includes(cat.id);
+            return (
+              <div key={cat.id} onClick={() => {
+                const current = d.trades || [];
+                u("trades", selected ? current.filter(t => t !== cat.id) : [...current, cat.id]);
+              }} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderRadius: 10, border: `1.5px solid ${selected ? cat.color : T.border}`, background: selected ? cat.color + "15" : T.surface2, cursor: "pointer" }}>
+                
+                <span style={{ fontSize: 14, fontWeight: 700, color: selected ? cat.color : T.text }}>{cat.label}</span>
+                <span style={{ marginLeft: "auto", width: 20, height: 20, borderRadius: "50%", border: `2px solid ${selected ? cat.color : T.border}`, background: selected ? cat.color : "transparent", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#fff" }}>{selected ? "✓" : ""}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       <div style={{ marginBottom: 14 }}>
         <label style={{ fontSize: 12, fontWeight: 700, color: T.muted, display: "block", marginBottom: 6, letterSpacing: 0.4, textTransform: "uppercase" }}>About Your Work</label>
         <textarea placeholder="Describe what you do, what you specialize in, why homeowners should hire you…" value={d.bio || ""} onChange={e => u("bio", e.target.value)} style={{ width: "100%", minHeight: 90, padding: "12px 14px", background: T.surface2, border: `1.5px solid ${T.border}`, borderRadius: 10, fontSize: 13, fontWeight: 500, color: T.text, outline: "none", lineHeight: 1.6 }} />
       </div>
       <div style={{ display: "flex", gap: 10 }}>
         <Btn variant="secondary" onClick={() => setStep(0)} T={T} style={{ width: 48, padding: "14px 0", flexShrink: 0 }}>←</Btn>
-        <Btn onClick={() => d.city && setStep(2)} disabled={!d.city} T={T}>Continue →</Btn>
+        <Btn onClick={() => d.city && (d.trades || []).length > 0 && setStep(2)} disabled={!d.city || !(d.trades || []).length} T={T}>Continue</Btn>
       </div>
     </div>,
 
@@ -690,11 +750,17 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
         <p style={{ fontSize: 12, fontWeight: 700, color: T.gold }}>⏱ Reviewed within 1–2 business days. Browse and bid on jobs right away while you wait.</p>
       </div>
 
-      {err && <p style={{ fontSize: 12, color: T.red, fontWeight: 600, marginBottom: 12 }}> {err}</p>}
+      {err && <p style={{ fontSize: 12, color: T.red, fontWeight: 600, marginBottom: 12 }}>{err}</p>}
+      <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 14, padding: "12px 14px", background: T.surface2, borderRadius: 10 }}>
+        <input type="checkbox" id="contractor-terms" checked={termsAgreed} onChange={e => setTermsAgreed(e.target.checked)} style={{ marginTop: 2, cursor: "pointer", width: 16, height: 16, flexShrink: 0 }} />
+        <label htmlFor="contractor-terms" style={{ fontSize: 12, color: T.muted, fontWeight: 500, lineHeight: 1.6, cursor: "pointer" }}>
+          I agree to the <span onClick={() => setShowTerms(true)} style={{ color: T.accent, fontWeight: 700, textDecoration: "underline" }}>Terms of Service</span> and <span onClick={() => setShowPrivacy(true)} style={{ color: T.accent, fontWeight: 700, textDecoration: "underline" }}>Privacy Policy</span>. I am 18 or older.
+        </label>
+      </div>
       <div style={{ display: "flex", gap: 10 }}>
         <Btn variant="secondary" onClick={() => setStep(1)} T={T} style={{ width: 48, padding: "14px 0", flexShrink: 0 }}>←</Btn>
-        <Btn onClick={() => !loading && save()} disabled={loading} T={T}>
-          {loading ? <div className="spin" style={{ width: 18, height: 18, border: `2px solid rgba(255,255,255,0.3)`, borderTopColor: "#fff", borderRadius: "50%", margin: "0 auto" }} /> : "Submit & Get Started →"}
+        <Btn onClick={() => !loading && termsAgreed && save()} disabled={loading || !termsAgreed} T={T}>
+          {loading ? <div className="spin" style={{ width: 18, height: 18, border: `2px solid rgba(255,255,255,0.3)`, borderTopColor: "#fff", borderRadius: "50%", margin: "0 auto" }} /> : "Submit & Get Started"}
         </Btn>
       </div>
     </div>,
@@ -714,9 +780,12 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
           </div>
         ))}
       </div>
-      <Btn onClick={() => onDone(session.get())} T={T}>Go to Dashboard →</Btn>
+      <Btn onClick={() => onDone(session.get())} T={T}>Go to Dashboard</Btn>
     </div>,
   ];
+
+  if (showTerms) return <TermsScreen T={T} dark={dark} onToggleTheme={onToggleTheme} onBack={() => setShowTerms(false)} />;
+  if (showPrivacy) return <PrivacyScreen T={T} dark={dark} onToggleTheme={onToggleTheme} onBack={() => setShowPrivacy(false)} />;
 
   return (
     <div style={{ minHeight: "100vh", background: T.bg }}>
@@ -725,7 +794,7 @@ function ContractorSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
         <div style={{ width: "100%", maxWidth: 440, padding: "0 16px" }}>
           <div style={{ marginBottom: 20 }}><ProgressBar step={step} steps={C_STEPS} T={T} /></div>
           <Card T={T}>{screens[step]}</Card>
-          <p style={{ textAlign: "center", fontSize: 11, color: T.muted, fontWeight: 600, marginTop: 14 }}> Encrypted & secure · usehirehero.com</p>
+          <p style={{ textAlign: "center", fontSize: 11, color: T.muted, fontWeight: 600, marginTop: 14 }}>Encrypted & secure · usehirehero.com</p>
         </div>
       </div>
     </div>
@@ -741,6 +810,8 @@ function HomeownerSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
+  const [termsAgreed, setTermsAgreed] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
   const u = (k, v) => setD(p => ({ ...p, [k]: v }));
 
   const validate0 = () => {
@@ -792,11 +863,17 @@ function HomeownerSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
       <Field label="Street Address" icon="" T={T}><input style={iS(T)} placeholder="" value={d.address || ""} onChange={e => u("address", e.target.value)} /></Field>
       <Field label="City & State" icon="" T={T}><input style={iS(T)} placeholder="" value={d.city || ""} onChange={e => u("city", e.target.value)} /></Field>
       <Field label="Zip Code" icon="" T={T}><input style={iS(T)} placeholder="" value={d.zip || ""} onChange={e => u("zip", e.target.value)} /></Field>
-      {err && <p style={{ fontSize: 12, color: T.red, fontWeight: 600, marginBottom: 12 }}> {err}</p>}
+      {err && <p style={{ fontSize: 12, color: T.red, fontWeight: 600, marginBottom: 12 }}>{err}</p>}
+      <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 14, padding: "12px 14px", background: T.surface2, borderRadius: 10 }}>
+        <input type="checkbox" id="homeowner-terms" checked={termsAgreed} onChange={e => setTermsAgreed(e.target.checked)} style={{ marginTop: 2, cursor: "pointer", width: 16, height: 16, flexShrink: 0 }} />
+        <label htmlFor="homeowner-terms" style={{ fontSize: 12, color: T.muted, fontWeight: 500, lineHeight: 1.6, cursor: "pointer" }}>
+          I agree to the <span onClick={() => setShowTerms(true)} style={{ color: T.accent, fontWeight: 700, textDecoration: "underline" }}>Terms of Service</span> and <span onClick={() => setShowPrivacy(true)} style={{ color: T.accent, fontWeight: 700, textDecoration: "underline" }}>Privacy Policy</span>. I am 18 or older.
+        </label>
+      </div>
       <div style={{ display: "flex", gap: 10 }}>
         <Btn variant="secondary" onClick={() => setStep(0)} T={T} style={{ width: 48, padding: "14px 0", flexShrink: 0 }}>←</Btn>
-        <Btn onClick={() => d.city && save()} disabled={!d.city || loading} T={T}>
-          {loading ? <div className="spin" style={{ width: 18, height: 18, border: `2px solid rgba(255,255,255,0.3)`, borderTopColor: "#fff", borderRadius: "50%", margin: "0 auto" }} /> : "Create Account →"}
+        <Btn onClick={() => d.city && termsAgreed && save()} disabled={!d.city || !termsAgreed || loading} T={T}>
+          {loading ? <div className="spin" style={{ width: 18, height: 18, border: `2px solid rgba(255,255,255,0.3)`, borderTopColor: "#fff", borderRadius: "50%", margin: "0 auto" }} /> : "Create Account"}
         </Btn>
       </div>
     </div>,
@@ -809,6 +886,9 @@ function HomeownerSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
     </div>,
   ];
 
+  if (showTerms) return <TermsScreen T={T} dark={dark} onToggleTheme={onToggleTheme} onBack={() => setShowTerms(false)} />;
+  if (showPrivacy) return <PrivacyScreen T={T} dark={dark} onToggleTheme={onToggleTheme} onBack={() => setShowPrivacy(false)} />;
+
   return (
     <div style={{ minHeight: "100vh", background: T.bg }}>
       <Topbar T={T} dark={dark} onToggleTheme={onToggleTheme} onBack={step > 0 ? () => setStep(s => s - 1) : onBack} />
@@ -816,7 +896,7 @@ function HomeownerSignup({ T, dark, onToggleTheme, onDone, onLogin, onBack }) {
         <div style={{ width: "100%", maxWidth: 440, padding: "0 16px" }}>
           <div style={{ marginBottom: 20 }}><ProgressBar step={step} steps={H_STEPS} T={T} /></div>
           <Card T={T}>{screens[step]}</Card>
-          <p style={{ textAlign: "center", fontSize: 11, color: T.muted, fontWeight: 600, marginTop: 14 }}> Encrypted & secure · usehirehero.com</p>
+          <p style={{ textAlign: "center", fontSize: 11, color: T.muted, fontWeight: 600, marginTop: 14 }}>Encrypted & secure · usehirehero.com</p>
         </div>
       </div>
     </div>
@@ -882,7 +962,9 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome, o
         sb.select("notifications", `?user_id=eq.${user.id}&order=created_at.desc`),
         sb.select("users", `?id=eq.${user.id}`),
       ]);
-      setJobs(j || []); setMyBids(b || []); setNotifications(n || []);
+      const contractorTrades = freshUser?.[0]?.trades ? JSON.parse(freshUser[0].trades) : ["handyman"];
+      const filteredJobs = (j || []).filter(job => !job.trade || contractorTrades.includes(job.trade) || contractorTrades.length === 0);
+      setJobs(filteredJobs); setMyBids(b || []); setNotifications(n || []);
       if (freshUser && freshUser[0]) session.set({ ...user, ...freshUser[0] });
     } catch {}
     setLoading(false);
@@ -988,12 +1070,12 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome, o
                         <div style={{ padding: 16 }}>
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
                             <p style={{ fontSize: 16, fontWeight: 800, color: T.text }}>{job.title}</p>
-                            <span style={{ background: T.greenBg, color: T.green, borderRadius: 6, padding: "3px 10px", fontSize: 12, fontWeight: 700, flexShrink: 0, marginLeft: 8 }}>${job.budget_min}–${job.budget_max}</span>
                           </div>
                           <p style={{ fontSize: 12, color: T.muted, fontWeight: 600, marginBottom: 8 }}> {job.city} · {timeAgo(job.created_at)}</p>
                           <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, lineHeight: 1.55, marginBottom: 12 }}>{job.description}</p>
-                          <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-                            <span style={{ background: T.accentGlow, color: T.accent, borderRadius: 6, padding: "3px 10px", fontSize: 11, fontWeight: 700 }}> Handyman</span>
+                          <div style={{ display: "flex", gap: 8, marginBottom: 12, flexWrap: "wrap" }}>
+                            {(() => { const cat = CATEGORIES.find(c => c.id === job.trade) || CATEGORIES[0]; return <span style={{ background: cat.color + "20", color: cat.color, borderRadius: 6, padding: "3px 10px", fontSize: 11, fontWeight: 700 }}>{cat.label}</span>; })()}
+                            {job.urgency === "urgent" && <span style={{ background: "#dc262620", color: "#dc2626", borderRadius: 6, padding: "3px 10px", fontSize: 11, fontWeight: 700 }}>Urgent</span>}
                             <span style={{ fontSize: 12, color: T.muted, fontWeight: 600 }}>{job.bid_count || 0} bid{job.bid_count !== 1 ? "s" : ""}</span>
                           </div>
                           {alreadyBidThis
@@ -1038,6 +1120,27 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome, o
                             </div>
                             <span style={{ marginLeft: "auto", fontSize: 20 }}>📞</span>
                           </a>
+                          {!bid.job_completed && (
+                            <button onClick={async () => {
+                              if (!window.confirm("Mark this job as complete? The homeowner will have 72 hours to approve or dispute.")) return;
+                              await sb.update("jobs", { status: "pending_approval", completed_at: new Date().toISOString() }, `?id=eq.${bid.job_id}`);
+                              await sb.update("bids", { job_completed: true }, `?id=eq.${bid.id}`);
+                              await sb.insert("notifications", {
+                                user_id: bid.homeowner_id || null,
+                                message: `Your job "${bid.job_title || "job"}" has been marked complete. Please approve within 72 hours or open a dispute.`,
+                                type: "complete", read: false,
+                              });
+                              load();
+                            }} style={{ width: "100%", marginTop: 10, padding: "12px", borderRadius: 10, border: "none", background: T.green, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
+                              Mark Job Complete
+                            </button>
+                          )}
+                          {bid.job_completed && (
+                            <div style={{ marginTop: 10, background: T.greenBg, border: `1px solid ${T.greenBorder}`, borderRadius: 10, padding: "10px 14px", textAlign: "center" }}>
+                              <p style={{ fontSize: 13, fontWeight: 700, color: T.green }}>Job marked complete. Waiting for homeowner approval.</p>
+                              <p style={{ fontSize: 11, color: T.muted, fontWeight: 500, marginTop: 4 }}>Payment releases automatically in 72 hours if no dispute is filed.</p>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
@@ -1158,7 +1261,6 @@ function ContractorDashboard({ T, dark, onToggleTheme, user, onLogout, onHome, o
             <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, marginBottom: 16 }}>{selectedJob.title} · {selectedJob.city}</p>
             
             <div style={{ background: T.accentGlow, borderRadius: 10, padding: "10px 14px", marginBottom: 14 }}>
-              <p style={{ fontSize: 12, fontWeight: 700, color: T.accent }}>Homeowner budget: <strong>${selectedJob.budget_min}–${selectedJob.budget_max}</strong></p>
             </div>
             <Field label="Your Bid Amount ($)" icon="" T={T}><input style={iS(T)} type="number" placeholder="e.g. 150" value={bidAmount} onChange={e => setBidAmount(e.target.value)} /></Field>
             <div style={{ marginBottom: 14 }}>
@@ -1248,7 +1350,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
       contractor_name: bid.contractor_name,
       contractor_phone: contractor?.phone || null,
     }, `?id=eq.${selectedJob.id}`);
-    await sb.update("bids", { status: "accepted", homeowner_name: `${user.first_name} ${user.last_name}`, homeowner_phone: user.phone || null }, `?id=eq.${bid.id}`);
+    await sb.update("bids", { status: "accepted", homeowner_name: `${user.first_name} ${user.last_name}`, homeowner_phone: user.phone || null, homeowner_id: user.id, job_title: selectedJob.title }, `?id=eq.${bid.id}`);
     for (const b of jobBids.filter(b => b.id !== bid.id)) await sb.update("bids", { status: "declined" }, `?id=eq.${b.id}`);
     await sb.insert("notifications", {
       user_id: bid.contractor_id,
@@ -1278,7 +1380,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
         homeowner_id: user.id,
         homeowner_name: `${user.first_name} ${user.last_name}`,
         homeowner_city: user.city,
-        title: pData.title, trade: "handyman",
+        title: pData.title, trade: pData.category || "handyman",
         description: pData.description || "",
         city: user.city || "Marysville, OH",
         photo_url: (pData.photoUrls || [])[0] || null,
@@ -1289,8 +1391,8 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
     setPosting(false);
   };
 
-  const statusColor = { open: T.accent, in_progress: T.gold, complete: T.green };
-  const statusLabel = { open: "Open", in_progress: "In Progress", complete: "Complete" };
+  const statusColor = { open: T.accent, in_progress: T.gold, pending_approval: T.gold, complete: T.green, disputed: T.red };
+  const statusLabel = { open: "Open", in_progress: "In Progress", pending_approval: "Pending Approval", complete: "Complete", disputed: "Disputed" };
   const mockJobImages = [UNSPLASH.job1, UNSPLASH.job2, UNSPLASH.job3];
 
   return (
@@ -1318,13 +1420,13 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
 
       {/* Tabs */}
       <div style={{ display: "flex", margin: "14px 16px 0", background: T.surface, borderRadius: 12, padding: 4, border: `1px solid ${T.border}` }}>
-        {[["jobs", "My Jobs"], ["post", "Post Job"], ["escrow", "Escrow"], ["profile", "Profile"]].map(([t, l]) => (
+        {[["jobs", "My Jobs"], ["post", "Post Job"], ["profile", "Profile"]].map(([t, l]) => (
           <button key={t} onClick={() => setTab(t)} style={{ flex: 1, padding: "10px 4px", borderRadius: 10, border: "none", fontSize: 11, fontWeight: 700, cursor: "pointer", background: tab === t ? T.green : "transparent", color: tab === t ? "#fff" : T.muted, transition: "all 0.2s" }}>{l}</button>
         ))}
       </div>
 
       <div style={{ padding: "14px 16px 0" }}>
-        {loading && tab !== "post" && tab !== "escrow" ? <Spinner T={T} /> : (
+        {loading && tab !== "post" ? <Spinner T={T} /> : (
           <>
             {tab === "jobs" && (
               <div className="fu">
@@ -1339,28 +1441,47 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                           <span style={{ background: statusColor[job.status] + "20", color: statusColor[job.status], border: `1px solid ${statusColor[job.status]}40`, borderRadius: 6, padding: "3px 10px", fontSize: 11, fontWeight: 700, flexShrink: 0, marginLeft: 8 }}>{statusLabel[job.status]}</span>
                         </div>
                         <p style={{ fontSize: 12, color: T.muted, fontWeight: 600, marginBottom: 10 }}> {job.city} · {timeAgo(job.created_at)}</p>
-                        <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-                          <span style={{ background: T.accentGlow, color: T.accent, borderRadius: 6, padding: "3px 10px", fontSize: 12, fontWeight: 700 }}>{job.bid_count || 0} bid{job.bid_count !== 1 ? "s" : ""}</span>
-                          <span style={{ background: T.greenBg, color: T.green, borderRadius: 6, padding: "3px 10px", fontSize: 12, fontWeight: 700 }}>${job.budget_min}–${job.budget_max}</span>
+                        <div style={{ display: "flex", gap: 8, marginBottom: 12, flexWrap: "wrap" }}>
+                          {(() => { const cat = CATEGORIES.find(c => c.id === job.trade) || CATEGORIES[0]; return <span style={{ background: cat.color + "20", color: cat.color, borderRadius: 6, padding: "3px 10px", fontSize: 11, fontWeight: 700 }}>{cat.label}</span>; })()}
+                          <span style={{ background: T.accentGlow, color: T.accent, borderRadius: 6, padding: "3px 10px", fontSize: 11, fontWeight: 700 }}>{job.bid_count || 0} bid{job.bid_count !== 1 ? "s" : ""}</span>
                         </div>
                         {job.status === "open" && <Btn onClick={() => viewBids(job)} variant={(job.bid_count || 0) > 0 ? "primary" : "secondary"} T={T}>{(job.bid_count || 0) > 0 ? `View ${job.bid_count} Bid${job.bid_count > 1 ? "s" : ""} →` : "Waiting for bids…"}</Btn>}
                         {job.status === "in_progress" && (() => {
-                          const acceptedBid = job.accepted_bid_id;
                           return (
                             <div style={{ background: T.greenBg, border: `1px solid ${T.greenBorder}`, borderRadius: 12, padding: "14px 16px" }}>
                               <p style={{ fontSize: 13, fontWeight: 800, color: T.green, marginBottom: 10 }}>Bid Accepted! Here is your contractor's contact info:</p>
-                              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                                <a href={`tel:${job.contractor_phone}`} style={{ display: "flex", alignItems: "center", gap: 10, background: T.surface2, borderRadius: 10, padding: "12px 14px", textDecoration: "none", border: `1px solid ${T.border}` }}>
-                                  <div>
-                                    <p style={{ fontSize: 13, fontWeight: 700, color: T.text }}>{job.contractor_name}</p>
-                                    <p style={{ fontSize: 12, color: T.accent, fontWeight: 600 }}>{job.contractor_phone || "Phone not available"}</p>
-                                  </div>
-                                  <span style={{ marginLeft: "auto", fontSize: 20 }}>📞</span>
-                                </a>
-                              </div>
+                              <a href={`tel:${job.contractor_phone}`} style={{ display: "flex", alignItems: "center", gap: 10, background: T.surface2, borderRadius: 10, padding: "12px 14px", textDecoration: "none", border: `1px solid ${T.border}` }}>
+                                <div>
+                                  <p style={{ fontSize: 13, fontWeight: 700, color: T.text }}>{job.contractor_name}</p>
+                                  <p style={{ fontSize: 12, color: T.accent, fontWeight: 600 }}>{job.contractor_phone || "Phone not available"}</p>
+                                </div>
+                                <span style={{ marginLeft: "auto", fontSize: 20 }}>📞</span>
+                              </a>
                             </div>
                           );
                         })()}
+                        {job.status === "pending_approval" && (
+                          <div style={{ background: T.surface2, border: `1px solid ${T.gold}40`, borderRadius: 12, padding: "14px 16px" }}>
+                            <p style={{ fontSize: 14, fontWeight: 800, color: T.gold, marginBottom: 6 }}>Job Marked Complete</p>
+                            <p style={{ fontSize: 12, color: T.muted, fontWeight: 500, marginBottom: 14, lineHeight: 1.6 }}>Your contractor has marked this job as complete. Please approve if you are satisfied or open a dispute if there is an issue. Payment releases automatically in 72 hours.</p>
+                            <div style={{ display: "flex", gap: 8 }}>
+                              <button onClick={async () => {
+                                await sb.update("jobs", { status: "complete" }, `?id=eq.${job.id}`);
+                                setMyJobs(prev => prev.map(j => j.id === job.id ? { ...j, status: "complete" } : j));
+                              }} style={{ flex: 1, padding: "12px", borderRadius: 10, border: "none", background: T.green, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>Approve</button>
+                              <button onClick={async () => {
+                                await sb.update("jobs", { status: "disputed" }, `?id=eq.${job.id}`);
+                                setMyJobs(prev => prev.map(j => j.id === job.id ? { ...j, status: "disputed" } : j));
+                                alert("Dispute opened. Kyle from HireHero will review and contact both parties within 24 hours.");
+                              }} style={{ flex: 1, padding: "12px", borderRadius: 10, border: `1px solid ${T.red}`, background: T.redBg, color: T.red, fontSize: 13, fontWeight: 700, cursor: "pointer" }}>Dispute</button>
+                            </div>
+                          </div>
+                        )}
+                        {job.status === "disputed" && (
+                          <div style={{ background: T.redBg, border: `1px solid ${T.red}40`, borderRadius: 10, padding: "12px 14px", textAlign: "center" }}>
+                            <p style={{ fontSize: 13, fontWeight: 700, color: T.red }}>Dispute opened. HireHero will review within 24 hours.</p>
+                          </div>
+                        )}
                         {job.status === "complete" && <div style={{ background: T.greenBg, borderRadius: 10, padding: 10, textAlign: "center", fontSize: 13, fontWeight: 700, color: T.green }}> Job complete — payment released</div>}
                         {job.status === "open" && <button onClick={async () => { if (window.confirm("Delete this job?")) { await sb.delete("bids", `?job_id=eq.${job.id}`); await sb.delete("jobs", `?id=eq.${job.id}`); setMyJobs(prev => prev.filter(j => j.id !== job.id)); } }} style={{ width: "100%", marginTop: 8, padding: "10px", borderRadius: 10, border: `1px solid ${T.red}40`, background: T.redBg, color: T.red, fontSize: 12, fontWeight: 700, cursor: "pointer" }}>Delete Job</button>}
                       </div>
@@ -1413,6 +1534,12 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                         <p style={{ fontSize: 11, color: T.muted, fontWeight: 500 }}>More photos help contractors give accurate bids</p>
                       </div>
 
+                      <Field label="What do you need done?" icon="" T={T}>
+                        <select style={{ ...iS(T), cursor: "pointer", colorScheme: "dark" }} value={pData.category || ""} onChange={e => up("category", e.target.value)}>
+                          <option value="" style={{ background: "#1e293b", color: "#fff" }}>Select a category...</option>
+                          {CATEGORIES.map(c => <option key={c.id} value={c.id} style={{ background: "#1e293b", color: "#fff" }}>{c.label}</option>)}
+                        </select>
+                      </Field>
                       <Field label="Job Title" icon="" T={T}><input style={iS(T)} placeholder="e.g. Fix leaky faucet, install ceiling fan" value={pData.title || ""} onChange={e => up("title", e.target.value)} /></Field>
 
                       <div style={{ marginBottom: 14 }}>
@@ -1420,7 +1547,7 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                         <textarea placeholder="Tell contractors what needs to be done. The more detail the better." value={pData.description || ""} onChange={e => up("description", e.target.value)} style={{ width: "100%", minHeight: 90, padding: "12px 14px", background: T.surface2, border: `1.5px solid ${T.border}`, borderRadius: 10, fontSize: 13, fontWeight: 500, color: T.text, outline: "none", lineHeight: 1.6 }} />
                       </div>
 
-                      <Btn onClick={() => pData.title && setPStep(1)} disabled={!pData.title} T={T}>Continue</Btn>
+                      <Btn onClick={() => pData.title && pData.category && setPStep(1)} disabled={!pData.title || !pData.category} T={T}>Continue</Btn>
                     </div>
                   )}
                   {pStep === 1 && (
@@ -1492,40 +1619,6 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
                 </Card>
               </div>
             )}
-            {tab === "escrow" && (
-              <div className="fu">
-                <div style={{ position: "relative", borderRadius: 16, overflow: "hidden", marginBottom: 16 }}>
-                  
-                  <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", padding: "0 20px", gap: 14 }}>
-                    <span style={{ fontSize: 36 }}></span>
-                    <div>
-                      <p style={{ fontSize: 20, fontWeight: 800, color: "#fff" }}>Escrow Protection</p>
-                      <p style={{ fontSize: 12, color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>Your money is safe until you're satisfied</p>
-                    </div>
-                  </div>
-                </div>
-                <Card T={T}>
-                  <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, lineHeight: 1.7, marginBottom: 20 }}>Your payment is held safely until the job is done right. No risk on either side.</p>
-                  {[
-                    ["1", T.accent, "You fund escrow", "Once you accept a bid your payment is set aside. The contractor knows the money is there but nobody touches it until the work is done."],
-                    ["2", T.gold, "Work gets done", "Your contractor completes the job. If you need to reach them you can message directly through the app."],
-                    ["3", T.green, "You approve", "Happy with the work? Tap Approve and the payment goes straight to the contractor."],
-                    ["!", T.red, "Have a problem?", "If something isn't right open a dispute within 72 hours and we'll step in to help work it out."],
-                  ].map(([n, color, title, desc]) => (
-                    <div key={title} style={{ display: "flex", gap: 14, alignItems: "flex-start", padding: "14px 16px", background: T.surface2, borderRadius: 12, border: `1px solid ${T.border}`, marginBottom: 10 }}>
-                      <div style={{ width: 34, height: 34, borderRadius: "50%", background: color, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 900, flexShrink: 0 }}>{n}</div>
-                      <div>
-                        <p style={{ fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 4 }}>{title}</p>
-                        <p style={{ fontSize: 12, color: T.muted, fontWeight: 500, lineHeight: 1.55 }}>{desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                  <div style={{ background: T.accentGlow, borderRadius: 10, padding: "12px 14px", marginTop: 6 }}>
-                    <p style={{ fontSize: 12, fontWeight: 700, color: T.accent }}>• Funds release automatically after 72 hours if no dispute is filed.</p>
-                  </div>
-                </Card>
-              </div>
-            )}
           </>
         )}
       </div>
@@ -1570,8 +1663,70 @@ function HomeownerDashboard({ T, dark, onToggleTheme, user, onLogout, defaultTab
 }
 
 /* ─────────────────────────────────────────────
-   ADMIN SCREEN
+   PRIVACY POLICY
 ───────────────────────────────────────────── */
+function PrivacyScreen({ T, dark, onToggleTheme, onBack }) {
+  return (
+    <div style={{ minHeight: "100vh", background: T.bg, paddingBottom: 40 }}>
+      <Topbar T={T} dark={dark} onToggleTheme={onToggleTheme} onBack={onBack} />
+      <div style={{ padding: "24px 20px", maxWidth: 600, margin: "0 auto" }}>
+        <p style={{ fontSize: 24, fontWeight: 800, color: T.text, marginBottom: 4 }}>Privacy Policy</p>
+        <p style={{ fontSize: 12, color: T.muted, fontWeight: 500, marginBottom: 24 }}>Last updated May 2026</p>
+        {[
+          ["1. Information We Collect", "We collect information you provide when creating an account including your name, email address, phone number, city, and photos you upload. We also collect information about how you use the app such as jobs posted and bids submitted."],
+          ["2. How We Use Your Information", "We use your information to operate HireHero, connect homeowners with service professionals, send notifications, and improve our services. We do not sell your personal information to third parties."],
+          ["3. Information Shared Between Users", "When a bid is accepted, the homeowner and contractor will see each other name and phone number to coordinate the job. Your email is never shared with other users."],
+          ["4. Photos", "Photos you upload are stored securely and visible to other users on the platform. Do not upload photos containing sensitive personal information."],
+          ["5. Payment Information", "Payments are handled by Stripe. HireHero does not store your credit card or banking information. Please review Stripe privacy policy for how they handle payment data."],
+          ["6. Data Security", "We use industry standard security measures to protect your information. Your password is encrypted and never stored in plain text."],
+          ["7. Data Retention", "We retain your account information for as long as your account is active. You may request deletion by contacting kyle@usehirehero.com."],
+          ["8. Children Privacy", "HireHero is not intended for users under 18 years of age. We do not knowingly collect information from children under 18."],
+          ["9. Changes to This Policy", "We may update this privacy policy from time to time. Continued use of the platform after changes constitutes acceptance of the new policy."],
+          ["10. Contact Us", "If you have questions about this privacy policy contact us at kyle@usehirehero.com"],
+        ].map(([title, body]) => (
+          <div key={title} style={{ marginBottom: 20 }}>
+            <p style={{ fontSize: 14, fontWeight: 800, color: T.text, marginBottom: 6 }}>{title}</p>
+            <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, lineHeight: 1.7 }}>{body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   TERMS OF SERVICE
+───────────────────────────────────────────── */
+function TermsScreen({ T, dark, onToggleTheme, onBack }) {
+  return (
+    <div style={{ minHeight: "100vh", background: T.bg, paddingBottom: 40 }}>
+      <Topbar T={T} dark={dark} onToggleTheme={onToggleTheme} onBack={onBack} />
+      <div style={{ padding: "24px 20px", maxWidth: 600, margin: "0 auto" }}>
+        <p style={{ fontSize: 24, fontWeight: 800, color: T.text, marginBottom: 4 }}>Terms of Service</p>
+        <p style={{ fontSize: 12, color: T.muted, fontWeight: 500, marginBottom: 24 }}>Last updated May 2026</p>
+
+        {[
+          ["1. About HireHero", "HireHero is an online marketplace platform that connects homeowners with independent contractors. HireHero is not a contractor, does not perform any services, and is not a party to any agreement between homeowners and contractors."],
+          ["2. Platform Only", "HireHero provides the technology to connect two parties. We do not control, supervise, or direct the work performed by contractors. All work is performed by independent contractors who are solely responsible for the quality, safety, and completion of their services."],
+          ["3. No Liability for Work Performed", "HireHero is not liable for any damages, injuries, losses, or disputes arising from work performed by contractors found through our platform. By using HireHero, you agree that any claims related to work quality or disputes are between the homeowner and contractor only."],
+          ["4. Contractor Responsibility", "Contractors are responsible for maintaining their own licenses, insurance, and compliance with local laws. HireHero does not guarantee that any contractor is licensed, insured, or qualified. Users are encouraged to verify credentials independently."],
+          ["5. No-Show Policy", "If a contractor fails to show up for a scheduled job without prior notice, the homeowner may report the no-show through the platform. First offense will result in a warning. A second no-show offense will result in permanent removal from the platform. Contractors who repeatedly cancel or fail to communicate with homeowners are subject to removal at HireHero's discretion."],
+          ["6. Payments", "HireHero facilitates payments between parties. We are not responsible for disputes related to payment amounts. All payment disputes must be resolved between the homeowner and contractor with HireHero acting only as a mediator at our discretion."],
+          ["7. User Conduct", "Users agree not to use HireHero for any unlawful purpose, post false or misleading information, or engage in any behavior that harms other users or the platform. HireHero reserves the right to remove any user at any time for any reason."],
+          ["8. Dispute Resolution", "HireHero may at our discretion assist in mediating disputes between homeowners and contractors. Our decision in any dispute is final. HireHero is not obligated to mediate any dispute."],
+          ["9. Founding Member Pricing", "Founding member pricing is offered to early adopters at a reduced rate. This rate is locked in for as long as the account remains active and in good standing. If a founding member cancels their subscription the founding member rate is forfeited and cannot be reinstated. Future pricing for new members may differ."],
+          ["10. Changes to Terms", "HireHero reserves the right to update these terms at any time. Continued use of the platform after changes constitutes acceptance of the new terms."],
+          ["11. Contact", "For questions about these terms contact kyle@usehirehero.com"],
+        ].map(([title, body]) => (
+          <div key={title} style={{ marginBottom: 20 }}>
+            <p style={{ fontSize: 14, fontWeight: 800, color: T.text, marginBottom: 6 }}>{title}</p>
+            <p style={{ fontSize: 13, color: T.muted, fontWeight: 500, lineHeight: 1.7 }}>{body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 const ADMIN_PIN = "1234";
 
 function AdminScreen({ T, dark, onToggleTheme, onBack }) {
@@ -1777,13 +1932,15 @@ export default function App() {
         body { background: #0a0a0a !important; }
       `}</style>
       <div id="hirehero-root">
-      {screen === "welcome" && <WelcomeScreen {...shared} onSelect={(r, s) => { setRole(r); setScreen(s); }} onLogin={() => setScreen("login")} onDashboard={user ? () => setScreen("dashboard") : null} onLogoTap={handleLogoTap} />}
+      {screen === "welcome" && <WelcomeScreen {...shared} onSelect={(r, s) => { setRole(r); setScreen(s); }} onLogin={() => setScreen("login")} onDashboard={user ? () => setScreen("dashboard") : null} onLogoTap={handleLogoTap} onShowTerms={() => setScreen("terms")} onShowPrivacy={() => setScreen("privacy")} />}
       {screen === "login" && <LoginScreen {...shared} onBack={() => setScreen("welcome")} onLogin={login} />}
       {screen === "signup" && role === "contractor" && <ContractorSignup {...shared} onDone={signup} onLogin={() => setScreen("login")} onBack={() => setScreen("welcome")} />}
       {screen === "signup" && role === "homeowner" && <HomeownerSignup {...shared} onDone={signup} onLogin={() => setScreen("login")} onBack={() => setScreen("welcome")} />}
       {screen === "dashboard" && user?.role === "contractor" && <ContractorDashboard {...shared} user={user} onLogout={logout} onHome={goHome} onSwitch={switchAccount} />}
       {screen === "dashboard" && user?.role === "homeowner" && <HomeownerDashboard {...shared} user={user} onLogout={logout} defaultTab={defaultTab} onHome={goHome} onSwitch={switchAccount} />}
       {screen === "admin" && <AdminScreen {...shared} onBack={() => setScreen("welcome")} />}
+      {screen === "terms" && <TermsScreen {...shared} onBack={() => setScreen("welcome")} />}
+      {screen === "privacy" && <PrivacyScreen {...shared} onBack={() => setScreen("welcome")} />}
       </div>
     </>
   );
